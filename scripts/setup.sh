@@ -71,8 +71,45 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Download and update shared-functions.sh
+# >>> intelis-loader: identical in every script, kept so by bin/build/check-shell-loaders.php
+#
+# The commit the scripts are downloaded from. raw.githubusercontent.com caches a
+# branch URL for 5 minutes and ignores any query string, so a script fetched
+# just after a push could be paired with the previous shared-functions.sh. A
+# commit URL never changes, so every file fetched through it matches. The commit
+# is read from GitHub's git endpoint (what `git ls-remote` uses), exported so
+# the scripts this one starts use the same commit, and falls back to the branch
+# name when GitHub cannot be reached.
+intelis_resolve_scripts_ref() {
+    [[ "${INTELIS_SCRIPTS_REF:-}" =~ ^[0-9a-f]{40}$ ]] && return 0
+    local url="https://github.com/deforay/intelis.git/info/refs?service=git-upload-pack" sha=""
+    if command -v curl >/dev/null 2>&1; then
+        sha="$(curl -fsS --connect-timeout 5 --max-time 10 "$url" 2>/dev/null | grep -ao '[0-9a-f]\{40\} refs/heads/master' | head -n 1 | cut -c1-40 || true)"
+    elif command -v wget >/dev/null 2>&1; then
+        sha="$(wget -q -T 10 -O - "$url" 2>/dev/null | grep -ao '[0-9a-f]\{40\} refs/heads/master' | head -n 1 | cut -c1-40 || true)"
+    fi
+    if [[ "$sha" =~ ^[0-9a-f]{40}$ ]]; then
+        INTELIS_SCRIPTS_REF="$sha"
+    else
+        INTELIS_SCRIPTS_REF="master"
+    fi
+    export INTELIS_SCRIPTS_REF
+}
+
+# Stop when the shared-functions.sh just loaded is older than this script. That
+# happens when the download failed and an old copy was left on the machine.
+intelis_require_shared_fn_version() {
+    local need="$1" have="${SHARED_FN_VERSION:-0}"
+    [ "$have" -ge "$need" ] 2>/dev/null && return 0
+    echo "shared-functions.sh at ${SHARED_FN_PATH:-/usr/local/lib/intelis/shared-functions.sh} is version ${have}. This script needs version ${need} or newer."
+    echo "Check this machine's internet connection, then run the same command again. Nothing has been changed."
+    exit 1
+}
+# <<< intelis-loader
+intelis_resolve_scripts_ref
+
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
-SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/${INTELIS_SCRIPTS_REF}/scripts/shared-functions.sh"
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
@@ -116,35 +153,13 @@ fi
 
 # Source the shared functions
 source "$SHARED_FN_PATH"
+intelis_require_shared_fn_version 1
 
 # Existing is not the same as usable — check for a function it must define
 # before prepare_system runs anything as root.
 if ! declare -F prepare_system >/dev/null 2>&1; then
     echo "shared-functions.sh at $SHARED_FN_PATH is unusable (truncated or corrupt)."
     echo "Delete it and run this again: sudo rm -f $SHARED_FN_PATH"
-    exit 1
-fi
-
-# A copy left on this machine by an older run can lack functions this script
-# calls. Saving the MySQL password without mysql_cnf_quote would write an empty
-# one into the config, so check before any question is asked: re-fetch once
-# past the CDN cache, then stop if the copy is still too old.
-REQUIRED_SHARED_FN=(ask_password ask_text ask_choice ask_yes_no ui_note mysql_cnf_quote mysql_cnf_password)
-missing_shared_fn() {
-    local fn missing=""
-    for fn in "${REQUIRED_SHARED_FN[@]}"; do
-        declare -F "$fn" >/dev/null 2>&1 || missing="${missing} ${fn}"
-    done
-    printf '%s' "${missing# }"
-}
-if [ -n "$(missing_shared_fn)" ] &&
-    fetch_shared_fn "$SHARED_FN_PATH" "${SHARED_FN_URL}?t=$(date +%s)"; then
-    # shellcheck source=/dev/null
-    source "$SHARED_FN_PATH"
-fi
-if [ -n "$(missing_shared_fn)" ]; then
-    echo "shared-functions.sh at $SHARED_FN_PATH is older than this script (missing: $(missing_shared_fn))."
-    echo "Check the internet connection, then run setup again. Nothing has been changed."
     exit 1
 fi
 
@@ -1365,13 +1380,8 @@ fi
 rm -f ./lamp-setup.sh
 
 # lamp-setup keeps a PHP that is already installed, so a reused machine can
-# still carry a patch release older than the one InteLIS needs. An older
-# shared-functions.sh lacks the check: re-fetch it once past the CDN cache.
-if ! declare -F ensure_php_security_floor >/dev/null &&
-    fetch_shared_fn "$SHARED_FN_PATH" "${SHARED_FN_URL}?t=$(date +%s)"; then
-    # shellcheck source=/dev/null
-    source "$SHARED_FN_PATH"
-fi
+# still carry a patch release older than the one InteLIS needs. The version
+# check at the top guarantees the function; this stays as a last guard.
 if ! declare -F ensure_php_security_floor >/dev/null; then
     print error "shared-functions.sh is out of date, so setup cannot check the PHP security update. Check the network connection, then run setup again."
     log_action "Setup aborted: shared-functions.sh lacks ensure_php_security_floor"
@@ -2015,13 +2025,13 @@ fi
 # Staleness is not a reason to overwrite it either — `intelis update` refreshes
 # this copy from master every time it runs.
 if [ ! -x /usr/local/bin/intelis-update ]; then
-    download_file "/usr/local/bin/intelis-update" https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh
+    download_file "/usr/local/bin/intelis-update" "https://raw.githubusercontent.com/deforay/intelis/${INTELIS_SCRIPTS_REF:-master}/scripts/upgrade.sh"
     chmod +x /usr/local/bin/intelis-update
     print success "Update command installed. To update this machine, run: intelis update"
 fi
 
 # Set proper permissions
-download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
+download_file "/usr/local/bin/intelis-refresh" "https://raw.githubusercontent.com/deforay/intelis/${INTELIS_SCRIPTS_REF:-master}/scripts/refresh.sh"
 chmod +x /usr/local/bin/intelis-refresh
 # INTELIS_SHARED_FN_FRESH: this run already fetched the shared functions, so
 # intelis-refresh has no reason to fetch them again.

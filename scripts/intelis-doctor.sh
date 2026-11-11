@@ -47,7 +47,43 @@ trap 'echo "intelis doctor stopped unexpectedly at ${BASH_SOURCE[0]:-intelis-doc
 MODE=ask          # ask | check | yes
 QUIET=false
 
-RAW_BASE="https://raw.githubusercontent.com/deforay/intelis/master/scripts"
+# >>> intelis-loader: identical in every script, kept so by bin/build/check-shell-loaders.php
+#
+# The commit the scripts are downloaded from. raw.githubusercontent.com caches a
+# branch URL for 5 minutes and ignores any query string, so a script fetched
+# just after a push could be paired with the previous shared-functions.sh. A
+# commit URL never changes, so every file fetched through it matches. The commit
+# is read from GitHub's git endpoint (what `git ls-remote` uses), exported so
+# the scripts this one starts use the same commit, and falls back to the branch
+# name when GitHub cannot be reached.
+intelis_resolve_scripts_ref() {
+    [[ "${INTELIS_SCRIPTS_REF:-}" =~ ^[0-9a-f]{40}$ ]] && return 0
+    local url="https://github.com/deforay/intelis.git/info/refs?service=git-upload-pack" sha=""
+    if command -v curl >/dev/null 2>&1; then
+        sha="$(curl -fsS --connect-timeout 5 --max-time 10 "$url" 2>/dev/null | grep -ao '[0-9a-f]\{40\} refs/heads/master' | head -n 1 | cut -c1-40 || true)"
+    elif command -v wget >/dev/null 2>&1; then
+        sha="$(wget -q -T 10 -O - "$url" 2>/dev/null | grep -ao '[0-9a-f]\{40\} refs/heads/master' | head -n 1 | cut -c1-40 || true)"
+    fi
+    if [[ "$sha" =~ ^[0-9a-f]{40}$ ]]; then
+        INTELIS_SCRIPTS_REF="$sha"
+    else
+        INTELIS_SCRIPTS_REF="master"
+    fi
+    export INTELIS_SCRIPTS_REF
+}
+
+# Stop when the shared-functions.sh just loaded is older than this script. That
+# happens when the download failed and an old copy was left on the machine.
+intelis_require_shared_fn_version() {
+    local need="$1" have="${SHARED_FN_VERSION:-0}"
+    [ "$have" -ge "$need" ] 2>/dev/null && return 0
+    echo "shared-functions.sh at ${SHARED_FN_PATH:-/usr/local/lib/intelis/shared-functions.sh} is version ${have}. This script needs version ${need} or newer."
+    echo "Check this machine's internet connection, then run the same command again. Nothing has been changed."
+    exit 1
+}
+# <<< intelis-loader
+intelis_resolve_scripts_ref
+RAW_BASE="https://raw.githubusercontent.com/deforay/intelis/${INTELIS_SCRIPTS_REF}/scripts"
 
 # Spelled out here rather than read back out of "$0", because the whole point of
 # the invocation above is that there is no file on disk to read.

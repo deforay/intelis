@@ -1,6 +1,13 @@
 #!/bin/bash
 # shared-functions.sh - Common functions for LIS scripts
 
+# Raised on every change to this file, together with the
+# intelis_require_shared_fn_version line in each script that loads it, so a
+# script never runs against an older copy than the one it was written for.
+# To raise it everywhere: php bin/dev/bump-shared-fn-version.php
+# bin/build/check-shell-loaders.php fails a push that changes this file without it.
+SHARED_FN_VERSION=1
+
 # Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
 export LANG="${LANG:-en_US.UTF-8}"
 export LC_ALL="${LC_ALL:-en_US.UTF-8}"

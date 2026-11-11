@@ -98,6 +98,7 @@
         "check-vendor": "@php bin/build/check-vendor.php",
         "setup-tests": "@php bin/build/setup-tests.php",
         "check-counts": "@php bin/build/check-count-invariants.php",
+        "check-shell-loaders": "@php bin/build/check-shell-loaders.php",
         "check-sync-ownership": "@php bin/build/check-sync-ownership.php",
         "check-sql-value-safety": "@php bin/build/check-sql-value-safety.php",
         "check-repository-boundaries": "@php bin/build/check-repository-boundaries.php",
@@ -111,7 +112,8 @@
             "@check-sync-ownership",
             "@check-sql-value-safety",
             "@check-repository-boundaries",
-            "@check-request-output-escaping"
+            "@check-request-output-escaping",
+            "@check-shell-loaders"
         ],
         "lint": "find app bin public sys tests -name '*.php' -print0 | xargs -0 -P 8 -n 200 php -d display_errors=stderr -l > /dev/null",
         "cs-check": [
@@ -254,6 +256,7 @@
         "check-commit-attribution": "Check no commit ahead of origin/master names an AI tool or vendor, in its message or its author",
         "check-debug-leftovers": "Check no line added since origin/master, committed or not, leaves a die, var_dump or print_r in app/ or public/",
         "check-sync-ownership": "Check an incoming sync cannot overwrite a column the lab owns, such as a sample it has cancelled",
+        "check-shell-loaders": "Check every script in scripts/ loads shared-functions.sh from the same commit and at the version it was written for, and that a change to shared-functions.sh raises that version",
         "check-counts": "Check every surface that counts rejected samples also excludes cancelled ones, so two screens cannot disagree",
         "check-request-output-escaping": "Check no page prints a request value unescaped, or puts htmlspecialchars output inside an inline handler's JS string",
         "check-di": "Compile the DI container in isolation so a broken service definition fails here instead of in production",
