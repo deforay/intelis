@@ -634,7 +634,8 @@ http_get() { # http_get <url> [host] -> body on stdout
 https_redirect_target() { # https_redirect_target <path> [host]
   command -v curl >/dev/null 2>&1 || return 1
   local loc hostport name port=443
-  loc="$(curl -sS --noproxy '*' -o /dev/null -w '%{redirect_url}' --max-time 15 ${2:+-H "Host: $2"} "http://127.0.0.1$1" 2>/dev/null || true)"
+  # Plain HTTP to this machine on purpose: the question is where it redirects.
+  loc="$(curl -sS --noproxy '*' -o /dev/null -w '%{redirect_url}' --max-time 15 ${2:+-H "Host: $2"} "http://127.0.0.1$1" 2>/dev/null || true)" # NOSONAR
   case "$loc" in https://*) ;; *) return 1 ;; esac
   hostport="${loc#https://}"
   hostport="${hostport%%/*}"
@@ -830,7 +831,7 @@ check_probe() {
   if [ -n "$https_name" ]; then
     PROBE_STATUS="$(https_local "$https_name" "$https_port" "/" -o /dev/null -w '%{http_code}' || true)"
   else
-    PROBE_STATUS="$(http_status "http://127.0.0.1/" "$host" || true)"
+    PROBE_STATUS="$(http_status "http://127.0.0.1/" "$host" || true)" # NOSONAR: this machine's own site, over the plain HTTP it serves
   fi
   report "site status=${PROBE_STATUS:-unknown}"
 }
