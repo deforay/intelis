@@ -643,7 +643,7 @@ https_redirect_target() { # https_redirect_target <path> [host]
   [ "$hostport" != "$name" ] && port="${hostport##*:}"
   case "$port" in ''|*[!0-9]*) return 1 ;; esac
   [ -n "$name" ] || return 1
-  printf '%s %s' "$name" "$port"
+  printf '%s %s' "$name" "$port" # NOSONAR: a host name and port from an https:// redirect, no protocol here
 }
 
 # GET over HTTPS from this machine itself: --resolve sends the request to
