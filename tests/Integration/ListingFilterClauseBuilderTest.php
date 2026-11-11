@@ -113,6 +113,30 @@ final class ListingFilterClauseBuilderTest extends TestCase
         $this->assertSame([2], array_map(static fn(array $row): int => (int) $row['id'], $rows));
     }
 
+    public function testGroupingFilterFindsSamplesNotYetBatchedOrManifested(): void
+    {
+        $db = LegacyAppHarness::db();
+        $db->rawQuery(
+            'CREATE TABLE f (id INT PRIMARY KEY, sample_batch_id INT NULL, sample_package_code VARCHAR(40) NULL)'
+        );
+        $db->rawQuery(
+            "INSERT INTO f VALUES (1, NULL, NULL), (2, 7, NULL), (3, NULL, 'PKG1'), (4, 7, 'PKG1'), (5, NULL, '')"
+        );
+        $ids = static function (mixed $value) use ($db): array {
+            $clauses = Filters::groupingClauses($value, 'vl');
+            $where = $clauses === [] ? '' : ' WHERE ' . implode(' AND ', $clauses);
+            $rows = $db->rawQuery("SELECT vl.id FROM f AS vl$where ORDER BY vl.id");
+            return array_map(static fn(array $row): int => (int) $row['id'], $rows);
+        };
+
+        $this->assertSame([1, 3, 5], $ids(Filters::NOT_BATCHED));
+        $this->assertSame([1, 2, 5], $ids(Filters::NOT_MANIFESTED));
+        $this->assertSame([1, 2, 3, 4, 5], $ids(null));
+        $this->assertSame([1, 2, 3, 4, 5], $ids(''));
+        $this->assertSame([1, 2, 3, 4, 5], $ids('1=1) OR (1'));
+        $this->assertSame([1, 2, 3, 4, 5], $ids(['notBatched']));
+    }
+
     public function testAnUnknownKindIsRefused(): void
     {
         $this->expectException(\InvalidArgumentException::class);

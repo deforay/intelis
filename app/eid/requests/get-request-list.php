@@ -8,6 +8,7 @@ use const COUNTRY\DRC;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -253,6 +254,7 @@ try {
      if ($labScope = $general->labScopeWhere('vl')) {
           $sWhere[] = $labScope;
      }
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::groupingClauses($_POST['groupingFilter'] ?? null)];
      if (!empty($sWhere)) {
           $_SESSION['eidRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
           $sQuery = "$sQuery WHERE $sWhere";
@@ -398,6 +400,7 @@ try {
           if (!$_POST['hidesrcofreq']) {
                $row[] = $actions . $barcode;
           }
+          $row[0] .= _sampleGroupingLabels($aRow['batch_code'] ?? null, $aRow['sample_package_code'] ?? null);
           $output['aaData'][] = $row;
      }
      echo JsonUtility::encodeUtf8Json($output);

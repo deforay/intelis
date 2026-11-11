@@ -614,6 +614,14 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								<?= _manifestFilter('manifestCode', 'vl', 'collection'); ?>
 							</td>
 						</tr>
+						<tr>
+							<td><strong>
+									<?= _htmlTranslate("Batch / Manifest"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _sampleGroupingFilterSelect(); ?>
+							</td>
+						</tr>
 
 					</table>
 					<div class="filter-actions">
@@ -1276,6 +1284,10 @@ function fnShowHide(iCol) {
 				aoData.push({
 					"name": "manifestCode",
 					"value": $("#manifestCode").val()
+				});
+				aoData.push({
+					"name": "groupingFilter",
+					"value": $("#groupingFilter").val()
 				});
 				$.ajax({
 					"dataType": 'json',

@@ -63,6 +63,31 @@ final class ListingFilterClauseBuilder
         return $clauses;
     }
 
+    /** Request grid quick filter: samples not yet in a batch. */
+    public const NOT_BATCHED = 'notBatched';
+
+    /** Request grid quick filter: samples not yet on a manifest. */
+    public const NOT_MANIFESTED = 'notManifested';
+
+    /**
+     * Build the request grids' "Not in a batch" or "Not on a manifest" filter.
+     *
+     * "Not in a batch" uses the same test the batch screens use to offer a
+     * sample for batching. Only the two known values produce SQL. Any other
+     * value, including an empty one, adds no clause.
+     *
+     * @param string $alias the form table's alias in the listing query
+     * @return list<string> zero or one WHERE fragment
+     */
+    public static function groupingClauses(mixed $value, string $alias = 'vl'): array
+    {
+        return match ($value) {
+            self::NOT_BATCHED => [" ($alias.sample_batch_id IS NULL OR $alias.sample_batch_id = '')"],
+            self::NOT_MANIFESTED => [" ($alias.sample_package_code IS NULL OR $alias.sample_package_code = '')"],
+            default => [],
+        };
+    }
+
     /**
      * Re-encodes a list a page sends already quoted for SQL -- `'A', 'B'`, as the
      * import screens build it -- into `'A','B'` with every code escaped.

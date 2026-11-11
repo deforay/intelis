@@ -93,6 +93,7 @@ try {
           $sWhere[] = ' vl.result_status IN (' . $db->inIntList($_POST['status']) . ')';
      }
 
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::groupingClauses($_POST['groupingFilter'] ?? null)];
      if (!empty($sWhere)) {
           $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
           $sQuery = "$sQuery $sWhere";
@@ -198,6 +199,7 @@ try {
                $row[] = "";
           }
 
+          $row[0] .= _sampleGroupingLabels($aRow['batch_code'] ?? null, $aRow['sample_package_code'] ?? null);
           $output['aaData'][] = $row;
      }
      echo JsonUtility::encodeUtf8Json($output);

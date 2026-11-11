@@ -232,6 +232,7 @@ try {
      // grid should list. Matches the VL requests grid.
      $sWhere[] = SampleCountUtility::countableWhere('vl');
 
+     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::groupingClauses($_POST['groupingFilter'] ?? null)];
      if ($sWhere !== []) {
           $_SESSION['covid19RequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
           $sQuery = $sQuery . ' WHERE ' . $sWhere;
@@ -365,6 +366,7 @@ try {
           if (!$_POST['hidesrcofreq']) {
                $row[] = $actions . $barcode;
           }
+          $row[0] .= _sampleGroupingLabels($aRow['batch_code'] ?? null, $aRow['sample_package_code'] ?? null);
           $output['aaData'][] = $row;
      }
      echo JsonUtility::encodeUtf8Json($output);

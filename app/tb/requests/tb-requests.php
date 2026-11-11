@@ -308,6 +308,14 @@ foreach ($sourceOfRequests as $value => $displayText) {
 								<?= _manifestFilter('manifestCode', 'tb', 'collection'); ?>
 							</td>
                         </tr>
+                        <tr>
+                            <td><strong>
+                                    <?= _htmlTranslate("Batch / Manifest"); ?>&nbsp;:
+                                </strong></td>
+                            <td>
+                                <?= _sampleGroupingFilterSelect(); ?>
+                            </td>
+                        </tr>
                     </table>
                     <div class="filter-actions">
                         <button type="button" onclick="searchVlRequestData();" class="filter-search btn btn-default btn-sm">
@@ -677,6 +685,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 					"name": "manifestCode",
 					"value": $("#manifestCode").val()
 				});
+                aoData.push({
+                    "name": "groupingFilter",
+                    "value": $("#groupingFilter").val()
+                });
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
