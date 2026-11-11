@@ -260,6 +260,43 @@ if (!function_exists('_tooltipAttribute')) {
     }
 }
 
+// The Batch and Manifest labels the request listings add to the Sample ID
+// cell, and the filter panel's Batch / Manifest select. Same output as the
+// real helpers, built on the stubs above.
+if (!function_exists('_sampleGroupingLabels')) {
+    function _sampleGroupingLabels(?string $batchCode, ?string $manifestCode): string
+    {
+        $labels = [];
+        $batchCode = trim((string) $batchCode);
+        $manifestCode = trim((string) $manifestCode);
+        if ($batchCode !== '') {
+            $labels[] = '<span class="label label-primary">'
+                . _htmlTranslate('Batch') . ': ' . _sanitizeOutput($batchCode) . '</span>';
+        }
+        if ($manifestCode !== '') {
+            $labels[] = '<span class="label label-info">'
+                . _htmlTranslate('Manifest') . ': ' . _sanitizeOutput($manifestCode) . '</span>';
+        }
+        return $labels === [] ? '' : '<br>' . implode(' ', $labels);
+    }
+}
+if (!function_exists('_sampleGroupingFilterSelect')) {
+    function _sampleGroupingFilterSelect(string $id = 'groupingFilter'): string
+    {
+        $options = [
+            '' => _htmlTranslate('All'),
+            \App\Utilities\ListingFilterClauseBuilder::NOT_BATCHED => _htmlTranslate('Not in a batch'),
+            \App\Utilities\ListingFilterClauseBuilder::NOT_MANIFESTED => _htmlTranslate('Not on a manifest'),
+        ];
+        $html = '<select class="form-control" id="' . _sanitizeOutput($id) . '" name="' . _sanitizeOutput($id) . '"'
+            . ' style="width:220px;">';
+        foreach ($options as $value => $label) {
+            $html .= '<option value="' . _sanitizeOutput($value) . '">' . $label . '</option>';
+        }
+        return $html . '</select>';
+    }
+}
+
 // The real helper is one line over DownloadTokenUtility, which works against the
 // TEMP_PATH defined above, so the stub does the same rather than pretend.
 if (!function_exists('_downloadToken')) {
