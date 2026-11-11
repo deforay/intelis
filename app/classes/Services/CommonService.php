@@ -356,16 +356,6 @@ final class CommonService
     }
 
 
-    public function getInstruments($staus = 'active')
-    {
-        $key = 'instruments_list';
-        return $this->fileCache->get($key, function () use ($staus) {
-            $this->db->where("status", $staus);
-            $this->db->orderBy("machine_name", "ASC");
-            return $this->db->get("instruments");
-        }, ['instruments']);
-    }
-
     public function getInstrumentsCount()
     {
         $key = 'instruments_count';
