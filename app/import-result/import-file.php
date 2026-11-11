@@ -65,8 +65,10 @@ $instrumentsList = [];
 if (isset($directoryMap[$type])) {
 	$scriptDir = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'instruments' . DIRECTORY_SEPARATOR . $directoryMap[$type] . DIRECTORY_SEPARATOR;
 	foreach ($general->getInstruments() as $instrument) {
+		// Instruments saved before supported tests existed have none set: they
+		// imported every test, so they still show for every test.
 		$supportedTests = json_decode((string) ($instrument['supported_tests'] ?? ''), true);
-		if (!is_array($supportedTests) || !in_array($type, $supportedTests, true)) {
+		if (is_array($supportedTests) && $supportedTests !== [] && !in_array($type, $supportedTests, true)) {
 			continue;
 		}
 		$scriptName = basename((string) ($instrument['import_machine_file_name'] ?? ''));
