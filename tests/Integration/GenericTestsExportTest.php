@@ -52,6 +52,8 @@ final class GenericTestsExportTest extends TestCase
             'test_form_config' => json_encode([
                 'requestSection' => ['f_species' => ['field_name' => 'Species']],
                 'otherSection' => ['Travel' => ['f_area' => ['field_name' => 'Endemic Area']]],
+                // Saved by hand or by an older version: not a field definition.
+                'notesSection' => ['f_note' => 'free text'],
             ]),
         ]);
         foreach ([1 => ['f_species' => 'P. falciparum', 'f_area' => ['North', 'East']], 2 => null] as $id => $form) {
@@ -114,6 +116,11 @@ final class GenericTestsExportTest extends TestCase
         );
         self::assertSame(['MAL-1', 'P. falciparum', 'North, East'], [$first[2], $first[$species], $first[$area]]);
         self::assertSame(['MAL-2', '', ''], [$second[2], $second[$species], $second[$area]]);
+        self::assertSame(
+            $area + 1,
+            array_search('f_note', $headings, true),
+            'a field with no definition is named by its id'
+        );
         self::assertNotContains('Patient Name', $headings, 'patient details were not asked for');
     }
 
