@@ -6,7 +6,7 @@
 # script never runs against an older copy than the one it was written for.
 # To raise it everywhere: php bin/dev/bump-shared-fn-version.php
 # bin/build/check-shell-loaders.php fails a push that changes this file without it.
-SHARED_FN_VERSION=1
+SHARED_FN_VERSION=2
 
 # Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
 export LANG="${LANG:-en_US.UTF-8}"
@@ -1072,10 +1072,14 @@ set_permissions() {
                     setfacl -m "u:${who}:rwx,u:www-data:rwx" 2>>/tmp/acl_failures.log &
             pids+=($!)
 
-            # Files: rw to user + www-data
+            # Files: rw to user + www-data, and x where the file is already
+            # executable (X). A named-user entry is checked before "other", so a
+            # plain rw entry on a 755 script took execute away from that user:
+            # `intelis` then failed with "Permission denied" for whoever ran
+            # the upgrade with sudo.
             $CPU_NICE $IO_NICE find "$path" "${EXCLUDES[@]}" -type f -print0 \
                 | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
-                    setfacl -m "u:${who}:rw,u:www-data:rw" 2>>/tmp/acl_failures.log &
+                    setfacl -m "u:${who}:rwX,u:www-data:rwX" 2>>/tmp/acl_failures.log &
             pids+=($!)
         ;;
         quick)
@@ -1101,6 +1105,15 @@ set_permissions() {
         return
         ;;
     esac
+
+    # Executable files (intelis, scripts/*.sh) get x in their ACL entries. Older
+    # passes gave every file a plain rw entry, which took execute away from the
+    # user who ran the upgrade. quick mode only touches *.php, so without this
+    # those machines would never be repaired. Only a handful of files match.
+    if [[ "$mode" != "minimal" ]]; then
+        find "$path" "${EXCLUDES[@]}" -type f -perm /111 -print0 \
+            | xargs -0 -r setfacl -m "u:${who}:rwx,u:www-data:rwx" 2>>/tmp/acl_failures.log || true
+    fi
 
     # Default ACLs on the directories that get written at runtime.
     #

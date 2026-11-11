@@ -95,7 +95,7 @@ fi
 
 # Source the shared functions
 source "$SHARED_FN_PATH"
-intelis_require_shared_fn_version 1
+intelis_require_shared_fn_version 2
 
 # Show help if requested
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
