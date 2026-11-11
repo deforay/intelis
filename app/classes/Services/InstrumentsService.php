@@ -8,6 +8,16 @@ use App\Utilities\SampleCountUtility;
 
 final class InstrumentsService
 {
+    /** Folder under app/instruments that holds each test type's import scripts. */
+    public const IMPORT_FOLDERS = [
+        'vl' => 'vl',
+        'eid' => 'eid',
+        'covid19' => 'covid-19',
+        'hepatitis' => 'hepatitis',
+        'tb' => 'tb',
+        'cd4' => 'cd4',
+    ];
+
     protected string $table = 'instruments';
 
     public function __construct(protected DatabaseService $db)
@@ -109,5 +119,42 @@ final class InstrumentsService
                 : (string) $row['instrument'];
         }
         return $out;
+    }
+
+    /**
+     * Active instruments that can import results for this test type: they support
+     * the test and have a non-empty import script for it. Any other one would fail
+     * with "Import Script not found".
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function getForResultImport(string $testType): array
+    {
+        if (!isset(self::IMPORT_FOLDERS[$testType])) {
+            return [];
+        }
+        $scriptDir = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'instruments' . DIRECTORY_SEPARATOR
+            . self::IMPORT_FOLDERS[$testType] . DIRECTORY_SEPARATOR;
+
+        $this->db->where('status', 'active');
+        $this->db->orderBy('machine_name', 'ASC');
+        $instruments = $this->db->get($this->table) ?: [];
+
+        $list = [];
+        foreach ($instruments as $instrument) {
+            // Instruments saved before supported tests existed have none set: they
+            // imported every test, so they still show for every test.
+            $supportedTests = json_decode((string) ($instrument['supported_tests'] ?? ''), true);
+            if (is_array($supportedTests) && $supportedTests !== [] && !in_array($testType, $supportedTests, true)) {
+                continue;
+            }
+            $scriptName = basename((string) ($instrument['import_machine_file_name'] ?? ''));
+            $script = $scriptDir . $scriptName;
+            if ($scriptName === '' || !is_file($script) || trim((string) file_get_contents($script)) === '') {
+                continue;
+            }
+            $list[] = $instrument;
+        }
+        return $list;
     }
 }
