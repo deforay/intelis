@@ -566,7 +566,7 @@ $sampleStatusData = $general->getSampleStatus();
 		IntelisExport.start("/generic-tests/requests/export-generic-tests-requests.php", {
 			patientInfo: $('#patientInfo').val(),
 			withDetails: $('#withDetails').is(':checked') ? 'yes' : 'no',
-		},<?= json_encode(_translate("Custom Tests Requests Export")) ?>);
+		}, <?= json_encode(_translate("Custom Tests Requests Export")) ?>);
 	}
 
 	<?php if ($general->isLISInstance()) { ?>

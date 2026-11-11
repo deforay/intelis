@@ -80,7 +80,7 @@ final class TbExportService extends AbstractSampleExportService
                     tr.test_reason_name,
                     rs.rejection_reason_name,
                     rca.recommended_corrective_action_name,
-                u_lab.user_name AS lab_technician_name
+                    u_lab.user_name AS lab_technician_name
                 FROM form_tb AS vl
                 {$shared['joins']}
                 LEFT JOIN user_details AS u_lab ON u_lab.user_id = vl.lab_technician
