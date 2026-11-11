@@ -12,7 +12,8 @@ set -o pipefail
 
 # Ensure the script is run with sudo privileges
 if [ "$EUID" -ne 0 ]; then
-    echo "Please run as root or use sudo"
+    echo "This script needs administrator rights. Run it again with sudo:"
+    echo "    sudo $0"
     exit 1
 fi
 
@@ -26,7 +27,8 @@ error_handling() {
     local last_cmd=$1
     local last_line=$2
     local last_error=$3
-    echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
+    echo "The backup stopped because of an unexpected error. No backup is complete."
+    echo "Send this line to support: line ${last_line}, command '${last_cmd}', exit status ${last_error}"
     log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
     exit 1
 }
@@ -34,7 +36,7 @@ error_handling() {
 # Error trap
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
-echo "This script will help you export selected MySQL databases."
+echo "This script exports the MySQL databases you choose to .sql.gz files."
 
 # Resolve the systemd unit name; MariaDB hosts do not always answer to "mysql".
 mysql_unit_name() {
@@ -141,7 +143,7 @@ mysql_start_diagnostics() {
 echo "Checking MySQL status..."
 MYSQL_UNIT="$(mysql_unit_name)"
 if ! mysql_is_up; then
-    echo "MySQL is stopped, starting MySQL (unit: ${MYSQL_UNIT})..."
+    echo "MySQL is stopped. Starting MySQL (unit: ${MYSQL_UNIT})..."
     log_action "MySQL is stopped, starting MySQL (unit: ${MYSQL_UNIT})..."
 
     # The trap must not fire here: a failed start is handled below, with the
@@ -165,8 +167,36 @@ if ! mysql_is_up; then
     log_action "MySQL started"
 fi
 
+echo "MySQL is running."
+
+# Reads a password and prints one * per character, so the operator can see
+# that the keyboard works. Backspace removes the last character and its *.
+# Same logic as _read_masked in shared-functions.sh, which this script does
+# not load: it is downloaded and run on its own.
+read_masked() {
+    local __out="$1" __pw="" __ch
+    while IFS= read -rs -n1 __ch; do
+        # Enter arrives as an empty read. Ctrl-D arrives as a byte because
+        # read -n1 turns off line mode, so treat it as the end of input too.
+        [ -z "$__ch" ] && break
+        [ "$__ch" = $'\x04' ] && break
+        if [ "$__ch" = $'\x7f' ] || [ "$__ch" = $'\b' ]; then
+            if [ -n "$__pw" ]; then
+                __pw="${__pw%?}"
+                printf '\b \b'
+            fi
+            continue
+        fi
+        __pw+="$__ch"
+        printf '*'
+    done
+    printf -v "$__out" '%s' "$__pw"
+}
+
 # Ask for MySQL root or administrative username
-read -p "Enter MySQL username [root]: " USERNAME
+echo
+echo "To use the MySQL root user, press enter."
+read -r -p "MySQL username [root]: " USERNAME
 USERNAME=${USERNAME:-root}
 
 # MySQL reads option files before anything it is handed, and the precedence
@@ -195,16 +225,20 @@ defaults_flag=()
 # uses it. As a password test it accepts anything typed, so the loop below could
 # never have rejected a wrong one and the first sign of trouble would have been
 # an access-denied several prompts later.
+echo
+echo "If /root/.my.cnf already holds the password, press enter without typing one."
 while true; do
-    read -sp "Enter MySQL password: " PASSWORD
+    printf 'MySQL password for %s: ' "$USERNAME"
+    read_masked PASSWORD
     echo
     defaults_flag=()
     [ -n "$PASSWORD" ] && defaults_flag=(--no-defaults)
     if MYSQL_PWD="$PASSWORD" mysql ${defaults_flag[@]+"${defaults_flag[@]}"} \
         -u "$USERNAME" -e "SELECT 1;" >/dev/null 2>&1; then
+        echo "MySQL accepted the password."
         break
     fi
-    echo "Could not log in as '${USERNAME}' with that password. Please try again."
+    echo "MySQL rejected this password for '${USERNAME}'. Type it again."
 done
 
 # Passed through the environment rather than on the command line, where it
@@ -212,7 +246,7 @@ done
 export MYSQL_PWD="$PASSWORD"
 
 # List all databases
-echo "Fetching list of databases..."
+echo "Getting the list of databases..."
 # The grep is wrapped so that filtering everything out is not read as a
 # failure; pipefail still surfaces a genuine mysql error.
 DATABASES=$(mysql ${defaults_flag[@]+"${defaults_flag[@]}"} -u "$USERNAME" -N -B -e "SHOW DATABASES;" |
@@ -233,29 +267,40 @@ for db in $DATABASES; do
     ((i++))
 done
 
-# Ask user to select databases
-read -p "Enter the numbers of the databases you want to export (e.g., 1,2,3): " DB_SELECTIONS
+# Ask user to select databases. A wrong number is asked again rather than
+# dropped, so the operator never ends up with a backup missing a database
+# they believe they chose.
+while true; do
+    echo
+    echo "Type the numbers of the databases to export, separated by commas. For example: 1,2"
+    read -r -p "Databases: " DB_SELECTIONS
 
-# Parse selections and prepare to export
-IFS=',' read -ra SELECTED_INDEXES <<<"$DB_SELECTIONS"
-SELECTED_DBS=()
-for index in "${SELECTED_INDEXES[@]}"; do
-    trimmed_index=$(echo $index | xargs) # Trim whitespace
-    if [[ -n ${db_map[$trimmed_index]} ]]; then
-        SELECTED_DBS+=("${db_map[$trimmed_index]}")
-    else
-        echo "Invalid selection: $index"
+    IFS=',' read -ra SELECTED_INDEXES <<<"$DB_SELECTIONS"
+    SELECTED_DBS=()
+    bad_selection=false
+    for index in "${SELECTED_INDEXES[@]}"; do
+        trimmed_index=$(echo $index | xargs) # Trim whitespace
+        [ -z "$trimmed_index" ] && continue
+        if [[ "$trimmed_index" =~ ^[0-9]+$ ]] && [[ -n ${db_map[$trimmed_index]+x} ]]; then
+            SELECTED_DBS+=("${db_map[$trimmed_index]}")
+        else
+            echo "'${trimmed_index}' is not in the list. Use the numbers shown above."
+            bad_selection=true
+        fi
+    done
+
+    if $bad_selection; then
+        continue
     fi
+    if [ ${#SELECTED_DBS[@]} -eq 0 ]; then
+        echo "No database chosen. Type at least one number from the list."
+        continue
+    fi
+    break
 done
 
-if [ ${#SELECTED_DBS[@]} -eq 0 ]; then
-    echo "No databases selected. Nothing to export."
-    log_action "No databases selected; nothing exported"
-    exit 1
-fi
-
 # Confirm selected databases
-echo "You have selected the following databases for export:"
+echo "These databases are exported:"
 log_action "Selected databases for export:"
 for db in "${SELECTED_DBS[@]}"; do
     echo "- $db"
@@ -263,15 +308,33 @@ for db in "${SELECTED_DBS[@]}"; do
 done
 
 # Ask for the location of export
-read -p "Enter the location to export (default is ~/Desktop or ~ if Desktop does not exist): " EXPORT_LOCATION
-if [ -z "$EXPORT_LOCATION" ]; then
-    if [ -d "$HOME/Desktop" ]; then
-        EXPORT_LOCATION="$HOME/Desktop"
-    else
-        EXPORT_LOCATION="$HOME"
-    fi
+if [ -d "$HOME/Desktop" ]; then
+    default_location="$HOME/Desktop"
+else
+    default_location="$HOME"
 fi
-mkdir -p "$EXPORT_LOCATION" # Ensure directory exists
+while true; do
+    echo
+    echo "Folder to save the backup files in. To use ${default_location}, press enter."
+    read -r -p "Folder: " EXPORT_LOCATION
+    EXPORT_LOCATION="${EXPORT_LOCATION:-$default_location}"
+    # read does not expand ~, so a typed ~/backups would otherwise create a
+    # folder literally named ~ inside the current folder.
+    case "$EXPORT_LOCATION" in
+        "~") EXPORT_LOCATION="$HOME" ;;
+        "~/"*) EXPORT_LOCATION="$HOME/${EXPORT_LOCATION#\~/}" ;;
+    esac
+    if [[ "$EXPORT_LOCATION" != /* ]]; then
+        echo "'${EXPORT_LOCATION}' is not a full path. A full path starts with /, for example /root/backups."
+        continue
+    fi
+    if ! mkdir -p "$EXPORT_LOCATION" 2>/dev/null || [ ! -w "$EXPORT_LOCATION" ]; then
+        echo "Cannot save files in ${EXPORT_LOCATION}. Choose another folder."
+        continue
+    fi
+    break
+done
+echo "Saving backup files in ${EXPORT_LOCATION}"
 log_action "Export location: $EXPORT_LOCATION"
 
 # Change to the export directory
@@ -307,14 +370,14 @@ for db in "${SELECTED_DBS[@]}"; do
 
     # The trap must not fire here; a failed dump is reported per database.
     if spinner; then
-        echo "Exported $db to ${EXPORT_LOCATION}/${outfile}"
+        echo "Saved $db to ${EXPORT_LOCATION}/${outfile}"
         log_action "Exported $db to ${EXPORT_LOCATION}/${outfile}"
     else
         # The partial file is truncated and would restore silently as an
         # incomplete database, which is worse than having no backup at all.
         rm -f "$outfile"
         FAILED_DBS+=("$db")
-        echo "FAILED to export $db. The incomplete file has been deleted."
+        echo "FAILED to export $db. The incomplete file is deleted."
         log_action "FAILED to export $db; incomplete file deleted"
     fi
 done
@@ -322,10 +385,12 @@ done
 if [ ${#FAILED_DBS[@]} -gt 0 ]; then
     echo
     echo "These databases were NOT backed up: ${FAILED_DBS[*]}"
-    echo "Do not treat this run as a completed backup."
+    echo "This backup is not complete. Check the disk space, then run this script again."
     log_action "Script completed with failures: ${FAILED_DBS[*]}"
     exit 1
 fi
 
-echo "Script completed."
+echo
+echo "Backup complete. The files are in ${EXPORT_LOCATION}"
+echo "Copy them to another machine or a USB drive to keep them safe."
 log_action "Script completed"

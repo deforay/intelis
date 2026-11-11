@@ -67,7 +67,7 @@
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
-    echo "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
+    echo "This script needs administrator rights. Run it again with sudo in front, for example: sudo intelis update"
     exit 1
 fi
 
@@ -180,7 +180,7 @@ fi
 #   grep -oE '^[a-z_][a-z0-9_]*\(\)' scripts/shared-functions.sh | tr -d '()' | sort -u
 # then keep the names this script uses.
 REQUIRED_SHARED_FN=(
-    app_heavy_dirs ask_multi ask_password ask_yes_no chown_app_tree
+    app_heavy_dirs ask_multi ask_password ask_text ask_yes_no chown_app_tree
     configure_apache_compression configure_php_ini download_file ensure_composer
     ensure_composer_runnable_by_wwwdata ensure_mysql_running
     ensure_opcache ensure_path ensure_php_cli_extensions ensure_php_security_floor
@@ -193,7 +193,7 @@ REQUIRED_SHARED_FN=(
     phase_reset
     prepare_system print print_instance_status repair_html_escaped_db_password
     restart_service resume_cron run_git set_permissions setup_intelis_cron
-    setup_mysql_config spinner to_absolute_path ui_note
+    setup_mysql_config spinner to_absolute_path ui_interactive ui_note
     wwwdata_composer
 )
 
@@ -440,22 +440,38 @@ fi
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
 # Function to update configuration
+# DEBIAN_FRONTEND as the operator launched the upgrade. The apt step below
+# exports noninteractive for apt's own sake, and the prompt helpers read that
+# as "nobody is here". Without this, a repair that runs after the apt step
+# skips the password question even with an operator at the keyboard.
+_launch_debian_frontend="${DEBIAN_FRONTEND:-}"
+
 update_configuration() {
-    local mysql_root_password
-    local mysql_root_password_confirm
+    local DEBIAN_FRONTEND="${_launch_debian_frontend}"
+    local mysql_root_password=""
 
+    print warning "The database settings in ${config_file} are missing. Setup needs them again."
+    ui_note "Enter the MySQL root password for this machine." \
+        "If you do not know it, ask the person who installed InteLIS."
+    # Asked once: this password already exists and is being recalled. Checked
+    # against MySQL straight away, so a typo is re-asked here instead of
+    # failing at the database check later. `mysqladmin ping` cannot do this
+    # check, because it exits 0 on a wrong password.
     while :; do
-        # Ask for MySQL root password
-        read -sp "Please enter the MySQL root password: " mysql_root_password
-        echo
-        read -sp "Please confirm the MySQL root password: " mysql_root_password_confirm
-        echo
-
-        if [ "$mysql_root_password" == "$mysql_root_password_confirm" ]; then
+        if ! ask_password mysql_root_password "MySQL root password" ""; then
+            mysql_root_password=""
+            print warning "No terminal to ask on. Continuing without a MySQL password."
             break
-        else
-            print error "Passwords do not match. Please try again."
         fi
+        if ! mysqladmin ping >/dev/null 2>&1; then
+            print info "MySQL is not running, so the password is checked at the database step."
+            break
+        fi
+        if mysql -u root -p"$mysql_root_password" -e 'SELECT 1' >/dev/null 2>&1; then
+            print success "MySQL accepted the password."
+            break
+        fi
+        print error "MySQL rejected this password. Type it again."
     done
 
     # Escape password for sed replacement and PHP single-quoted strings
@@ -467,13 +483,21 @@ update_configuration() {
     sed -i "s|\$systemConfig\['database'\]\['password'\]\s*=.*|\$systemConfig['database']['password'] = '$escaped_mysql_root_password';|" "${config_file}"
 
     # Prompt for Remote STS URL
-    ui_note "The central server this lab sends its results to." \
-        "Ask the national programme if you do not know it." \
-        "Leave it blank to configure syncing later."
-    read -p " Remote STS URL (or press Enter to skip): " remote_sts_url
+    ui_note "The STS is the central server this lab sends its results to." \
+        "Type its full address, starting with https://" \
+        "If you do not know it, ask the national programme." \
+        "To set up syncing later, leave it blank and press enter."
+    ask_text remote_sts_url "" "STS address" "" "https://sts.example.org"
+    remote_sts_url="${remote_sts_url%/}"
+    if [ -n "$remote_sts_url" ] && [[ "$remote_sts_url" != http://* && "$remote_sts_url" != https://* ]]; then
+        remote_sts_url="https://${remote_sts_url}"
+        print info "Using ${remote_sts_url}"
+    fi
 
     # Update config.production.php with Remote STS URL if provided
-    if [ ! -z "$remote_sts_url" ]; then
+    if [ -z "$remote_sts_url" ]; then
+        print info "No STS address given. Syncing is not set up."
+    else
         sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|\$systemConfig['remoteURL'] = '$remote_sts_url';|" "${config_file}"
 
         # A machine that resolves its own STS to itself will sync to itself and
@@ -483,14 +507,14 @@ update_configuration() {
         _sts_host="$(normalize_hostname_input "$remote_sts_url")"
         if [ -n "$_sts_host" ] && hosts_file_shadows "$_sts_host"; then
             print error "/etc/hosts points ${_sts_host} at this machine."
-            print error "Syncing cannot work: this server would be talking to itself."
+            print error "Syncing cannot work. This machine sends its results to itself."
             print error "Remove the '${_sts_host}' line from /etc/hosts, then run: intelis check"
             log_action "STS host ${_sts_host} is shadowed by /etc/hosts"
         fi
         unset _sts_host
     fi
 
-    print info "Configuration file updated."
+    print success "Saved the database settings in ${config_file}."
 }
 
 ensure_cache_di_true() {
@@ -597,14 +621,15 @@ trap - ERR
 if [ "$auto_detect" = true ]; then
     # Warn if -p was also specified
     if [ -n "$lis_path" ]; then
-        print warning "-A flag specified, ignoring -p ${lis_path}"
+        print warning "-A is set, so -p ${lis_path} is ignored."
     fi
     # Auto-detect mode: scan /var/www for all valid installations
-    print info "Scanning /var/www for intelis installations..."
+    print info "Looking for InteLIS installations in /var/www..."
     mapfile -t detected_paths < <(detect_intelis_installations /var/www)
 
     if [ ${#detected_paths[@]} -eq 0 ]; then
-        print error "No valid intelis installations found in /var/www"
+        print error "No InteLIS installation found in /var/www."
+        print info "If InteLIS is in another folder, run: sudo intelis update -p <folder>"
         log_action "Auto-detect found no valid installations"
         exit 1
     fi
@@ -619,7 +644,7 @@ if [ "$auto_detect" = true ]; then
         mapfile -t lis_paths < <(ask_multi "Which instances should be updated?" "${detected_paths[@]}")
 
         if [ ${#lis_paths[@]} -eq 0 ]; then
-            print error "No valid instances selected"
+            print error "No installation was selected. Run the upgrade again and select at least one."
             exit 1
         fi
     else
@@ -631,7 +656,7 @@ if [ "$auto_detect" = true ]; then
         lis_paths=("${detected_paths[@]}")
     fi
 
-    print info "Will update ${#lis_paths[@]} instance(s):"
+    print info "Updating ${#lis_paths[@]} installation(s):"
     for p in "${lis_paths[@]}"; do
         print info "  - $p"
     done
@@ -640,29 +665,43 @@ elif [ -n "$lis_path" ]; then
     # Single path provided via -p flag
     lis_path="$(resolve_lis_path "$lis_path")"
     if ! is_valid_application_path "$lis_path"; then
-        print error "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
+        print error "${lis_path} is not an InteLIS installation."
+        print info "An InteLIS installation has configs/config.production.php and a public folder."
+        print info "Check the folder, then run the upgrade again."
         log_action "Invalid LIS path specified: $lis_path"
         exit 1
     fi
     lis_paths=("$lis_path")
-    print info "LIS path is set to ${lis_path}"
+    print info "Updating InteLIS in ${lis_path}"
     log_action "LIS path is set to ${lis_path}"
 else
-    # Interactive prompt for path (existing behavior)
-    echo "Enter the LIS installation path [press enter for /var/www/intelis]: "
-    if read -t 60 lis_path && [ -n "$lis_path" ]; then
-        : # user provided a value; resolver will honor it as-is
-    else
-        lis_path=""  # empty => resolver will auto-pick intelis, else vlsm
-    fi
-    lis_path="$(resolve_lis_path "$lis_path")"
-    if ! is_valid_application_path "$lis_path"; then
-        print error "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
-        log_action "Invalid LIS path specified: $lis_path"
-        exit 1
-    fi
+    # Interactive prompt for path. The old prompt timed out after 60 seconds
+    # and took the default, so an operator who looked away came back to a
+    # decision already made. A wrong folder is now re-asked with the fix named.
+    # With no terminal, ask_text returns the default straight away, as before.
+    _default_lis_path="$(resolve_lis_path "")"
+    ui_note "The folder where InteLIS is installed on this machine." \
+        "To keep the suggested folder, press enter." \
+        "To use another folder, type its full path."
+    while :; do
+        ask_text lis_path "$_default_lis_path" "Installation folder" "" "$_default_lis_path"
+        lis_path="$(resolve_lis_path "$lis_path")"
+        is_valid_application_path "$lis_path" && break
+        print error "${lis_path} is not an InteLIS installation."
+        print info "An InteLIS installation has configs/config.production.php and a public folder."
+        if ! ui_interactive; then
+            log_action "Invalid LIS path specified: $lis_path"
+            exit 1
+        fi
+        mapfile -t _found_paths < <(detect_intelis_installations /var/www)
+        if [ ${#_found_paths[@]} -gt 0 ]; then
+            print info "InteLIS is installed in: ${_found_paths[*]}"
+        fi
+        log_action "Invalid LIS path entered: $lis_path"
+    done
+    unset _default_lis_path _found_paths
     lis_paths=("$lis_path")
-    print info "LIS path is set to ${lis_path}"
+    print info "Updating InteLIS in ${lis_path}"
     log_action "LIS path is set to ${lis_path}"
 fi
 
@@ -711,7 +750,7 @@ create_rollback_snapshot() {
     # an operator reading the log later should not have to guess why there is
     # nothing to restore.
     if [ "${skip_snapshot:-false}" = true ]; then
-        print warning "Rollback snapshot skipped (--no-snapshot); a failed apply cannot be reverted." >&2
+        print warning "No rollback snapshot (--no-snapshot). If the upgrade fails, it cannot be undone." >&2
         log_action "Rollback snapshot skipped for ${lp} (--no-snapshot)"
         return 0
     fi
@@ -741,7 +780,7 @@ create_rollback_snapshot() {
         echo "$snap_dir"
         return 0
     fi
-    print warning "Rollback snapshot failed for ${lp} (continuing without rollback safety net)" >&2
+    print warning "Could not take a rollback snapshot of ${lp}. Continuing. If the upgrade fails, it cannot be undone." >&2
     return 1
 }
 
@@ -891,13 +930,13 @@ if [ "$rollback_only" = true ]; then
 
         if [ -z "$latest_snap" ]; then
             print error "No rollback snapshot found for ${lp} under ${ROLLBACK_BASE_DIR}"
-            print info  "Snapshots are taken during an upgrade's apply phase; there is nothing to go back to."
+            print info  "An upgrade takes a snapshot before it changes files. No upgrade has run here yet, so there is nothing to go back to."
             exit 1
         fi
 
         print info "Most recent snapshot: ${latest_snap}"
         print warning "The database is NOT rolled back. Migrations only run forward, so the"
-        print warning "restored code will be running against the newer schema."
+        print warning "restored code runs against the newer database structure."
 
         if restore_rollback_snapshot "$lp" "$latest_snap"; then
             restart_service apache >/dev/null 2>&1 || true
@@ -916,7 +955,7 @@ fi
 
 # Check for MySQL
 if ! command -v mysql &>/dev/null; then
-    print error "MySQL is not installed. Please first run the setup script."
+    print error "MySQL is not installed. Install InteLIS with the setup script first."
     log_action "MySQL is not installed. Please first run the setup script."
     exit 1
 fi
@@ -1259,25 +1298,26 @@ print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
 # Determine which password to use (use first instance's config for multi-instance)
 if [ -n "$mysql_root_password" ]; then
     mysql_pw="$mysql_root_password"
-    print info "Using user-provided MySQL root password"
+    print info "Using the MySQL root password you entered."
 elif [ -f "${first_lis_path}/configs/config.production.php" ]; then
     mysql_pw=$(extract_mysql_password_from_config "${first_lis_path}/configs/config.production.php")
-    print info "Extracted MySQL root password from config.production.php"
+    print info "Using the MySQL root password from config.production.php."
 else
-    print error "MySQL root password not provided and config.production.php not found."
+    print error "No MySQL root password was entered, and config.production.php does not exist."
+    print info "Check that the installation folder is correct, then run the upgrade again."
     exit 1
 fi
 
 if [ -z "$mysql_pw" ]; then
-    print warning "Password in config file is empty or missing."
+    print warning "The config file has no MySQL root password."
     # Asked once, not twice: this password already exists and is being recalled,
     # and MySQL rejects a wrong one moments later anyway. The `read -sp` this
     # replaces read from stdin, so a run whose stdin was not the terminal — the
     # remote command plane, or a piped invocation — silently swallowed a line of
     # whatever was there and used it as the password.
-    if ! ask_password mysql_pw "Please enter the MySQL root password" ""; then
+    if ! ask_password mysql_pw "MySQL root password" ""; then
         mysql_pw=""
-        print info "No terminal to ask on — continuing without it."
+        print info "No terminal to ask on. Continuing without it."
     fi
 fi
 
@@ -1300,14 +1340,14 @@ chmod 644 "$MYSQL_CONFIG_FILE"
 
 # Check for Apache
 if ! command -v apache2ctl &>/dev/null; then
-    print error "Apache is not installed. Please first run the setup script."
+    print error "Apache is not installed. Install InteLIS with the setup script first."
     log_action "Apache is not installed. Please first run the setup script."
     exit 1
 fi
 
 # Check for PHP
 if ! command -v php &>/dev/null; then
-    print error "PHP is not installed. Please first run the setup script."
+    print error "PHP is not installed. Install InteLIS with the setup script first."
     log_action "PHP is not installed. Please first run the setup script."
     exit 1
 fi
@@ -1415,12 +1455,13 @@ if apache2ctl -t; then
 
     systemctl reload apache2 || systemctl restart apache2
 else
-    print warning "apache2 config test failed; NOT reloading. Please fix and reload manually."
+    print warning "The Apache configuration test failed, so Apache was NOT reloaded."
+    print info "To see the problem, run: sudo apache2ctl configtest. After fixing it, run: sudo systemctl reload apache2"
 fi
 
 # Check for Composer
 if ! command -v composer &>/dev/null; then
-    echo "Composer is not installed. Please first run the setup script."
+    echo "Composer is not installed. Install InteLIS with the setup script first."
     log_action "Composer is not installed. Please first run the setup script."
     exit 1
 fi
@@ -1653,9 +1694,9 @@ prepare_phase() {
     # will take; the exact outcome (incl. any fallback) lands in $master_log and
     # is confirmed by the "Master ready" line below.
     if command -v git >/dev/null 2>&1 && [ -d "$INTELIS_SRC_DIR/.git" ]; then
-        print info "Updating source mirror (delta fetch — only changed files)..."
+        print info "Updating the source mirror. Only changed files are downloaded..."
     elif command -v git >/dev/null 2>&1; then
-        print info "Cloning source mirror (first run; shallow clone — future runs are delta-only)..."
+        print info "Downloading the source mirror for the first time. Later upgrades download only changed files..."
     else
         print info "Downloading master tarball (git unavailable)..."
     fi
@@ -1753,7 +1794,7 @@ prepare_phase() {
             print warning "Vendor staging not populated; apply will fall back to composer install"
         fi
     else
-        print success "All target instance(s) already match the new composer.lock — skipping vendor download"
+        print success "All installations already have the right vendor packages. Skipping the vendor download."
         log_action "Prepare: vendor skipped — all instances in sync with master composer.lock"
     fi
 
@@ -2025,9 +2066,9 @@ else
         print error "Could not download the LIS update package."
         print info "This is almost always a network problem on this server."
         print info "Things to check:"
-        print info "  • Is the server online?  ping -c2 codeload.github.com"
+        print info "  • Is this machine online?  ping -c2 codeload.github.com"
         print info "  • Can it reach GitHub?   curl -IL https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master"
-        print info "  • Is a proxy/firewall blocking outbound HTTPS?"
+        print info "  • Does a proxy or firewall block outgoing HTTPS?"
         if [ -n "$staging_dir" ] && [ -d "$staging_dir" ]; then
             print info ""
             print info "Detailed logs (while staging is kept):"
@@ -2035,7 +2076,7 @@ else
             [ -f "${staging_dir}/vendor.log" ] && print info "  ${staging_dir}/vendor.log"
         fi
         print info ""
-        print info "Once the network is working, just run the upgrade again."
+        print info "When the network works, run the upgrade again: sudo intelis update"
         log_action "Prepare phase failed (rc=${prepare_rc}) - update aborted; likely network issue"
         # Keep the staging dir so the user can inspect the logs. A later rerun
         # creates a new timestamped staging dir and prune_staging_dirs clears
@@ -2143,10 +2184,10 @@ upgrade_instance() {
         instance_failure_reason["$lis_path"]="$reason"
         print error "Apply failed for ${lis_path}: ${reason}"
         if [ "${show_maintenance:-false}" = "true" ]; then
-            print error "  Left in MAINTENANCE mode (503) pending manual fix; code NOT rolled back."
+            print error "  The site stays in MAINTENANCE mode (503) until the problem is fixed. The code is NOT rolled back."
             log_action "Apply failed (no rollback) for ${lis_path}: ${reason}; left in maintenance mode"
         else
-            print error "  Code NOT rolled back; fix the issue and re-run intelis-update."
+            print error "  The code is NOT rolled back. Fix the problem above, then run: sudo intelis update"
             log_action "Apply failed (no rollback) for ${lis_path}: ${reason}"
         fi
     }
@@ -2455,7 +2496,7 @@ upgrade_instance() {
     # optional, often lives on another machine, and must never hold up the
     # upgrade of the instance that is actually being updated.
     if ! sudo -u www-data php "${lis_path}/vendor/bin/db-tools" db:test --all >/dev/null 2>&1; then
-        print warning "A secondary database profile (interfacing) is unreachable; continuing, since the main database is fine."
+        print warning "The interfacing database is not reachable. The main database works, so the upgrade continues."
     fi
 
     # Hold scheduled tasks for the duration of post-update. They keep opening
@@ -2688,7 +2729,7 @@ chmod +x /usr/local/bin/intelis-refresh
 if [ ! -x /usr/local/bin/intelis-update ]; then
     download_file "/usr/local/bin/intelis-update" https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh
     chmod +x /usr/local/bin/intelis-update
-    print success "Update command installed — next time just run 'intelis update'"
+    print success "Update command installed. Next time, run: sudo intelis update"
 fi
 
 # Install or refresh the remote command runner (root-owned, systemd-timed).
@@ -2766,7 +2807,7 @@ if [ ${#lis_paths[@]} -eq 1 ] && [ -z "$apply_prepared_dir" ]; then
     # and the rest of the wrap-up, so an operator who walked away after the
     # long part leaves the whole upgrade hanging on end-of-run housekeeping
     # that defaults to "no" anyway. 30s is enough to say yes when present.
-    if [ ${#files[@]} -gt 0 ] && ask_yes_no "Do you want to run maintenance scripts?" "no" 30; then
+    if [ ${#files[@]} -gt 0 ] && ask_yes_no "Run the optional maintenance scripts now?" "no" 30; then
         # Chosen by name rather than by index. The numbers were only ever a way
         # to refer to a file, and a mistyped one used to be dropped in silence
         # — the operator asked for three scripts, two ran, and nothing said so.
@@ -2812,7 +2853,7 @@ if apache2ctl -k graceful >/dev/null 2>&1 9>&- || systemctl reload apache2 >/dev
     print success "Apache reloaded."
     log_action "Apache reloaded after instance updates"
 else
-    print warning "Could not reload Apache; please reload it manually (systemctl reload apache2)."
+    print warning "Could not reload Apache. Reload it with: sudo systemctl reload apache2"
     log_action "Apache reload failed after instance updates"
 fi
 
@@ -2859,7 +2900,7 @@ if [ -f "$runner_installer" ]; then
         print success "Remote command runner installed / refreshed."
         log_action "intelis-runner installed via $runner_installer"
     else
-        print warning "Remote command runner install failed; see $log_file. Upgrade will continue."
+        print warning "Could not install the remote command runner. The upgrade continues. Details: $log_file"
         log_action "intelis-runner install failed"
     fi
 else
@@ -2884,7 +2925,7 @@ if [ -f "$backup_setup" ] && [ -f /etc/intelis/backup.conf ]; then
         print success "Backup runner refreshed."
         log_action "backup runner refreshed via $backup_setup"
     else
-        print warning "Could not refresh the backup runner; the existing one still works. See $log_file."
+        print warning "Could not refresh the backup runner. The existing one still works. Details: $log_file"
         log_action "backup runner refresh failed"
     fi
 fi
@@ -2941,7 +2982,7 @@ if [ ${#updated_instances[@]} -gt 0 ]; then
         done
         if [ "$_perm_still_running" -eq 1 ]; then
             print info "The final permission pass is still finishing in the background."
-            print info "  If an ownership line below looks off, re-run 'intelis check' in a minute."
+            print info "  If an ownership line below looks wrong, wait a minute, then run: intelis check"
             log_action "Permission pass still running at post-upgrade check; not waiting on it"
         fi
     fi

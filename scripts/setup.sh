@@ -57,7 +57,7 @@
 # Download the script to a file first, then run it. (A real file argument makes
 # BASH_SOURCE[0] point at an existing file; a piped run leaves it empty.)
 if [ ! -f "${BASH_SOURCE[0]:-/dev/null}" ]; then
-    echo "ERROR: Do not pipe this script into bash — the prompts will read the script itself."
+    echo "ERROR: Do not pipe this script into bash. The prompts read the script itself as their answers."
     echo "Download it first, then run it:"
     echo "  wget -O setup.sh \"https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=\$(date +%s)\""
     echo "  sudo bash setup.sh"
@@ -181,10 +181,10 @@ prompt_db_strategy() {
     # Written straight to the tty because the caller captures stdout.
     {
         echo
-        echo "An existing 'vlsm' database with data in it was found."
-        echo "  1) Keep a copy, then start fresh — renamed to vlsm_YYYYMMDD_HHMMSS, nothing is lost (default)"
-        echo "  2) Leave it alone and use it   — no import; choose this when reinstalling over live data"
-        echo "  3) Delete it                   — the existing data is destroyed permanently"
+        echo "This machine already has a 'vlsm' database with data in it."
+        echo "  1) Keep a copy, then start fresh. The copy is renamed vlsm_YYYYMMDD_HHMMSS. Nothing is lost. (default)"
+        echo "  2) Leave it alone and use it. Nothing is imported. Choose this when reinstalling over live data."
+        echo "  3) Delete it. The existing data is destroyed permanently."
     } >"$tty"
 
     # The order matches the list above, safest first, and anything unrecognised
@@ -532,14 +532,14 @@ handle_database_setup_and_import() {
 
         {
             echo
-            echo "Import failed for: ${failed_file}"
-            echo "Choose how to continue:"
-            echo "  1) SEED  – reset 'vlsm' and import the default init.sql"
-            echo "  2) BLANK – reset 'vlsm' and continue with an empty database"
-            echo "  3) ABORT – stop setup"
+            echo "Setup could not import this file: ${failed_file}"
+            echo "The file itself is not changed. Choose how to continue:"
+            echo "  1) Start with a new InteLIS database instead. (default)"
+            echo "  2) Start with an empty database. For support staff only."
+            echo "  3) Stop setup."
         } >"$tty"
 
-        read -r -p "Enter choice [1=SEED(default), 2=BLANK, 3=ABORT]: " choice <"$tty"
+        read -r -p "Enter choice [1=new database (default), 2=empty, 3=stop]: " choice <"$tty"
         case "${choice:-1}" in
             1) echo "seed"  ;;
             2) echo "blank" ;;
@@ -574,7 +574,7 @@ handle_database_setup_and_import() {
                 return 0
                 ;;
             *)
-                echo "No valid db strategy supplied; defaulting to RENAME."
+                echo "No valid database strategy given. Using rename: the existing database is kept as a copy."
                 perform_backup_rename
                 ;;
         esac
@@ -634,6 +634,32 @@ handle_database_setup_and_import() {
 # Gather every interactive answer up front so the rest of the run is
 # unattended. Anything that needs MySQL or extracted files (password
 # verification, ~/.my.cnf write, vhost config) is deferred to its original place but uses the values collected here.
+# Validator for the install folder, passed to ask_text.
+#
+# A relative path lands wherever setup happened to be started, and a system
+# folder gets its contents replaced. Both are refused here, with the fix named,
+# so the operator types again instead of breaking the machine.
+_validate_install_path() {
+    local candidate="${1%/}"
+    if [[ "$1" != /* ]]; then
+        print error "'${1}' is not a full path. A full path starts with /"
+        print error "To keep the suggested folder, type /var/www/intelis or press enter."
+        return 1
+    fi
+    if [[ "$candidate" =~ [[:space:]\'\"\\\$\`] ]]; then
+        print error "The folder path cannot contain spaces, quotes, \\, \$ or \`."
+        return 1
+    fi
+    case "$candidate" in
+        ""|/bin|/boot|/dev|/etc|/home|/lib|/lib64|/opt|/proc|/root|/run|/sbin|/srv|/sys|/tmp|/usr|/usr/local|/usr/bin|/usr/bin/*|/usr/sbin|/usr/sbin/*|/usr/lib|/usr/lib/*|/usr/share|/usr/share/*|/var|/var/www|/var/lib|/var/lib/*|/var/log|/var/log/*|/etc/*|/boot/*|/proc/*|/sys/*|/dev/*|/run/*)
+            print error "${candidate:-/} is a system folder or inside one. Setup replaces the contents of the install folder."
+            print error "Use a folder of its own, for example /var/www/intelis."
+            return 1
+            ;;
+    esac
+    return 0
+}
+
 # Validator for the local-address answer, passed to ask_text.
 #
 # It rejects, in order: anything that is not a hostname, the STS address, and
@@ -651,17 +677,17 @@ _validate_local_hostname() {
     normalized="$(normalize_hostname_input "$candidate")"
 
     if ! is_valid_hostname "$normalized"; then
-        print error "'${candidate}' is not a valid hostname."
-        print error "Use letters, digits, dots and hyphens — for example: lab.health.gov.zm"
+        print error "'${candidate}' is not a valid web address."
+        print error "Use only letters, digits, dots and hyphens. For example: lab.health.gov.zm"
         return 1
     fi
 
     if [ -n "${remote_sts_url:-}" ]; then
         sts_host="$(normalize_hostname_input "$remote_sts_url")"
         if [ -n "$sts_host" ] && [ "$normalized" = "$sts_host" ]; then
-            print error "That is the STS address you gave a moment ago (${remote_sts_url})."
+            print error "That is the STS address you entered earlier (${remote_sts_url})."
             print error "This question is asking for the address of THIS machine."
-            print error "Pointing it at the STS name would make this server answer for the STS, and syncing would stop completely."
+            print error "If this machine uses the STS name, it answers for the STS, and syncing stops completely."
             log_action "Rejected hostname '${normalized}': same host as the STS URL"
             return 1
         fi
@@ -670,7 +696,7 @@ _validate_local_hostname() {
     resolved="$(dns_resolve_host "$normalized")"
     if [ -n "$resolved" ] && ! ip_is_local "$resolved"; then
         print warning "${normalized} already resolves to ${resolved}, which is not this machine."
-        print warning "Using it here would make this server answer for a name that belongs to another one."
+        print warning "If you use it here, this machine answers for a name that belongs to another server."
         if ! ask_yes_no "Use ${normalized} anyway?" "no"; then
             return 1
         fi
@@ -721,7 +747,7 @@ collect_user_inputs() {
     local _cli_db_strategy="$DB_STRATEGY_FLAG"
     if [ -f "$answers_file" ]; then
         print info "Found saved answers from a previous run: ${answers_file}"
-        if ask_yes_no "Reuse your previous setup answers and skip the prompts?" "yes"; then
+        if ask_yes_no "Use the same answers as last time and skip the questions?" "yes"; then
             # shellcheck disable=SC1090
             source "$answers_file"
             reuse_saved_answers=true
@@ -734,9 +760,9 @@ collect_user_inputs() {
     # An explicit --db-strategy on the command line always wins over a saved one.
     [ -n "$_cli_db_strategy" ] && DB_STRATEGY_FLAG="$_cli_db_strategy"
 
-    print header "Setup configuration — please answer the following prompts"
-    echo "After this, setup will run unattended. (lamp-setup.sh may still"
-    echo "prompt internally; that sub-script is out of our control.)"
+    print header "Setup questions"
+    echo "Answer these questions. Setup then runs on its own."
+    echo "Some questions can still appear while the web server and database install."
     echo
 
     # Count the questions this particular machine will be asked, so the step
@@ -761,7 +787,11 @@ collect_user_inputs() {
     # already made for them. Nothing here is on a clock.
     if ! $reuse_saved_answers; then
         ui_step_next "Where to install"
-        ask_text lis_path "/var/www/intelis" "Installation directory" "" "/var/www/intelis"
+        ui_note "InteLIS is installed in this folder on this machine." \
+            "To keep the suggested folder, press enter." \
+            "To use another folder, type its full path, for example /opt/intelis."
+        ask_text lis_path "/var/www/intelis" "Installation folder" _validate_install_path "/var/www/intelis"
+        lis_path="${lis_path%/}"
         print info "Installing into ${lis_path}"
     else
         print info "Reusing saved LIS path: ${lis_path}"
@@ -778,16 +808,18 @@ collect_user_inputs() {
             log_action "Resume mode rejected because the database setup checkpoint was missing."
             exit 1
         fi
-        print info "Resume mode enabled. Database setup/import will be skipped."
+        print info "Resume mode is on. Setup skips the database step."
         log_action "Resume mode enabled. Skipping database setup/import."
     fi
 
     # --- Preflight: existing installation ---
     if ! $reuse_saved_answers && [ -d "${lis_path}" ] && [ -n "$(ls -A ${lis_path} 2>/dev/null)" ]; then
         if [ -f "${lis_path}/composer.json" ] || [ -f "${lis_path}/bootstrap.php" ]; then
-            print warning "InteLIS installation detected at ${lis_path}"
-            if ask_yes_no "An existing InteLIS installation was found. Do you want to proceed with setup (this will update/overwrite the installation)?" "yes"; then
-                print info "Proceeding with setup. Existing installation will be backed up."
+            print warning "InteLIS is already installed in ${lis_path}."
+            ui_note "If you continue, setup copies this folder to ${lis_path}-<date>-<time>," \
+                "then replaces it with the new version."
+            if ask_yes_no "Continue and replace the current installation?" "yes"; then
+                print info "Continuing. Setup copies the current installation before replacing it."
                 log_action "User chose to proceed with setup over existing installation"
             else
                 print info "Setup cancelled by user."
@@ -814,7 +846,7 @@ collect_user_inputs() {
         local _bkdir="${lis_path}/backups/db"
         [[ "$intelis_sql_file" == latest:* ]] && _bkdir="${intelis_sql_file#latest:}"
         if [[ ! -d "$_bkdir" ]]; then
-            echo "Backup folder not found: ${_bkdir}. Please check the path."
+            echo "Backup folder not found: ${_bkdir}. Check the path and run setup again."
             log_action "--db latest: folder not found: ${_bkdir}"
             exit 1
         fi
@@ -883,7 +915,7 @@ collect_user_inputs() {
             intelis_sql_file="$(pwd)/$intelis_sql_file"
         fi
         if [[ ! -f "$intelis_sql_file" ]]; then
-            echo "SQL file not found: $intelis_sql_file. Please check the path."
+            echo "Database file not found: $intelis_sql_file. Check the path and run setup again."
             log_action "SQL file not found: $intelis_sql_file. Please check the path."
             exit 1
         fi
@@ -913,10 +945,12 @@ collect_user_inputs() {
         if [ "$_role" = "sts" ]; then
             is_lis=false
             is_sts=true
+            print info "This machine is set up as the central server (STS)."
             log_action "Will install InteLIS alongside other apps (STS)"
         else
             is_lis=true
             is_sts=false
+            print info "This machine is set up as a lab machine (LIS)."
             log_action "Will install InteLIS as the default host (LIS)"
         fi
     else
@@ -938,19 +972,24 @@ collect_user_inputs() {
         local max_sts_url_attempts=3
         local sts_url_attempts=0
         ui_step_next "Address of the STS"
-        ui_note "The central server this lab sends its results to." \
-            "Ask the national programme if you do not know it." \
-            "Leave it blank to configure syncing later."
+        ui_note "The STS is the central server this lab sends its results to." \
+            "Type its full address, starting with https://" \
+            "If you do not know it, ask the national programme." \
+            "To set up syncing later, leave it blank and press enter."
         while true; do
-            ask_text remote_sts_url "" "Remote STS URL (leave blank to skip)" "" "https://sts.example.org"
+            ask_text remote_sts_url "" "STS address" "" "https://sts.example.org"
             log_action "Remote STS URL entered: $remote_sts_url"
             if [ -z "$remote_sts_url" ]; then
-                echo "No STS URL provided. Skipping validation."
+                echo "No STS address given. Syncing is not set up."
                 log_action "No STS URL provided. Skipping validation."
                 break
             fi
             remote_sts_url="${remote_sts_url%/}"
-            echo "Validating the provided STS URL..."
+            if [[ "$remote_sts_url" != http://* && "$remote_sts_url" != https://* ]]; then
+                remote_sts_url="https://${remote_sts_url}"
+                print info "Using ${remote_sts_url}"
+            fi
+            echo "Checking that this machine can reach the STS..."
             local response_code
             if command -v curl >/dev/null 2>&1; then
                 response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php" || true)
@@ -961,20 +1000,21 @@ collect_user_inputs() {
                     | awk '/^  HTTP\//{code=$2} END{print code}' || true)
             fi
             if [[ "$response_code" =~ ^[0-9]+$ ]] && [ "$response_code" -eq 200 ]; then
-                print success "STS URL validation successful."
+                print success "The STS answered."
                 log_action "STS URL validation successful."
                 break
             fi
             sts_url_attempts=$((sts_url_attempts + 1))
             log_action "STS URL validation failed with response code $response_code."
             if [ "$sts_url_attempts" -ge "$max_sts_url_attempts" ]; then
-                print warning "Failed to validate the provided STS URL ${max_sts_url_attempts} times (last HTTP response code: $response_code). Skipping STS configuration."
+                print warning "Could not reach the STS after ${max_sts_url_attempts} tries (last HTTP code: ${response_code:-none}). Syncing is not set up."
                 log_action "Skipping STS configuration after ${max_sts_url_attempts} failed validation attempts."
                 remote_sts_url=""
                 break
             fi
             local remaining_sts_url_attempts=$((max_sts_url_attempts - sts_url_attempts))
-            print error "Failed to validate the provided STS URL (HTTP response code: $response_code). Attempts remaining: $remaining_sts_url_attempts."
+            print error "Could not reach ${remote_sts_url} (HTTP code: ${response_code:-none})."
+            print error "Check the address and this machine's internet connection. Tries left: ${remaining_sts_url_attempts}."
         done
     fi
 
@@ -1001,14 +1041,14 @@ collect_user_inputs() {
                 hostname="$_validated_hostname"
                 print info "Using server name from --server-name: ${hostname}"
             else
-                print error "Ignoring --server-name; falling back to ${hostname}"
+                print error "Ignoring --server-name. Using ${hostname} instead."
             fi
         elif $is_sts; then
             ui_step_next "Web address of this server"
-            ui_note "What the labs will type in their browser to reach this server." \
-                "It must already point at this machine in DNS." \
+            ui_note "The address labs type in a browser to reach this server." \
+                "Its DNS record must already point to this machine." \
                 "" \
-                "Press enter to skip if the labs will use this machine's IP address."
+                "If labs use this machine's IP address, press enter to skip."
             _validated_hostname=""
             local _hostname_answer=""
             ask_text _hostname_answer "intelis" \
@@ -1018,9 +1058,9 @@ collect_user_inputs() {
             hostname="${_validated_hostname:-intelis}"
         fi
         if [ "$hostname" = "intelis" ]; then
-            print info "This machine will be reached at http://intelis/ or by its IP address."
+            print info "Open InteLIS at http://intelis/ on this machine, or at its IP address from other computers."
         else
-            print info "This machine will be served as: http://${hostname}/"
+            print info "Open InteLIS at http://${hostname}/"
         fi
     else
         print info "Reusing saved hostname: ${hostname}"
@@ -1034,10 +1074,38 @@ collect_user_inputs() {
         echo "MySQL root password extracted from ~/.my.cnf"
     else
         ui_step_next "MySQL root password"
-        ui_note "MySQL is not installed on this machine yet, so this password is" \
-            "being CHOSEN now, not recalled. Write it down before continuing:" \
-            "database backups and restores need it."
-        ask_password mysql_root_password "New MySQL root password" "Confirm password"
+        if command -v mysqld >/dev/null 2>&1 || command -v mariadbd >/dev/null 2>&1; then
+            # MySQL is already here without a saved password, so the password
+            # exists and must be recalled. Asking twice only repeats a typo.
+            ui_note "MySQL is already installed on this machine." \
+                "Enter its current root password." \
+                "If you do not know it, ask the person who installed MySQL."
+            while true; do
+                if ! ask_password mysql_root_password "MySQL root password" ""; then
+                    # Unattended: nobody can type it, so asking again loops forever.
+                    print error "MySQL is already installed, and its root password is not saved in /root/.my.cnf."
+                    print error "Run setup again in a terminal and type the password when asked,"
+                    print error "or save it in /root/.my.cnf first (a [client] section with user=root and password=...)."
+                    log_action "Existing MySQL, no /root/.my.cnf, and no terminal to ask for the password."
+                    exit 1
+                fi
+                # A stopped server cannot check it. The check after the web
+                # server and database install catches a wrong one then.
+                if ! mysqladmin ping >/dev/null 2>&1; then
+                    print info "MySQL is not running, so setup checks this password later."
+                    break
+                fi
+                if mysql -u root -p"$mysql_root_password" -e 'SELECT 1' >/dev/null 2>&1; then
+                    print success "MySQL accepted the password."
+                    break
+                fi
+                print error "MySQL rejected this password. Type it again."
+            done
+        else
+            ui_note "MySQL is not installed yet. Choose a new root password for it now." \
+                "Write it down before you continue. Backups and restores need it."
+            ask_password mysql_root_password "New MySQL root password" "Type the same password again"
+        fi
         mysql_password_needs_persisting=true
     fi
 
@@ -1053,16 +1121,21 @@ collect_user_inputs() {
     if ! $resume_setup && [[ -z "$DB_STRATEGY_FLAG" ]] && [ "$vlsm_db_state" != "no" ]; then
         ui_step_next "An existing database was found"
         if [ "$vlsm_db_state" = "unknown" ]; then
-            ui_note "MySQL is installed but could not be queried from here, so" \
-                "whether a 'vlsm' database exists is not known yet."
+            ui_note "MySQL is installed, but setup cannot open it yet." \
+                "Setup cannot tell whether a 'vlsm' database already exists."
         else
             ui_note "This machine already has a 'vlsm' database with data in it." \
-                "That usually means setup is being run again after a problem."
+                "This usually means setup is running again after a problem."
         fi
         ask_choice DB_STRATEGY_FLAG "rename" "What should setup do with it?" \
             "rename:Keep a copy, then start fresh:Renamed to vlsm_YYYYMMDD_HHMMSS. Nothing is lost. Safest." \
             "use:Leave it alone and use it:No import. Choose this when reinstalling over live data." \
             "drop:Delete it:The existing data is destroyed permanently."
+        case "$DB_STRATEGY_FLAG" in
+            rename) print info "Setup keeps a copy of the existing database, then starts fresh." ;;
+            use)    print info "Setup uses the existing database as it is." ;;
+            drop)   print warning "Setup deletes the existing database." ;;
+        esac
         log_action "DB strategy chosen upfront: ${DB_STRATEGY_FLAG}"
     fi
 
@@ -1078,10 +1151,10 @@ collect_user_inputs() {
             "Role: ${_role_label}" \
             "Install path: ${lis_path}" \
             "Reached at: http://${hostname}/" \
-            "Sends data to: ${remote_sts_url:-nowhere — syncing not configured}" \
+            "Sends data to: ${remote_sts_url:-not set (syncing is not set up)}" \
             "Existing vlsm database: ${DB_STRATEGY_FLAG:-none found}"
         if ! ask_yes_no "Is this correct?" "yes"; then
-            print info "Stopped. Nothing has been installed."
+            print info "Stopped. Nothing is installed."
             print info "Run the same command again to start over."
             log_action "Operator rejected the configuration recap; setup aborted before install."
             exit 0
@@ -1103,7 +1176,7 @@ EOF
     chmod 600 "$answers_file"
     log_action "Saved setup answers to ${answers_file}"
 
-    print success "All inputs collected. Setup will now run unattended."
+    print success "All questions answered. Setup now runs on its own. Keep this window open until it finishes."
     print info "Log file: ${log_file}"
     echo
 
@@ -1557,7 +1630,7 @@ fi
 
 # Restart Apache to apply changes
 restart_service apache || {
-    print error "Failed to restart Apache. Please check the configuration."
+    print error "Apache did not restart. Check the Apache configuration with: sudo apache2ctl configtest"
     log_action "Failed to restart Apache. Please check the configuration."
     exit 1
 }
@@ -1612,8 +1685,10 @@ fi
 # instance and persist it to ~/.my.cnf for future logins.
 if [ "${mysql_password_needs_persisting:-false}" = true ]; then
     echo "Verifying MySQL root password..."
-    if ! mysqladmin ping -u root -p"$mysql_root_password" &>/dev/null; then
-        print error "Unable to verify the password. Please check and try again."
+    # mysqladmin ping exits 0 even when the password is refused, because the
+    # server still answered. Only a real query proves the password.
+    if ! mysql -u root -p"$mysql_root_password" -e 'SELECT 1' &>/dev/null; then
+        print error "MySQL rejected this root password. Run setup again and enter the correct password."
         exit 1
     fi
 
@@ -1651,13 +1726,13 @@ elif [ -f "${db_setup_checkpoint_file}" ] && \
     # A prior run completed the import (checkpoint is written only on success and
     # cleared at the start of every import). Re-running must NOT re-reset or
     # re-import over an already-populated database.
-    print info "Database already imported in a previous run (checkpoint present); skipping DB setup/import."
+    print info "A previous run already set up the database. Skipping the database step."
     print info "Delete ${db_setup_checkpoint_file} to force a fresh import."
     log_action "Auto-skipped DB import: checkpoint present at ${db_setup_checkpoint_file}."
 elif [[ -n "$intelis_sql_file" && -f "$intelis_sql_file" ]]; then
     handle_database_setup_and_import "$intelis_sql_file"
 elif [[ -n "$intelis_sql_file" ]]; then
-    print error "SQL file not found: $intelis_sql_file. Please check the path."
+    print error "Database file not found: $intelis_sql_file. Check the path and run setup again."
     exit 1
 else
     handle_database_setup_and_import # Default to init.sql
@@ -1782,19 +1857,18 @@ print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
 # Determine which password to use
 if [ -n "$mysql_root_password" ]; then
     mysql_pw="$mysql_root_password"
-    print info "Using user-provided MySQL root password"
+    print info "Using the MySQL root password you entered."
 elif [ -f "${lis_path}/configs/config.production.php" ]; then
     mysql_pw=$(extract_mysql_password_from_config "${lis_path}/configs/config.production.php")
-    print info "Extracted MySQL root password from config.production.php"
+    print info "Using the MySQL root password from config.production.php."
 else
-    print error "MySQL root password not provided and config.production.php not found."
+    print error "No MySQL root password was entered, and config.production.php does not exist. Run setup again."
     exit 1
 fi
 
 if [ -z "$mysql_pw" ]; then
-    print warning "Password in config file is empty or missing. Prompting for manual entry..."
-    read -sp "Please enter MySQL root password: " mysql_pw
-    echo
+    print warning "The config file has no MySQL root password."
+    ask_password mysql_pw "MySQL root password" ""
 fi
 
 if persist_result=$(MYSQL_PWD="${mysql_pw}" mysql -u root -e "SET PERSIST sql_mode = '';" 2>&1); then
@@ -1911,7 +1985,7 @@ fi
 if [ ! -x /usr/local/bin/intelis-update ]; then
     download_file "/usr/local/bin/intelis-update" https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh
     chmod +x /usr/local/bin/intelis-update
-    print success "Update command installed — run 'intelis update' to update this machine"
+    print success "Update command installed. To update this machine, run: intelis update"
 fi
 
 # Set proper permissions
@@ -1969,10 +2043,11 @@ fi
 if [ ! -x /usr/local/bin/intelis-backup.sh ] && [ -x /usr/local/bin/intelis ]; then
     print header "Off-machine Backups"
     if ui_interactive; then
-        ui_note "You need a backup server set up before we can do this."
+        ui_note "Backups copy this machine's data to a backup server, a Windows" \
+            "shared folder, or a USB drive. That place must be ready first."
     fi
-    ask_choice _backup_choice "later" "Do you want to set up backups for this installation?" \
-        "now:I have a backup server ready and configured for backups:Set up backups now" \
+    ask_choice _backup_choice "later" "Set up backups now?" \
+        "now:Set up backups now:The backup server, shared folder, or USB drive is ready." \
         "later:Not now:Set up later with: sudo intelis backup setup"
     if [ "${_backup_choice}" = "now" ]; then
         if ! /usr/local/bin/intelis backup setup; then
@@ -1984,5 +2059,11 @@ if [ ! -x /usr/local/bin/intelis-backup.sh ] && [ -x /usr/local/bin/intelis ]; t
     fi
 fi
 
-print success "Setup complete. Proceed to LIS setup."
-log_action "Setup complete. Proceed to LIS setup."
+print success "Setup is complete."
+if [ "${hostname:-intelis}" = "intelis" ]; then
+    print info "To finish, open http://intelis/ in a web browser on this machine."
+    print info "From another computer, open http://<this machine's IP address>/ instead."
+else
+    print info "To finish, open http://${hostname}/ in a web browser."
+fi
+log_action "Setup complete."

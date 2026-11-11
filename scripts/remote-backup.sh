@@ -54,7 +54,7 @@ case "${1:-}" in
     ;;
   *)
     echo "Unknown option: $1"
-    echo "Try --help"
+    echo "To see the options, run this again with --help."
     exit 2
     ;;
 esac
@@ -63,7 +63,7 @@ esac
 # under /usr/local/lib, so a non-root run has to fail here rather than partway
 # through with a permission error nobody can read.
 if [ "$(id -u)" -ne 0 ]; then
-  echo "Need admin privileges. Run with sudo."
+  echo "This needs administrator rights. Run it again with sudo: sudo intelis backup setup"
   exit 1
 fi
 
@@ -127,12 +127,20 @@ source "$SHARED_FN_PATH"
 # Present is not the same as usable — a truncated copy sources without error and
 # defines nothing.
 if ! declare -F ask_choice >/dev/null 2>&1; then
-  echo "shared-functions.sh at $SHARED_FN_PATH is unusable (truncated or corrupt)."
+  echo "The copy of shared-functions.sh at $SHARED_FN_PATH is damaged."
   echo "Delete it and run this again: sudo rm -f $SHARED_FN_PATH"
   exit 1
 fi
 
-require_cmd() { command -v "$1" >/dev/null 2>&1 || { print error "Missing dependency: $1"; exit 1; }; }
+require_cmd() { command -v "$1" >/dev/null 2>&1 || { print error "The program '$1' is not installed on this machine. Install it, then run: intelis backup setup"; exit 1; }; }
+
+# Every "no" to a "try again?" ends here, so the operator always learns what
+# state setup was left in and how to start over.
+stop_setup() {
+  print info "Stopped. Backups are not set up yet."
+  print info "To start again, run: intelis backup setup"
+  exit 1
+}
 
 trim() {
   local s=$1
@@ -142,7 +150,7 @@ trim() {
 }
 
 no_more_input() {
-  print error "Ran out of answers — the input ended before the questions did."
+  print error "The answers ran out before the questions did."
   print info  "Run this directly in a terminal: intelis backup setup"
   exit 1
 }
@@ -159,7 +167,7 @@ no_more_input() {
 
 validate_nonempty() {
   [ -n "$(trim "$1")" ] && return 0
-  print error "This cannot be left empty."
+  print error "This cannot be left empty. Type an answer, then press enter."
   return 1
 }
 
@@ -184,11 +192,17 @@ ask_secret() {
       input=$(gum input --password --header "$prompt") || input=""
     else
       printf '\n \033[1m%s\033[0m\n > ' "$prompt" >&2
-      read -r -s input || no_more_input
+      # One * per character, so the operator can see the keyboard works.
+      # An older shared-functions.sh has no _read_masked: read silently then.
+      if declare -F _read_masked >/dev/null 2>&1 && [ -t 0 ]; then
+        _read_masked input
+      else
+        read -r -s input || no_more_input
+      fi
       echo >&2
     fi
     [ -n "$input" ] && break
-    print warning "This cannot be left empty. Try again."
+    print warning "The password cannot be empty. Type it, then press enter."
   done
   printf -v "$__var" '%s' "$input"
 }
@@ -268,7 +282,7 @@ case "${1:-}" in
   *)          echo "Unknown option: $1"; usage; exit 2 ;;
 esac
 
-[ -f "$CONF_FILE" ] || { echo "No backup configuration found at $CONF_FILE. Run remote-backup.sh first."; exit 1; }
+[ -f "$CONF_FILE" ] || { echo "Backups are not set up on this machine. To set them up, run: sudo intelis backup setup"; exit 1; }
 # shellcheck disable=SC1090
 . "$CONF_FILE"
 
@@ -384,7 +398,7 @@ if [ "$ACTION" = "status" ]; then
   if crontab -l 2>/dev/null | grep -q "$CRON_MARKER"; then
     echo "Schedule        : every 8 hours and after every restart"
   else
-    echo "Schedule        : OFF — backups are not scheduled"
+    echo "Schedule        : OFF. To start the scheduled backups, run: intelis backup enable"
   fi
   exit 0
 fi
@@ -521,7 +535,7 @@ ensure_destination_available() {
       ;;
     smb)
       if ! mountpoint -q "$MOUNT_POINT"; then
-        print warning "The Windows shared folder is not connected; reconnecting."
+        print warning "The Windows shared folder is not connected. Reconnecting it."
         mount "$MOUNT_POINT" >/dev/null 2>&1 || fail "Cannot connect to //${SMB_HOST}/${SMB_SHARE}. Is the Windows machine switched on and on the network?"
       fi
       ;;
@@ -531,7 +545,7 @@ ensure_destination_available() {
         # mounted on it, so its presence proves nothing: an unmounted one is a
         # folder on this machine's own disk. Only a mount point counts.
         if ! mountpoint -q "$LOCAL_ROOT"; then
-          print warning "The backup drive is not connected; connecting it."
+          print warning "The backup drive is not connected. Connecting it."
           mount "$LOCAL_ROOT" >/dev/null 2>&1 || true
           mountpoint -q "$LOCAL_ROOT" || fail "The backup drive is not plugged in. Plug it in, then run: intelis backup"
         fi
@@ -561,7 +575,7 @@ ensure_destination_available
 
 # The folder must still belong to this lab before anything is written into it.
 REMOTE_UUID="$(dest_exec "awk -F= '/^lab_uuid=/{print \$2}' ${Q_DEST}/.lab-meta 2>/dev/null || true" | tr -d '\r\n')"
-[ "$REMOTE_UUID" = "$LAB_UUID" ] || fail "The backup folder does not belong to this installation any more. Re-run remote-backup.sh."
+[ "$REMOTE_UUID" = "$LAB_UUID" ] || fail "The backup folder does not belong to this installation any more. Run 'intelis backup setup' again."
 
 # Free space at the destination.
 AVAILABLE_GB=$(dest_exec "df -Pk ${Q_DEST} 2>/dev/null | awk 'NR==2{print int(\$4/1024/1024)}'" || echo 0)
@@ -775,7 +789,7 @@ RSYNC_OPTS=("${RSYNC_FILTER_OPTS[@]}" "${RSYNC_MODE_OPTS[@]}")
 # --- dry run ------------------------------------------------------------------
 
 if [ "$ACTION" = "test" ]; then
-  print info "Test run: nothing will be changed."
+  print info "Test run. Nothing is changed."
   DRY_LOG="$(mktemp /tmp/intelis-backup-dry.XXXXXX)"
   if ! rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" >"$DRY_LOG" 2>&1; then
     tail -20 "$DRY_LOG"; rm -f "$DRY_LOG"
@@ -843,7 +857,7 @@ print success "Files copied (${CHANGED_COUNT} changed)"
 # rather than silently verifying the wrong paths.
 verify_transfer() {
   if grep -q '\\#' "$CHANGED_LIST"; then
-    print info "Some file names need escaping; verifying the whole tree instead."
+    print info "Some file names contain unusual characters. Checking every file instead."
     local remaining
     local out
     out=$(rsync "${RSYNC_OPTS[@]}" --dry-run --itemize-changes "${LIS_PATH}/" "$RSYNC_TARGET" 2>/dev/null) || return 1
@@ -1012,7 +1026,7 @@ if update_history; then
     print success "History: ${HISTORY_OLDEST} to ${HISTORY_NEWEST} (${HISTORY_COUNT} days)"
   fi
 else
-  print warning "Could not update the database history at the destination. The copy itself is complete; the next backup tries again."
+  print warning "Could not update the database history at the destination. The copy itself is complete. The next backup tries again."
 fi
 
 # --- deleted files ------------------------------------------------------------
@@ -1054,7 +1068,7 @@ DELETED_OLDEST=""
 if prune_deleted; then
   [ -z "$DELETED_OLDEST" ] || print info "Deleted and replaced files are kept at the destination since ${DELETED_OLDEST}, in .deleted/"
 else
-  print warning "Could not tidy the deleted files kept at the destination. The copy itself is complete; the next backup tries again."
+  print warning "Could not tidy the deleted files kept at the destination. The copy itself is complete. The next backup tries again."
 fi
 
 # The size on the backup, for `intelis backup status` — measured only where
@@ -1126,7 +1140,7 @@ print success "Backup runner installed at $RUNNER"
 # The Windows-only runner from the older setup is replaced by the unified one.
 if [ -f "$LEGACY_WINDOWS_RUNNER" ]; then
   rm -f "$LEGACY_WINDOWS_RUNNER"
-  print info "Removed the old Windows-only runner; one runner now handles every destination."
+  print info "Removed the old Windows-only runner. One runner now handles every destination."
 fi
 }
 
@@ -1164,7 +1178,7 @@ if [ "$SETUP_ACTION" = "refresh-runner" ]; then
     exit 0
   fi
 
-  print warning "Could not refresh the backup runner; the existing one is left in place."
+  print warning "Could not refresh the backup runner. The existing one is left in place."
   exit 1
 fi
 
@@ -1240,18 +1254,26 @@ if [ -n "$DEST_MODE" ] && [ -n "$DEST_BASE" ] && [ -n "$INSTANCE_NAME" ] &&
     [ "$keep_choice" = "keep" ] && KEEP_DEST=true
   else
     print warning "The saved backup destination, $(describe_destination), cannot be reached or written to."
-    print info    "Setting up as if for the first time. The saved answers are offered; press Enter to keep one."
+    print info    "Setting up as if for the first time. Each question shows the saved answer. To keep it, press enter."
   fi
 fi
 
 # --- instance name ------------------------------------------------------------
 
-$KEEP_DEST || ask INSTANCE_NAME "Lab name or lab code" "${INSTANCE_NAME:-$(hostname -s 2>/dev/null || echo lab)}"
-SANITIZED_NAME=$(printf '%s' "$INSTANCE_NAME" | tr -s '[:space:]' '-' | tr -cd '[:alnum:]-' | sed 's/-*$//;s/^-*//')
-if [ -z "$SANITIZED_NAME" ]; then
-  print error "That name has no letters or numbers in it. Use something like 'kigali-central'."
-  exit 1
+sanitize_name() { printf '%s' "$1" | tr -s '[:space:]' '-' | tr -cd '[:alnum:]-' | sed 's/-*$//;s/^-*//'; }
+if ! $KEEP_DEST; then
+  ui_note "A short name for this lab, such as its name or code." \
+    "The backup folder is named after it, so the lab is easy to find on the backup machine."
 fi
+while true; do
+  $KEEP_DEST || ask INSTANCE_NAME "Lab name or lab code" "${INSTANCE_NAME:-$(hostname -s 2>/dev/null || echo lab)}"
+  SANITIZED_NAME=$(sanitize_name "$INSTANCE_NAME")
+  [ -n "$SANITIZED_NAME" ] && break
+  print error "That name has no letters or numbers in it. Use something like 'central-lab'."
+  # A saved name cannot be re-asked while keeping the destination, so ask anew.
+  KEEP_DEST=false
+  INSTANCE_NAME=""
+done
 
 # --- lab identity -------------------------------------------------------------
 # Every installation gets a permanent UUID. The destination folder is named from
@@ -1269,7 +1291,7 @@ UUID_SHORT="${LAB_UUID:0:8}"
 DEST_FOLDER="${SANITIZED_NAME}-${UUID_SHORT}"
 
 print success "This installation is '${SANITIZED_NAME}' (id ${UUID_SHORT})"
-print info    "Its backups will live in a folder called: ${DEST_FOLDER}"
+print info    "Its backups go into a folder called: ${DEST_FOLDER}"
 
 # --- LIS path -----------------------------------------------------------------
 
@@ -1304,15 +1326,15 @@ else
 fi
 
 while $lis_asked; do
-  ask LIS_PATH "InteLIS folder path" "${LIS_PATH:-/var/www/intelis}"
+  ask LIS_PATH "InteLIS installation folder" "${LIS_PATH:-/var/www/intelis}"
   [[ "$LIS_PATH" != /* ]] && LIS_PATH="$(realpath "$LIS_PATH" 2>/dev/null || printf '%s' "$LIS_PATH")"
   if [ ! -d "$LIS_PATH" ]; then
-    print warning "'$LIS_PATH' does not exist. Try again."
+    print warning "'$LIS_PATH' does not exist. Type the full path of the InteLIS folder, for example /var/www/intelis."
     LIS_PATH=""
     continue
   fi
   if ! looks_like_lis "$LIS_PATH"; then
-    print warning "'$LIS_PATH' does not look like an InteLIS installation (no configs/config.production.php)."
+    print warning "'$LIS_PATH' is not an InteLIS installation. It has no configs/config.production.php. Type the folder InteLIS is installed in."
     LIS_PATH=""
     continue
   fi
@@ -1739,7 +1761,7 @@ server_snapshot_version() {
 run_as_backup_admin() { # run_as_backup_admin <lines...>
   local admin
   ask admin "Administrator account on the backup machine (the account used to manage it)" "${BACKUP_ADMIN:-}"
-  [[ "$admin" =~ ^[a-z_][a-z0-9_.-]*$ ]] || { print warning "'$admin' is not a valid username."; return 1; }
+  [[ "$admin" =~ ^[a-z_][a-z0-9_.-]*$ ]] || { print warning "'$admin' is not a valid username. Use lowercase letters, digits, dots, hyphens and underscores."; return 1; }
   BACKUP_ADMIN="$admin"
   print info "Logging in as ${admin}. If it asks for a password, it is ${admin}'s password on the backup server."
   admin_run_lines "$admin" "$@"
@@ -1784,7 +1806,7 @@ install_key_via_admin() {
   # No default. Ubuntu refuses root logins by password, so "root" is the wrong
   # guess on most backup machines; the account is the one used to manage it.
   ask admin "Administrator account on the backup machine (the account used to manage it)" ""
-  [[ "$admin" =~ ^[a-z_][a-z0-9_.-]*$ ]] || { print warning "'$admin' is not a valid username."; return 1; }
+  [[ "$admin" =~ ^[a-z_][a-z0-9_.-]*$ ]] || { print warning "'$admin' is not a valid username. Use lowercase letters, digits, dots, hyphens and underscores."; return 1; }
 
   print info "Logging in as ${admin}. If it asks for a password, it is ${admin}'s password on the backup server."
   exists="$(ssh "${mux[@]}" -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 -p "$SSH_PORT" \
@@ -1879,13 +1901,13 @@ parse_address() {
   fi
   SSH_HOST="${a#[}"; SSH_HOST="${SSH_HOST%]}"
   if ! [[ "$SSH_USER" =~ ^[a-z_][a-z0-9_.-]*$ ]]; then
-    print warning "'${SSH_USER}' is not a valid account name."; return 1
+    print warning "'${SSH_USER}' is not a valid account name. Use lowercase letters, digits, dots, hyphens and underscores."; return 1
   fi
   if [ -z "$SSH_HOST" ] || [[ "$SSH_HOST" =~ [[:space:]/] ]]; then
     print warning "'$1' is not an address. Type an IP address such as 192.168.1.60, or a machine name."; return 1
   fi
   if [ "$SSH_PORT" -lt 1 ] || [ "$SSH_PORT" -gt 65535 ]; then
-    print warning "'${SSH_PORT}' is not a valid port number."; return 1
+    print warning "'${SSH_PORT}' is not a valid port number. Use a number from 1 to 65535, or leave the port out to use 22."; return 1
   fi
 }
 
@@ -1925,7 +1947,7 @@ configure_ssh() {
       print warning "Cannot reach ${SSH_HOST} on port ${SSH_PORT}."
       print info    "Check that the machine is switched on, on the same network, and has the SSH server installed (sudo apt install openssh-server)."
       confirm "Try again?" && continue
-      exit 1
+      stop_setup
     fi
 
     if backup_key_works; then
@@ -1976,11 +1998,11 @@ configure_ssh() {
         recheck=true ;;
       manual)
         print_manual_key_steps
-        confirm "Has it been added? Check now?" || exit 1
+        confirm "Have you run these commands on the backup machine? Check the access now?" || stop_setup
         just_added=true
         recheck=true ;;
       retry) ;;
-      *) exit 1 ;;
+      *) stop_setup ;;
     esac
   done
 
@@ -2001,24 +2023,52 @@ configure_smb() {
   echo
 
   print info "Installing the tools needed to talk to Windows shares..."
-  apt-get update -y >/dev/null 2>&1 || print warning "Could not refresh the package lists; continuing."
-  apt-get install -y cifs-utils rsync >/dev/null || { print error "Could not install cifs-utils. Fix the package manager and re-run."; exit 1; }
+  apt-get update -y >/dev/null 2>&1 || print warning "Could not refresh the package lists. Continuing with the current lists."
+  apt-get install -y cifs-utils rsync >/dev/null || { print error "Could not install cifs-utils. To see why, run: sudo apt-get install cifs-utils. Fix that, then run: intelis backup setup"; exit 1; }
   require_cmd mount.cifs
 
   mkdir -p "$MOUNT_POINT"
 
   local smb_pass
   while true; do
-    ask SMB_HOST  "Windows hostname or IP (for example 192.168.1.50)" "${SMB_HOST:-}"
-    ask SMB_SHARE "Name of the shared folder (for example InteLIS-Backups)" "${SMB_SHARE:-}"
-    ask SMB_USER  "Windows username" "${SMB_USER:-}"
-    ask_secret smb_pass "Windows password for ${SMB_USER}"
-
-    if printf '%s' "$SMB_SHARE" | grep -q ' '; then
-      print warning "The share name contains a space. Re-share the folder using a name without spaces, such as InteLIS-Backups."
-      SMB_SHARE=""
+    ask SMB_HOST  "Windows machine name or IP address (for example 192.168.1.50)" "${SMB_HOST:-}"
+    # Operators often paste the whole address from Windows Explorer, such as
+    # \\192.168.1.50\InteLIS-Backups. Take the machine and the share from it.
+    SMB_HOST="${SMB_HOST//\\//}"
+    SMB_HOST="${SMB_HOST#smb:}"
+    while [[ "$SMB_HOST" == /* ]]; do SMB_HOST="${SMB_HOST#/}"; done
+    SMB_HOST="${SMB_HOST%%/}"
+    if [[ "$SMB_HOST" == */* ]]; then
+      SMB_SHARE="${SMB_HOST#*/}"
+      SMB_SHARE="${SMB_SHARE%%/*}"
+      SMB_HOST="${SMB_HOST%%/*}"
+      print info "Using the machine ${SMB_HOST} and the shared folder ${SMB_SHARE}."
+    fi
+    if [ -z "$SMB_HOST" ] || [[ "$SMB_HOST" =~ [[:space:]] ]]; then
+      print warning "'${SMB_HOST}' is not a machine name or IP address. Type something like 192.168.1.50."
+      SMB_HOST=""
       continue
     fi
+    while true; do
+      ask SMB_SHARE "Name of the shared folder (for example InteLIS-Backups)" "${SMB_SHARE:-}"
+      SMB_SHARE="${SMB_SHARE//\\//}"
+      SMB_SHARE="${SMB_SHARE#/}"
+      SMB_SHARE="${SMB_SHARE%/}"
+      if [[ "$SMB_SHARE" == *" "* ]]; then
+        print warning "The share name contains a space. In Windows, share the folder again under a name without spaces, such as InteLIS-Backups."
+        SMB_SHARE=""
+        continue
+      fi
+      if [[ "$SMB_SHARE" == */* ]]; then
+        print warning "Type only the name of the shared folder, such as InteLIS-Backups, not a path."
+        SMB_SHARE=""
+        continue
+      fi
+      break
+    done
+    ask SMB_USER  "Windows username" "${SMB_USER:-}"
+    ask_secret smb_pass "Windows password for ${SMB_USER}"
+    print info "Connecting to //${SMB_HOST}/${SMB_SHARE}..."
 
     umask 077
     printf 'username=%s\npassword=%s\n' "$SMB_USER" "$smb_pass" > "$SMB_CRED_FILE"
@@ -2040,18 +2090,24 @@ configure_smb() {
 
     if [ "$mounted" -ne 1 ]; then
       print warning "Could not connect to ${unc}."
-      print info    "Check the username and password, that the folder is actually shared,"
+      print info    "Check the username and password, that the folder is shared,"
       print info    "and that File and Printer Sharing is allowed through the Windows firewall."
       rm -f "$SMB_CRED_FILE"
-      confirm "Try again?" && { SMB_HOST=""; SMB_SHARE=""; SMB_USER=""; SMB_VERS=""; continue; }
-      exit 1
+      if confirm "Try again?"; then
+        # Keep the answers as defaults, so a mistyped password does not mean
+        # typing the machine and folder again.
+        print info "Each question shows your last answer. To keep it, press enter."
+        SMB_VERS=""
+        continue
+      fi
+      stop_setup
     fi
 
     if ! ( : > "${MOUNT_POINT}/.intelis-writetest" && rm -f "${MOUNT_POINT}/.intelis-writetest" ); then
       print warning "Connected, but the folder is read-only. Give ${SMB_USER} the Change permission on the share in Windows."
       umount "$MOUNT_POINT" 2>/dev/null || true
       confirm "Try again?" && continue
-      exit 1
+      stop_setup
     fi
 
     print success "Connected to ${unc} (SMB ${SMB_VERS}) and it is writable"
@@ -2064,7 +2120,7 @@ configure_smb() {
     sed -i "\#[[:space:]]${MOUNT_POINT}[[:space:]]#d" /etc/fstab
   fi
   echo "$fstab_line" >> /etc/fstab
-  print success "The share will reconnect by itself after a restart"
+  print success "The share reconnects by itself after a restart"
 
   DEST_BASE="${MOUNT_POINT}/backups"
   DEST_DIR="${DEST_BASE}/${DEST_FOLDER}"
@@ -2179,7 +2235,7 @@ mount_backup_drive() {
 
   # Switching drives: whatever is on the backup folder now is the old one.
   if mountpoint -q "$USB_MOUNT" && [ "$(findmnt -no UUID "$USB_MOUNT" 2>/dev/null)" != "$uuid" ]; then
-    umount "$USB_MOUNT" 2>/dev/null || { print warning "The previous backup drive at ${USB_MOUNT} is still in use."; return 1; }
+    umount "$USB_MOUNT" 2>/dev/null || { print warning "The previous backup drive at ${USB_MOUNT} is still in use. Close any window or program using it, then choose again."; return 1; }
   fi
 
   mkdir -p "$USB_MOUNT"
@@ -2211,12 +2267,12 @@ configure_local_folder() {
   while true; do
     ask LOCAL_ROOT "Folder to back up into" "${LOCAL_ROOT:-/media/backup}"
     if [ ! -d "$LOCAL_ROOT" ]; then
-      print warning "'$LOCAL_ROOT' does not exist. Is the drive plugged in and mounted?"
+      print warning "'$LOCAL_ROOT' does not exist. Plug the drive in and check that it opens, or type another folder."
       LOCAL_ROOT=""
       continue
     fi
     if ! ( : > "${LOCAL_ROOT}/.intelis-writetest" && rm -f "${LOCAL_ROOT}/.intelis-writetest" ); then
-      print warning "'$LOCAL_ROOT' is not writable."
+      print warning "This machine cannot write to '$LOCAL_ROOT'. The drive may be write-protected. Type another folder."
       LOCAL_ROOT=""
       continue
     fi
@@ -2265,15 +2321,15 @@ configure_local() {
         continue ;;
     esac
 
-    mount_backup_drive "$choice" || { confirm "Choose again?" && continue; exit 1; }
+    mount_backup_drive "$choice" || { confirm "Choose again?" && continue; stop_setup; }
     if ! ( : > "${USB_MOUNT}/.intelis-writetest" && rm -f "${USB_MOUNT}/.intelis-writetest" ); then
       print warning "The drive is connected but cannot be written to. It may be write-protected, or damaged."
       confirm "Choose again?" && continue
-      exit 1
+      stop_setup
     fi
     LOCAL_UUID="$choice"
     LOCAL_ROOT="$USB_MOUNT"
-    print success "The drive is connected at ${USB_MOUNT}, and will be connected by itself after a restart"
+    print success "The drive is connected at ${USB_MOUNT}. It reconnects by itself after a restart."
     break
   done
 
@@ -2385,7 +2441,7 @@ fi
 if ! command -v rsync >/dev/null 2>&1; then
   print info "Installing rsync..."
   apt-get update -y >/dev/null 2>&1 || true
-  apt-get install -y rsync >/dev/null || { print error "Could not install rsync."; exit 1; }
+  apt-get install -y rsync >/dev/null || { print error "Could not install rsync. To see why, run: sudo apt-get install rsync. Fix that, then run: intelis backup setup"; exit 1; }
 fi
 require_cmd rsync
 
@@ -2449,7 +2505,7 @@ print success "Log rotation configured"
 print header "Scheduling"
 ( crontab -l 2>/dev/null | grep -v "intelis-backup.sh" || true ) | crontab -
 ( crontab -l 2>/dev/null; echo "@reboot ${RUNNER} >/dev/null 2>&1"; echo "0 */8 * * * ${RUNNER} >/dev/null 2>&1" ) | crontab -
-print success "Backups will run every 8 hours and after every restart"
+print success "Backups run every 8 hours and after every restart"
 
 # --- first backup, in the foreground -----------------------------------------
 # The operator must not walk away believing this worked when it did not.

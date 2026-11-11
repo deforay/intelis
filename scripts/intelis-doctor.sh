@@ -42,7 +42,7 @@ set -Eeuo pipefail
 # genuine bugs in this script, not for a grep that found nothing.
 # ------------------------------------------------------------------------------
 
-trap 'echo "intelis doctor stopped unexpectedly at ${BASH_SOURCE[0]:-intelis-doctor.sh} line $LINENO (status $?). Please report this."' ERR
+trap 'echo "intelis doctor stopped unexpectedly at ${BASH_SOURCE[0]:-intelis-doctor.sh} line $LINENO (status $?). Send the newest /var/log/intelis-doctor-*.log file when asking for help."' ERR
 
 MODE=ask          # ask | check | yes
 QUIET=false
@@ -53,7 +53,7 @@ RAW_BASE="https://raw.githubusercontent.com/deforay/intelis/master/scripts"
 # the invocation above is that there is no file on disk to read.
 usage() {
   cat <<'USAGE'
-Finds out why InteLIS will not open in the browser, and offers to repair it.
+Finds out why InteLIS does not open in the browser, and offers to repair it.
 
   sudo intelis doctor
 
@@ -193,9 +193,16 @@ if ! $HAVE_SHARED; then
   ask_yes_no() {
     local prompt="$1" default="${2:-no}" answer
     [ -t 0 ] || { [ "$default" = yes ] && return 0 || return 1; }
-    printf '%s (y/n) [default: %s]: ' "$prompt" "$default"
-    read -r answer || { [ "$default" = yes ] && return 0 || return 1; }
-    case "${answer,,}" in y|yes) return 0 ;; n|no) return 1 ;; *) [ "$default" = yes ] ;; esac
+    while true; do
+      printf '%s (y/n) [default: %s]: ' "$prompt" "$default"
+      read -r answer || { [ "$default" = yes ] && return 0 || return 1; }
+      case "${answer,,}" in
+        y|yes) return 0 ;;
+        n|no) return 1 ;;
+        "") [ "$default" = yes ]; return ;;
+        *) printf "'%s' is not an answer. Type y or n, then press enter.\n" "$answer" ;;
+      esac
+    done
   }
   ui_renderer() { echo plain; }
   ensure_gum()  { return 1; }
@@ -403,6 +410,25 @@ has_finding() { # has_finding <fix-key>
   return 1
 }
 
+# Asks before a repair. Anything other than yes or no is asked again. The
+# shared ask_yes_no takes the default on a typo, so a stray key read as no and
+# the operator saw "Skipped" for a repair they meant to accept.
+doctor_confirm() { # doctor_confirm <question>
+  local answer
+  if [ "$(ui_renderer)" = gum ]; then
+    ask_yes_no "$1" no
+    return
+  fi
+  while true; do
+    read -r -p "$1 Type y for yes or n for no, then press enter [y/N]: " answer || return 1
+    case "${answer,,}" in
+      y|yes) return 0 ;;
+      ""|n|no) return 1 ;;
+      *) print warning "'${answer}' is not an answer. Type y or n." ;;
+    esac
+  done
+}
+
 run_fix() { # run_fix <description> <function> [args...]
   local description="$1"; shift
   FIXES_OFFERED=$((FIXES_OFFERED + 1))
@@ -413,8 +439,8 @@ run_fix() { # run_fix <description> <function> [args...]
   fi
 
   print step "${description}"
-  if [ "$MODE" = ask ] && ! ask_yes_no "     Do this now?" no; then
-    print plain "     Left alone."
+  if [ "$MODE" = ask ] && ! doctor_confirm "     Do this now?"; then
+    print plain "     Skipped. Nothing was changed."
     return 1
   fi
 
@@ -425,7 +451,7 @@ run_fix() { # run_fix <description> <function> [args...]
     return 0
   fi
 
-  print error "That did not work. The details are in ${REPORT}."
+  print error "That repair did not work. The details are in ${REPORT}."
   report "FIX FAILED: ${description}"
   return 1
 }
@@ -647,10 +673,10 @@ $QUIET || printf '\n%sInteLIS doctor%s  ·  %s  ·  %s\n' "$C_BOLD" "$C_OFF" "$(
 # --- is there a web server at all ---------------------------------------------
 
 if ! $APACHE_INSTALLED; then
-  print error "There is no web server installed on this machine at all."
-  print info  "If this machine is meant to run InteLIS, it was never set up, or the"
-  print plain "     package was removed. Run setup.sh again rather than installing a"
-  print plain "     web server by hand."
+  print error "There is no web server installed on this machine."
+  print info  "If this machine is meant to run InteLIS, InteLIS setup never finished,"
+  print plain "     or the web server package was removed. Run InteLIS setup again."
+  print plain "     Do not install a web server by hand."
   report "VERDICT: apache not installed"
   exit 1
 fi
@@ -761,7 +787,7 @@ check_php_packages() {
   if [ -z "$candidate" ] || [ "$candidate" = "(none)" ]; then
     finding critical ppa \
       "The PHP packages this machine needs are not available to install." \
-      "apt has no ${pkg}. An Ubuntu release upgrade disables the PHP repository, which leaves nothing to install and makes every repair look like it failed."
+      "apt has no ${pkg}. An Ubuntu release upgrade switches off the PHP repository. Then there is nothing to install, and every repair looks like it failed. The repair below switches it back on."
   else
     finding critical handler \
       "The PHP module for Apache is not installed." \
@@ -778,7 +804,7 @@ check_maintenance_marker() {
   if [ -f "$marker" ]; then
     finding critical maintenance \
       "The site is still showing the update page." \
-      "An update was interrupted and left its marker behind, so every page is being turned away. Nothing is wrong with the machine; the marker just has to go."
+      "An update was interrupted and left its marker behind, so every page is turned away. Nothing is wrong with the machine. The repair below removes the marker."
   fi
 
   for conf in /etc/apache2/conf-enabled/intelis-maintenance-*.conf; do
@@ -795,7 +821,7 @@ check_config_valid() {
   out="$(apache2ctl -t 2>&1 || true)"
   if ! printf '%s' "$out" | grep -qi 'Syntax OK'; then
     finding critical config \
-      "The web server's configuration has an error in it, so it will not start." \
+      "The web server's configuration has an error in it, so it does not start." \
       "$(printf '%s' "$out" | head -n 2 | tr '\n' ' ')"
   fi
 }
@@ -860,7 +886,7 @@ check_php_extensions() {
   if [ -n "$installed" ] && [ -n "$PROBE_PHP_VERSION" ] && [ "$installed" != "$PROBE_PHP_VERSION" ]; then
     finding critical stale \
       "PHP was updated, but the web server is still running the old copy." \
-      "The web server runs PHP ${PROBE_PHP_VERSION} and the installed PHP is ${installed}. Until it restarts, parts of PHP fail to load and pages stop working at random. A restart is all it needs."
+      "The web server runs PHP ${PROBE_PHP_VERSION} and the installed PHP is ${installed}. Until it restarts, parts of PHP fail to load and pages stop working at random. The repair below restarts it."
     return
   fi
 
@@ -1024,7 +1050,7 @@ check_database() {
     DB_STATE=stopped
     finding critical database \
       "The database is not running." \
-      "InteLIS cannot show a single page without it, however healthy the web server is."
+      "InteLIS cannot show any page without it, even when the web server is healthy. The database section below says why it stopped."
     return
   fi
   # systemd says active for a server that is running and no longer answering.
@@ -1071,7 +1097,7 @@ case "$PROBE_RESULT" in
     if ! has_finding handler && ! has_finding ppa; then
       finding critical stale \
         "Apache is set up correctly but has not picked it up yet." \
-        "The configuration on disk is right and the running server is still working from the old one. It only needs restarting."
+        "The configuration on disk is right, but the running server still uses the old one. The repair below restarts it."
     fi
     ;;
   php-runs)
@@ -1083,14 +1109,14 @@ case "$PROBE_RESULT" in
     if [ -n "$PROBE_STATUS" ] && [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null && ! has_finding database && ! php_fault; then
       finding critical database \
         "The site runs, but InteLIS itself is returning an error." \
-        "http://127.0.0.1/ answered ${PROBE_STATUS}. The web server is doing its job, so the fault is inside the application — most often the database."
+        "http://127.0.0.1/ answered ${PROBE_STATUS}. The web server works, so the fault is inside InteLIS itself. The most common cause is the database."
     fi
     ;;
   unreachable)
     if ! has_finding foreign && ! has_finding start; then
       finding critical unreachable \
         "The web server is running but did not answer." \
-        "A request to http://127.0.0.1/ got nothing back. A firewall or a broken virtual host will do this."
+        "A request to http://127.0.0.1/ got nothing back. A firewall or a broken virtual host causes this."
     fi
     ;;
   no-docroot)
@@ -1356,14 +1382,14 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ] && ! only_database_finding; then
   if has_finding foreign; then
     print warning "Stopping another program that holds port 80 is a decision for a person."
     print plain   "     If it is a web server that was installed by mistake, it is safe to stop."
-    print plain   "     If it was installed on purpose, stopping it will break whatever uses it."
+    print plain   "     If it was installed on purpose, stopping it breaks whatever uses it."
     # That decision cannot be made unattended. run_fix only prompts in ask mode,
     # so under --yes this would stop AND disable whatever holds port 80 -- and
     # `disable` does not come back on reboot. A machine deliberately serving
     # something else on port 80 would be taken offline by a tool the operator
     # ran to diagnose a different problem. Report it and move on instead.
     if [ "$MODE" = yes ]; then
-      print warning "Left alone: unattended mode will not stop another program. Re-run without --yes to decide."
+      print warning "Skipped: unattended mode does not stop another program. To decide, run: sudo intelis doctor"
       report "SKIPPED (unattended): stop the program holding port 80"
     else
       run_fix "Stop it and let Apache have the address." fix_stop_foreign || true
@@ -1372,8 +1398,8 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ] && ! only_database_finding; then
 
   if has_finding config; then
     print header "Needs a person"
-    print warning "The web server's own configuration is broken, and guessing at an edit would"
-    print plain   "     make it worse. This says which file and which line:"
+    print warning "The web server's own configuration is broken. A guessed edit can make it"
+    print plain   "     worse, so this script does not change it. The file and line are:"
     print plain   ""
     apache2ctl -t 2>&1 | head -n 5 || true
     print plain   ""
@@ -1382,8 +1408,8 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ] && ! only_database_finding; then
 
   if has_finding docroot; then
     print info  "Apache is not pointed at the InteLIS files."
-    print plain "     Re-running setup.sh writes that virtual host correctly. Editing it by"
-    print plain "     hand is possible but easy to get wrong, so it is not done automatically."
+    print plain "     To fix it, run InteLIS setup again. Setup writes that virtual host"
+    print plain "     correctly. A hand edit is easy to get wrong, so this script does not do it."
   fi
 
   if has_finding builtin; then
@@ -1394,7 +1420,7 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ] && ! only_database_finding; then
   if has_finding disk; then
     print header "What is filling the disk"
     du -h -d 1 /var/log /var/www 2>/dev/null | sort -h | tail -n 10 || true
-    print info "Deleting anything is a decision for a person, so this script will not do it."
+    print info "This script does not delete anything. A person has to decide what to remove."
   fi
 
   if [ "$FIXES_OFFERED" -eq 0 ] && ! has_finding database; then
@@ -1475,13 +1501,13 @@ if [ "$UPDATE_STATE" = behind ] && [ "$MODE" != check ] &&
   print header "Update"
   print_wrapped "The web server, PHP and the database are working, and InteLIS still returns an error. An update often fixes errors inside InteLIS itself."
   if [ "$MODE" = yes ]; then
-    print info "Left alone: unattended runs do not install updates."
+    print info "Skipped: unattended runs do not install updates."
     print_update_advice
     report "SKIPPED (unattended): update offered"
   else
     FIXES_OFFERED=$((FIXES_OFFERED + 1))
     print step "Update InteLIS to the current release."
-    if ask_yes_no "     Do this now?" no; then
+    if doctor_confirm "     Do this now?"; then
       if run_update; then
         FIXES_APPLIED+=("Update InteLIS")
         report "FIX APPLIED: update"
@@ -1491,7 +1517,7 @@ if [ "$UPDATE_STATE" = behind ] && [ "$MODE" != check ] &&
       fi
       recheck_site
     else
-      print plain "     Left alone."
+      print plain "     Skipped. Nothing was changed."
     fi
   fi
 fi
@@ -1509,7 +1535,7 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ]; then
       "The database section above says what is wrong. Send both reports below when asking for help."
     report "VERDICT: database unresolved (${DB_DOCTOR_RC})"
   elif $DB_DOCTOR_RAN && ! db_answers; then
-    card bad "The database still will not start." \
+    card bad "The database still does not start." \
       "The database section above says why. Send both reports below when asking for help."
     report "VERDICT: database still down"
   elif site_opens; then
