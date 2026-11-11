@@ -3,7 +3,6 @@
 use App\Utilities\MiscUtility;
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Services\InstrumentsService;
@@ -28,9 +27,6 @@ require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
