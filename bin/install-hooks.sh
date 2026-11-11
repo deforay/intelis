@@ -101,7 +101,16 @@ write_shim() { cat > "$1" <<'SHIM'
 set -uo pipefail
 
 name="$(basename "$0")"
-here="$(cd "$(dirname "$0")" && pwd)"
+
+# Run at most once per hook. A <name>.local that finds hooks through
+# `git rev-parse --git-path hooks/<name>` resolves back to this shim (that path
+# honors core.hooksPath), and the two would call each other until fork fails.
+# A nested call exits clean: the outer one still runs both hooks.
+guard="INTELIS_HOOK_SHIM_$(printf '%s' "$name" | tr -c 'A-Za-z0-9' '_')"
+[ -n "${!guard:-}" ] && exit 0
+export "$guard=1"
+
+here="$(cd "$(dirname "$0")" && pwd -P)"
 mine="$here/$name.local"
 repo="$(git rev-parse --git-common-dir 2>/dev/null)/hooks/$name"
 
@@ -129,7 +138,7 @@ run() {
     h="$1"; shift
     [ -x "$h" ] || return 0
     # Never recurse into this shim if the repo hooks dir happens to be this one.
-    [ "$(cd "$(dirname "$h")" && pwd)/$(basename "$h")" = "$here/$name" ] && return 0
+    [ "$(cd "$(dirname "$h")" && pwd -P)/$(basename "$h")" = "$here/$name" ] && return 0
     if [ -n "$tmp" ]; then "$h" "$@" < "$tmp"; else "$h" "$@"; fi
 }
 
