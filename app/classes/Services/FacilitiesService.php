@@ -167,17 +167,32 @@ final class FacilitiesService
      *
      * @param int|null $excludeFacilityId Skip this facility (for edits).
      */
+    /**
+     * A facility name as it should be stored and compared: every run of
+     * whitespace (tabs, line breaks, non-breaking spaces) becomes one space,
+     * and none at either end.
+     */
+    public static function normalizeFacilityName(?string $facilityName): string
+    {
+        $name = (string) $facilityName;
+        return trim(preg_replace('/[\s\p{Z}]+/u', ' ', $name) ?? $name);
+    }
+
     public function isFacilityNameTakenInArea(string $facilityName, $stateId, $districtId, ?int $excludeFacilityId = null): bool
     {
-        $name = trim(preg_replace('/\s+/u', ' ', $facilityName) ?? $facilityName);
+        $name = self::normalizeFacilityName($facilityName);
         if ($name === '') {
             return false;
         }
         $stateId = (is_numeric($stateId) && (int) $stateId > 0) ? (int) $stateId : null;
         $districtId = (is_numeric($districtId) && (int) $districtId > 0) ? (int) $districtId : null;
 
+        // Stored names can carry tabs, line breaks or non-breaking spaces (imports,
+        // copy-paste). MySQL's TRIM() strips only plain spaces, so a stored
+        // "\tMAMAN WA HURUMA" slipped past it: every kind of whitespace is folded
+        // to one space on both sides before comparing.
         $sql = "SELECT 1 FROM facility_details
-                WHERE TRIM(facility_name) = ?
+                WHERE TRIM(REGEXP_REPLACE(facility_name, '[[:space:]\\\\x{00A0}]+', ' ')) = ?
                   AND facility_state_id <=> ?
                   AND facility_district_id <=> ?";
         $params = [$name, $stateId, $districtId];
