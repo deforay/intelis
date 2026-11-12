@@ -5,6 +5,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\FacilitiesService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
@@ -19,6 +20,9 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 $healthFacilities = $facilitiesService->getHealthFacilities('generic-tests');
 $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
@@ -32,8 +36,6 @@ if ($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') !== 'testing-la
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
-
 
 // get instruments
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
@@ -63,12 +65,15 @@ $sResult = $db->query($sQuery);
 $vlTestReasonQuery = "SELECT * FROM r_generic_test_reasons WHERE test_reason_status = 'active'";
 $testReason = $db->query($vlTestReasonQuery);
 
+//get suspected treatment failure at
+$genericResultInfo = $sampleAccess->load('generic-tests', $_GET['id'] ?? null);
+$id = (int) $genericResultInfo['sample_id'];
+
 $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
 $genericTestInfo = $db->rawQuery($genericTestQuery, [$id]);
 
-//get suspected treatment failure at
-$vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
-$genericResultInfo = $db->rawQueryOne($vlQuery, [$id]);
+
+
 
 // A saved signer may now be outside the lab scope; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value. The
