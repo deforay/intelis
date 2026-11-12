@@ -4,6 +4,7 @@ use App\Registries\AppRegistry;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\FacilitiesService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
@@ -24,6 +25,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 //Funding source list
@@ -41,8 +45,9 @@ $labTechniciansResults = $usersService->getActiveLabScopedUsers();
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
+$covid19Info = $sampleAccess->load('covid19', $_GET['id'] ?? null);
+$id = (int) $covid19Info['covid19_id'];
 
 // get instruments
 $importQuery = "SELECT * FROM instruments WHERE `status` = 'active'";
@@ -65,10 +70,6 @@ $pdResult = $db->query($pdQuery);
 $sQuery = "SELECT * FROM r_covid19_sample_type WHERE `status`='active'";
 $specimenTypeResult = $db->query($sQuery);
 
-
-
-$covid19Query = "SELECT * FROM form_covid19 where covid19_id=?";
-$covid19Info = $db->rawQueryOne($covid19Query, [$id]);
 
 // A saved signer may now be outside the lab scope; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value.
