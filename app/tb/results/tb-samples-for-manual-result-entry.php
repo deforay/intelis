@@ -9,6 +9,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\TbService;
+use App\Services\SampleAccessService;
 use App\Utilities\DateUtility;
 
 
@@ -20,6 +21,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $key = (string) $general->getGlobalConfig('key');
+
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
@@ -212,7 +216,7 @@ $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "i
 
 foreach ($rResult as $aRow) {
     $row = [];
-    $print = '<a href="tb-update-result.php?id=' . base64_encode((string) $aRow['tb_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
+    $print = '<a href="'.$sampleAccess->url('/tb/results/tb-update-result.php',(int) $aRow['tb_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
     if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/tb/requests/edit-locked-tb-samples")) {
         $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em> ' . _translate("Locked") . '</a>';
     }

@@ -4,6 +4,7 @@ use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
+use App\Services\SampleAccessService;
 use App\Utilities\DateUtility;
 use App\Exceptions\SystemException;
 
@@ -48,6 +49,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $healthFacilities = $facilitiesService->getHealthFacilities('tb');
 $testingLabs = $facilitiesService->getTestingLabs('tb');
 
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 /* Get Active users for approved / reviewed / examined by */
 $userInfo = $usersService->getActiveLabScopedUsers();
 
@@ -63,10 +67,11 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$tbQuery = "SELECT * from form_tb where tb_id=?";
-$tbInfo = $db->rawQueryOne($tbQuery, [$id]);
+$tbInfo = $sampleAccess->load('tb', $_GET['id'] ?? null);
+$id = (int) $tbInfo['tb_id'];
+
+
 
 // Keep the sample's own stored lab selectable even if that lab has since been
 // deactivated. Without it the required Testing Lab select renders empty and the

@@ -13,6 +13,7 @@ use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REFERRED;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use App\Services\SampleAccessService;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\SampleCountUtility;
@@ -41,6 +42,9 @@ try {
      /** @var TbService $tbService */
      $tbService = ContainerRegistry::get(TbService::class);
      $tbResults = $tbService->getTbResults() ?? [];
+
+     /** @var SampleAccessService $sampleAccess */
+     $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
      // Global config
      $gconfig = $general->getGlobalConfig();
@@ -322,7 +326,7 @@ try {
           $row[] = ($aRow['status_name']);
 
           if ($editRequest) {
-               $edit = '<a href="tb-edit-request.php?id=' . base64_encode((string) $aRow['tb_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+               $edit = '<a href="'.$sampleAccess->url('/tb/requests/tb-edit-request.php',(int) $aRow['tb_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/tb/requests/edit-locked-tb-samples")) {
                     $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
                }
