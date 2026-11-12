@@ -121,8 +121,8 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
 }
 $formats = json_decode((string) $facilityInfo['report_format'], true);
 
-$geoLocationParentArray = $geolocation->fetchActiveGeolocations();
-$geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo['facility_state_id']);
+$geoLocationParentArray = $geolocation->fetchActiveGeolocations(applyUserMapping: false);
+$geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo['facility_state_id'], applyUserMapping: false);
 // The district dropdown is filtered by province (geo_parent = facility_state_id).
 // If this facility's saved district isn't parented to its province (broken hierarchy)
 // or is inactive, it would be missing from the list, show as "-- Select --", and be
@@ -202,7 +202,7 @@ if ($showInterfaceConnections) {
 											name="facilityName" placeholder="<?php echo _translate('Facility Name'); ?>"
 											title="<?php echo _translate('Please enter facility name'); ?>"
 											value="<?= ((string) $facilityInfo['facility_name']); ?>"
-											onblur="checkNameValidation('facility_details','facility_name',this,'<?php echo "facility_id##" . ((string) $facilityInfo['facility_id']); ?>','<?php echo _translate("The facility name that you entered already exists.Enter another name"); ?>',null)" />
+											onblur="checkFacilityNameInArea()" />
 										<input type="hidden" class="form-control isRequired" id="facilityId"
 											name="facilityId"
 											value="<?php echo base64_encode((string) $facilityInfo['facility_id']); ?>" />
@@ -1144,7 +1144,7 @@ if ($showInterfaceConnections) {
 
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
-<script type="text/javascript" src="/assets/js/facility-code-check.js"></script>
+<script type="text/javascript" src="<?= _asset('/assets/js/facility-code-check.js') ?>"></script>
 <script type="text/javascript">
 	FacilityCodeCheck.init({
 		facilityId: '<?= base64_encode((string) $facilityInfo['facility_id']); ?>',
@@ -1196,9 +1196,9 @@ if ($showInterfaceConnections) {
 
 		$("#stateId").change(function () {
 			if ($(this).val() == 'other') {
-				$('#provinceNew').show();
+				$('#provinceNew').show().addClass('isRequired').focus();
 			} else {
-				$('#provinceNew').hide();
+				$('#provinceNew').hide().removeClass('isRequired').val('');
 				$('#state').val($("#stateId option:selected").text());
 			}
 			$.blockUI();
@@ -1221,10 +1221,11 @@ if ($showInterfaceConnections) {
 
 		$("#districtId").change(function () {
 			if ($(this).val() == 'other') {
-				$('#districtNew').show();
+				$('#districtNew').show().addClass('isRequired').focus();
 			} else {
-				$('#districtNew').hide();
+				$('#districtNew').hide().removeClass('isRequired').val('');
 				$('#district').val($("#districtId option:selected").text());
+				checkFacilityNameInArea();
 			}
 		});
 		<?php if (isset($fType) && $fType == 2) { ?>
@@ -1249,19 +1250,49 @@ if ($showInterfaceConnections) {
 		$('#state').val($("#stateId option:selected").text());
 		$('#district').val($("#districtId option:selected").text());
 
-		if (window.FacilityCodeCheck && !FacilityCodeCheck.isOk()) {
-			$('#facilityCode').focus();
-			return false;
-		}
-
 		flag = deforayValidator.init({
 			formId: 'editFacilityForm'
 		});
 
 		if (flag) {
-			$.blockUI();
-			document.getElementById('editFacilityForm').submit();
+			// Re-check the code now: the last check may be older than what was typed.
+			var codeCheck = (window.FacilityCodeCheck && typeof FacilityCodeCheck.verify === 'function') ? FacilityCodeCheck.verify() : $.Deferred().resolve(true).promise();
+			codeCheck.then(function (codeOk) {
+				if (!codeOk) {
+					$('#facilityCode').focus();
+					return;
+				}
+				checkFacilityNameInArea(function () {
+					$.blockUI();
+					document.getElementById('editFacilityForm').submit();
+				});
+			});
 		}
+	}
+
+	// A facility name may repeat, but not within the same Province/State and District/County.
+	// Without a callback this only warns; with one, it runs the callback when the name is free.
+	function checkFacilityNameInArea(onFree) {
+		var name = $.trim($('#facilityName').val()).replace(/\s{2,}/g, ' ');
+		var stateId = $('#stateId').val();
+		var districtId = $('#districtId').val();
+		if (name === '' || !stateId || !districtId) {
+			if (typeof onFree === 'function') onFree();
+			return;
+		}
+		$.post('/facilities/checkFacilityName.php', {
+			name: name,
+			stateId: stateId,
+			districtId: districtId,
+			facilityId: '<?= base64_encode((string) $facilityInfo['facility_id']); ?>'
+		}, function (data) {
+			if (data && data.taken) {
+				alert('<?= _jsTranslate("A facility with this name already exists in the selected Province/State and District/County."); ?>');
+				$('#facilityName').focus();
+			} else if (typeof onFree === 'function') {
+				onFree();
+			}
+		}, 'json');
 	}
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
@@ -1285,17 +1316,6 @@ if ($showInterfaceConnections) {
 			});
 	}
 
-	$('#state').on('change', function () {
-		if (this.value == 'other') {
-			$('#provinceNew').show();
-			$('#provinceNew').addClass('isRequired');
-			$('#provinceNew').focus();
-		} else {
-			$('#provinceNew').hide();
-			$('#provinceNew').removeClass('isRequired');
-			$('#provinceNew').val('');
-		}
-	});
 
 	$('#facilityType').on('change', function () {
 		if (this.value == '2') {

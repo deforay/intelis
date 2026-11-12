@@ -140,6 +140,26 @@
         // True unless the last server check flagged the code invalid/taken.
         isOk: function () {
             return lastOk;
+        },
+
+        // Check the code as it is now and resolve to true when it can be saved.
+        // For the submit handler: isOk() only knows the last check, which can be
+        // older than the value (Save clicked while the debounced check was pending).
+        verify: function () {
+            var input = document.getElementById('facilityCode');
+            var raw = input ? (input.value || '').trim() : '';
+            if (raw === '' || (cfg.storedCode !== '' && raw === cfg.storedCode)) {
+                render({ status: raw === '' ? 'empty' : 'ok', raw: raw, normalized: raw });
+                return $.Deferred().resolve(true).promise();
+            }
+            return $.post(cfg.endpoint, { code: raw, facilityId: cfg.facilityId }, null, 'json')
+                .then(function (res) {
+                    render(res);
+                    return lastOk;
+                }, function () {
+                    // Don't block the user if the check itself fails; the server still enforces it.
+                    return $.Deferred().resolve(true).promise();
+                });
         }
     };
 

@@ -23,9 +23,26 @@ final class GeoLocationsService
         return $this->fetchActiveGeolocations(null, $province, $isApi, $onlyActive, $facilityMap);
     }
 
-    public function fetchActiveGeolocations($geoId = 0, $parent = 0, $api = "yes", $onlyActive = true, $facilityMap = null, $updatedDateTime = null, bool $orderByStatus = false): mixed
+    /**
+     * @param bool $applyUserMapping Limit provinces to the ones the logged-in user's
+     *        mapped facilities are in. Pass false on admin screens (Add/Edit Facility),
+     *        which must list every province: otherwise a facility outside the user's
+     *        provinces opens with no province selected and cannot be saved properly.
+     */
+    public function fetchActiveGeolocations($geoId = 0, $parent = 0, $api = "yes", $onlyActive = true, $facilityMap = null, $updatedDateTime = null, bool $orderByStatus = false, bool $applyUserMapping = true): mixed
     {
-        return MemoUtility::remember(function () use ($geoId, $parent, $api, $onlyActive, $facilityMap, $updatedDateTime, $orderByStatus) {
+        // Province access mapping applies only when fetching provinces (geo_parent = 0).
+        // It is worked out here, outside the memoised closure, so it is part of the
+        // cache key: the cache is shared across requests, and keying it without the
+        // mapping served one user's province list to every other user.
+        $mappedProvinceIds = [];
+        if ($applyUserMapping && !empty($_SESSION['mappedProvinces']) && (empty($parent) || $parent === 0 || $parent === "0")) {
+            // mappedProvinces is a comma-separated string; binding it to `=` makes
+            // MySQL cast "12,4,31" to 12, so only the first province would match.
+            $mappedProvinceIds = array_values(array_filter(array_map('intval', explode(',', (string) $_SESSION['mappedProvinces']))));
+        }
+
+        return MemoUtility::remember(function () use ($geoId, $parent, $api, $onlyActive, $facilityMap, $updatedDateTime, $orderByStatus, $mappedProvinceIds) {
 
             $returnArr = [];
             if ($onlyActive) {
@@ -43,14 +60,8 @@ final class GeoLocationsService
             } else {
                 $this->db->where('geo_parent', 0);
             }
-            // Province access mapping should only be applied when fetching provinces (geo_parent = 0)
-            if (!empty($_SESSION['mappedProvinces']) && (empty($parent) || $parent === 0 || $parent === "0")) {
-                // mappedProvinces is a comma-separated string; binding it to `=` makes
-                // MySQL cast "12,4,31" to 12, so only the first province would match.
-                $mappedProvinceIds = array_filter(array_map('intval', explode(',', (string) $_SESSION['mappedProvinces'])));
-                if (!empty($mappedProvinceIds)) {
-                    $this->db->where('geo_id', $mappedProvinceIds, 'IN');
-                }
+            if (!empty($mappedProvinceIds)) {
+                $this->db->where('geo_id', $mappedProvinceIds, 'IN');
             }
 
             if ($updatedDateTime) {
@@ -131,26 +142,107 @@ final class GeoLocationsService
         }
     }
 
+    /**
+     * The id of the province ($parent = 0) or district ($parent = province id)
+     * with this name, adding it when there is none.
+     *
+     * The match is on name AND parent, like the (geo_name, geo_parent) unique key.
+     * Matching on the name alone used to pick up a same-named district of another
+     * province (or a district when a province was meant) and rewrite its parent,
+     * moving it and every facility in it to the wrong province.
+     */
     public function addGeoLocation($geoName, $parent = 0)
     {
-
-        $data = ['geo_name'         => $geoName, 'geo_status'       => 'active', 'created_by'       => $_SESSION['userId'], 'created_on'       => DateUtility::getCurrentDateTime(), 'updated_datetime' => DateUtility::getCurrentDateTime(), 'data_sync'       => 0];
-        if ($parent > 0) {
-            $data['geo_parent'] = $parent;
+        $geoName = trim(preg_replace('/\s+/u', ' ', (string) $geoName) ?? (string) $geoName);
+        $parent = (is_numeric($parent) && (int) $parent > 0) ? (int) $parent : 0;
+        if ($geoName === '') {
+            return null;
         }
-        /* Check if the name already there? */
-        $this->db->where("geo_name", $geoName);
-        $geo = $this->db->getOne('geographical_divisions');
 
-        /* if yes then update or else insert and return Id */
-        if (isset($geo) && $geo != "") {
-            $this->db->where('geo_id', $geo['geo_id']);
-            $this->db->update('geographical_divisions', $data);
+        $geo = $this->db->rawQueryOne(
+            "SELECT geo_id, geo_status FROM geographical_divisions WHERE TRIM(geo_name) = ? AND geo_parent = ? LIMIT 1",
+            [$geoName, (string) $parent]
+        );
+        $now = DateUtility::getCurrentDateTime();
+
+        if (!empty($geo)) {
+            // Someone chose "Other" and typed a name that is already listed: reuse it.
+            if ($geo['geo_status'] !== 'active') {
+                $this->db->where('geo_id', $geo['geo_id']);
+                $this->db->update('geographical_divisions', ['geo_status' => 'active', 'updated_datetime' => $now, 'data_sync' => 0]);
+            }
             return $geo['geo_id'];
-        } else {
-            $this->db->insert('geographical_divisions', $data);
         }
+
+        $this->db->insert('geographical_divisions', [
+            'geo_name'         => $geoName,
+            'geo_parent'       => (string) $parent,
+            'geo_status'       => 'active',
+            'created_by'       => $_SESSION['userId'] ?? null,
+            'created_on'       => $now,
+            'updated_datetime' => $now,
+            'data_sync'        => 0,
+        ]);
         return $this->db->getInsertId();
+    }
+
+    /**
+     * Resolve the province and district a facility form posted into ids and the
+     * names that go with them.
+     *
+     * Each one is either an id from the dropdown, "other" with a typed new name,
+     * or (when no provinces exist yet) just a typed name. The stored names are
+     * always taken from geographical_divisions, never from the dropdown's text,
+     * so the name and the id cannot disagree. Without an id, $fallbackState and
+     * $fallbackDistrict (a legacy facility's free-text values) are kept.
+     *
+     * @return array{stateId: ?int, state: ?string, districtId: ?int, district: ?string, error: ?string}
+     */
+    public function resolveFacilityLocation($stateId, ?string $provinceNew, $districtId, ?string $districtNew, ?string $fallbackState = null, ?string $fallbackDistrict = null): array
+    {
+        $out = ['stateId' => null, 'state' => null, 'districtId' => null, 'district' => null, 'error' => null];
+        $provinceNew = trim((string) $provinceNew);
+        $districtNew = trim((string) $districtNew);
+
+        if ($stateId === 'other' || (empty($stateId) && $provinceNew !== '')) {
+            if ($provinceNew === '') {
+                $out['error'] = _translate('Please enter the new Province/State.');
+                return $out;
+            }
+            $stateId = $this->addGeoLocation($provinceNew);
+        }
+        $province = is_numeric($stateId) ? $this->getGeoLocationById($stateId) : null;
+        if ($province !== null) {
+            $out['stateId'] = (int) $province['geo_id'];
+            $out['state'] = trim((string) $province['geo_name']);
+        } else {
+            $out['state'] = ($fallbackState !== null && trim($fallbackState) !== '') ? trim($fallbackState) : null;
+        }
+
+        if ($districtId === 'other' || (empty($districtId) && $districtNew !== '')) {
+            if ($districtNew === '') {
+                $out['error'] = _translate('Please enter the new District/County.');
+                return $out;
+            }
+            if ($out['stateId'] === null) {
+                $out['error'] = _translate('Please choose the Province/State before adding a new District/County.');
+                return $out;
+            }
+            $districtId = $this->addGeoLocation($districtNew, $out['stateId']);
+        }
+        $district = is_numeric($districtId) ? $this->getGeoLocationById($districtId) : null;
+        if ($district !== null) {
+            if ($out['stateId'] !== null && (int) $district['geo_parent'] !== $out['stateId']) {
+                $out['error'] = _translate('The selected District/County does not belong to the selected Province/State.');
+                return $out;
+            }
+            $out['districtId'] = (int) $district['geo_id'];
+            $out['district'] = trim((string) $district['geo_name']);
+        } else {
+            $out['district'] = ($fallbackDistrict !== null && trim($fallbackDistrict) !== '') ? trim($fallbackDistrict) : null;
+        }
+
+        return $out;
     }
 
     /**

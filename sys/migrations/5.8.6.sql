@@ -12,3 +12,15 @@ ALTER TABLE `instruments` ADD COLUMN `instrument_make` VARCHAR(50) NULL DEFAULT 
 ALTER TABLE `instruments` ADD COLUMN `added_on` DATETIME NULL DEFAULT NULL AFTER `status`;
 UPDATE `instruments` SET `added_on` = `updated_datetime` WHERE `added_on` IS NULL;
 ALTER TABLE `instruments` MODIFY `added_on` DATETIME NULL DEFAULT CURRENT_TIMESTAMP;
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

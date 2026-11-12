@@ -80,21 +80,23 @@ try {
 
 	//Province Table
 	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== "") {
-		if (isset($_POST['provinceNew']) && $_POST['provinceNew'] != "" && $_POST['stateId'] == 'other') {
-			$_POST['stateId'] = $geolocation->addGeoLocation($_POST['provinceNew']);
-			$_POST['state'] = $_POST['provinceNew'];
-			// if (trim($_POST['state']) != "") {
-			$strSearch = (isset($_POST['provinceNew']) && trim((string) $_POST['provinceNew']) !== '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
-			$facilityQuery = "SELECT geo_name from geographical_divisions where geo_name= ?";
-			$facilityInfo = $db->rawQuery($facilityQuery, [$strSearch]);
-			if (isset($facilityInfo[0]['geo_name'])) {
-				$_POST['state'] = $facilityInfo[0]['geo_name'];
-			} else {
-				$geoData = ['geo_name' => $_POST['provinceNew'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
-				$db->insert($provinceTable, $geoData);
-				$_POST['state'] = $_POST['provinceNew'];
-			}
+		// Province and district ids, and their names taken from those ids.
+		$location = $geolocation->resolveFacilityLocation(
+			$_POST['stateId'] ?? null,
+			$_POST['provinceNew'] ?? null,
+			$_POST['districtId'] ?? null,
+			$_POST['districtNew'] ?? null
+		);
+		if (!empty($location['error'])) {
+			$_SESSION['alertMsg'] = $location['error'];
+			header("Location:/facilities/addFacility.php");
+			exit;
 		}
+		$_POST['stateId'] = $location['stateId'];
+		$_POST['state'] = $location['state'];
+		$_POST['districtId'] = $location['districtId'];
+		$_POST['district'] = $location['district'];
+
 		$instanceId = '';
 		if (isset($_SESSION['instanceId'])) {
 			$instanceId = $_SESSION['instanceId'];
@@ -124,13 +126,15 @@ try {
 			$_POST['testingPoints'] = null;
 		}
 
-		if (isset($_POST['districtNew']) && $_POST['districtNew'] != "" && $_POST['districtId'] == 'other') {
-			$_POST['districtId'] = $geolocation->addGeoLocation($_POST['districtNew'], $_POST['stateId']);
-			$_POST['district'] = $_POST['districtNew'];
-		}
-
 		/** @var \App\Services\FacilitiesService $facilitiesService */
 		$facilitiesService = ContainerRegistry::get(\App\Services\FacilitiesService::class);
+
+		// The same name is allowed, but not twice in the same province and district.
+		if ($facilitiesService->isFacilityNameTakenInArea((string) $_POST['facilityName'], $_POST['stateId'] ?? null, $_POST['districtId'] ?? null)) {
+			$_SESSION['alertMsg'] = _translate("A facility with this name already exists in the selected Province/State and District/County.");
+			header("Location:/facilities/addFacility.php");
+			exit;
+		}
 
 		// Normalise any entered code to plain uppercase Latin letters (A-Z only).
 		$facilityCode = $facilitiesService->sanitizeFacilityCode($_POST['facilityCode'] ?? null);
@@ -385,6 +389,16 @@ try {
 		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
-	$_SESSION['alertMsg'] = _translate("Could not save the facility. Please check the facility code is unique and try again.");
+	// Say which value clashed instead of always blaming the facility code.
+	$reason = $e->getMessage();
+	if (stripos($reason, 'Duplicate entry') !== false && stripos($reason, 'facility_code') !== false) {
+		$_SESSION['alertMsg'] = _translate("Could not save the facility. This facility code is already used by another facility.");
+	} elseif (stripos($reason, 'Duplicate entry') !== false && stripos($reason, 'other_id') !== false) {
+		$_SESSION['alertMsg'] = _translate("Could not save the facility. This External Facility Code is already used by another facility.");
+	} elseif (stripos($reason, 'Duplicate entry') !== false && stripos($reason, 'facility_name') !== false) {
+		$_SESSION['alertMsg'] = _translate("Could not save the facility. A facility with this name already exists.");
+	} else {
+		$_SESSION['alertMsg'] = _translate("Could not save the facility. Please try again.");
+	}
 	header("Location:facilities.php");
 }
