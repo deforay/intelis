@@ -10,6 +10,7 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\DataTableUtility;
 use App\Utilities\ListingFilterClauseBuilder;
 use App\Services\TestRequestsService;
+use App\Services\SampleAccessService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -21,6 +22,9 @@ try {
      /** @var TestRequestsService $testRequestsService */
      $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
      $testRequestsService->processSampleCodeQueue();
+
+     /** @var SampleAccessService $sampleAccess */
+     $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
      $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
@@ -194,7 +198,7 @@ try {
           $row[] = $aRow['status_name'];
 
           if ($editRequest) {
-               $row[] = '<a href="/generic-tests/requests/edit-request.php?id=' . base64_encode((string) $aRow['sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+               $row[] = '<a href="' . $sampleAccess->url('/generic-tests/requests/edit-request.php', (int) $aRow['sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
           } else {
                $row[] = "";
           }

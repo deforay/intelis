@@ -108,7 +108,7 @@ final class ClinicReportUtility
             'reason' => 'reason_for_testing',
             'sampleTypeTable' => 'r_generic_sample_types', 'sampleTypeId' => 'sample_type_id', 'sampleTypeName' => 'sample_type_name',
             'page' => '/generic-tests/program-management/generic-tests-clinic-report.php',
-            'edit' => '/generic-tests/requests/edit-request.php', 'editId' => 'base64',
+            'edit' => '/generic-tests/requests/edit-request.php', 'editId' => 'sample',
             'print' => '/generic-tests/results/generate-result-pdf.php',
         ],
     ];

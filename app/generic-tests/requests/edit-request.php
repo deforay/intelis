@@ -8,6 +8,7 @@ use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\SampleAccessService;
 use App\Exceptions\SystemException;
 
 
@@ -28,6 +29,9 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 $healthFacilities = $facilitiesService->getHealthFacilities('generic-tests');
 $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
@@ -41,7 +45,6 @@ if ($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') !== 'testing-la
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 // get instruments
@@ -73,8 +76,8 @@ $sResult = $db->query($sQuery);
 $vlTestReasonQuery = "SELECT * FROM r_generic_test_reasons WHERE test_reason_status = 'active'";
 $testReason = $db->query($vlTestReasonQuery);
 
-$vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
-$genericResultInfo = $db->rawQueryOne($vlQuery, [$id]);
+$genericResultInfo = $sampleAccess->load('generic-tests', $_GET['id'] ?? null);
+$id = (int) $genericResultInfo['sample_id'];
 
 // Re-resolve now the record is known, so a lab that has since been deactivated
 // still appears by name (the per-card list in _test-section.php otherwise falls
