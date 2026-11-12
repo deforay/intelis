@@ -134,6 +134,9 @@ try {
 			$_POST['testingPoints'] = null;
 		}
 
+		// Store the name without stray tabs, line breaks or repeated spaces.
+		$_POST['facilityName'] = \App\Services\FacilitiesService::normalizeFacilityName($_POST['facilityName']);
+
 		// The same name is allowed, but not twice in the same province and district.
 		if ($facilityService->isFacilityNameTakenInArea((string) $_POST['facilityName'], $_POST['stateId'] ?? null, $_POST['districtId'] ?? null, (int) $facilityId)) {
 			$_SESSION['alertMsg'] = _translate("A facility with this name already exists in the selected Province/State and District/County.");
