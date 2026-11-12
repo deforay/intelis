@@ -952,13 +952,22 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	} */
 
 	// A facility name may repeat, but not within the same Province/State and District/County.
-	// Without a callback this only warns; with one, it runs the callback when the name is free.
+	// Without a callback (leaving the name box, picking a district) it only warns, and only
+	// once for the same name, province and district: the alert itself takes focus from the
+	// name box, so warning again on every blur showed the alert over and over.
+	// With a callback (Save) it always warns when taken, else runs the callback.
+	var lastFacilityNameWarning = '';
 	function checkFacilityNameInArea(onFree) {
-		var name = $.trim($('#facilityName').val()).replace(/\s{2,}/g, ' ');
+		var isSave = (typeof onFree === 'function');
+		var name = $.trim($('#facilityName').val()).replace(/\s+/g, ' ');
 		var stateId = $('#stateId').val();
 		var districtId = $('#districtId').val();
 		if (name === '' || !stateId || !districtId) {
-			if (typeof onFree === 'function') onFree();
+			if (isSave) onFree();
+			return;
+		}
+		var key = name.toLowerCase() + '|' + stateId + '|' + districtId;
+		if (!isSave && key === lastFacilityNameWarning) {
 			return;
 		}
 		$.post('/facilities/checkFacilityName.php', {
@@ -968,10 +977,17 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			facilityId: ''
 		}, function (data) {
 			if (data && data.taken) {
+				if (!isSave && key === lastFacilityNameWarning) {
+					return;
+				}
+				lastFacilityNameWarning = key;
 				alert('<?= _jsTranslate("A facility with this name already exists in the selected Province/State and District/County."); ?>');
-				$('#facilityName').focus();
-			} else if (typeof onFree === 'function') {
-				onFree();
+				if (isSave) {
+					$('#facilityName').focus();
+				}
+			} else {
+				lastFacilityNameWarning = '';
+				if (isSave) onFree();
 			}
 		}, 'json');
 	}
