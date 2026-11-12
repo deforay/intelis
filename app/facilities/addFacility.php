@@ -53,7 +53,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
 if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) {
 	$reportFormats['generic-tests'] = $general->activeReportFormats('generic-tests');
 }
-$geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
+$geoLocationParentArray = $geolocationService->fetchActiveGeolocations(applyUserMapping: false);
 $formId = (int) $general->getGlobalConfig('vl_form');
 ?>
 <style>
@@ -101,7 +101,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										<?php echo _translate("Facility Name"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="facilityName" name="facilityName" placeholder="<?php echo _translate('Facility Name'); ?>" title="<?php echo _translate('Please enter facility name'); ?>" onblur='checkNameValidation("facility_details","facility_name",this,null,"<?php echo _translate("The facility name that you entered already exists.Enter another name"); ?>",null)' />
+										<input type="text" class="form-control isRequired" id="facilityName" name="facilityName" placeholder="<?php echo _translate('Facility Name'); ?>" title="<?php echo _translate('Please enter facility name'); ?>" onblur="checkFacilityNameInArea()" />
 									</div>
 								</div>
 							</div>
@@ -246,7 +246,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											<input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="<?php echo _translate('Enter Province/State'); ?>" title="<?php echo _translate('Please enter province/state'); ?>" style="margin-top:4px;display:none;" />
 											<input type="hidden" name="state" id="state" />
 										<?php } else { ?>
-											<input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="<?php echo _translate('Enter Province/State'); ?>" title="<?php echo _translate('Please enter province/state'); ?>" style="margin-top:4px;" />
+											<input type="text" class="form-control isRequired" name="provinceNew" id="provinceNew" placeholder="<?php echo _translate('Enter Province/State'); ?>" title="<?php echo _translate('Please enter province/state'); ?>" style="margin-top:4px;" />
 										<?php } ?>
 									</div>
 								</div>
@@ -822,7 +822,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
-<script type="text/javascript" src="/assets/js/facility-code-check.js"></script>
+<script type="text/javascript" src="<?= _asset('/assets/js/facility-code-check.js') ?>"></script>
 <script type="text/javascript">
 	FacilityCodeCheck.init({
 		facilityId: '',
@@ -871,9 +871,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 		$("#stateId").change(function() {
 			if ($(this).val() == 'other') {
-				$('#provinceNew').show();
+				$('#provinceNew').show().addClass('isRequired').focus();
 			} else {
-				$('#provinceNew').hide();
+				$('#provinceNew').hide().removeClass('isRequired').val('');
 				$('#state').val($("#stateId option:selected").text());
 			}
 			$.blockUI();
@@ -895,19 +895,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 		$("#districtId").change(function() {
 			if ($(this).val() == 'other') {
-				$('#districtNew').show();
+				$('#districtNew').show().addClass('isRequired').focus();
 			} else {
-				$('#districtNew').hide();
+				$('#districtNew').hide().removeClass('isRequired').val('');
 				$('#district').val($("#districtId option:selected").text());
+				checkFacilityNameInArea();
 			}
 		});
-		// Initialize the test type file section when main test type changes
-		$('#testType').on('change', function() {
-			updateRowVisibility();
-		});
-
-		// Initialize on page load
-		updateRowVisibility();
 	});
 
 	function validateNow() {
@@ -925,18 +919,23 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			return false;
 		}
 
-		if (window.FacilityCodeCheck && !FacilityCodeCheck.isOk()) {
-			$('#facilityCode').focus();
-			return false;
-		}
-
 		flag = deforayValidator.init({
 			formId: 'addFacilityForm'
 		});
 
 		if (flag) {
-			$.blockUI();
-			document.getElementById('addFacilityForm').submit();
+			// Re-check the code now: the last check may be older than what was typed.
+			var codeCheck = (window.FacilityCodeCheck && typeof FacilityCodeCheck.verify === 'function') ? FacilityCodeCheck.verify() : $.Deferred().resolve(true).promise();
+			codeCheck.then(function (codeOk) {
+				if (!codeOk) {
+					$('#facilityCode').focus();
+					return;
+				}
+				checkFacilityNameInArea(function () {
+					$.blockUI();
+					document.getElementById('addFacilityForm').submit();
+				});
+			});
 		}
 	}
 
@@ -951,6 +950,31 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			$(".labDiv").hide();
 		}
 	} */
+
+	// A facility name may repeat, but not within the same Province/State and District/County.
+	// Without a callback this only warns; with one, it runs the callback when the name is free.
+	function checkFacilityNameInArea(onFree) {
+		var name = $.trim($('#facilityName').val()).replace(/\s{2,}/g, ' ');
+		var stateId = $('#stateId').val();
+		var districtId = $('#districtId').val();
+		if (name === '' || !stateId || !districtId) {
+			if (typeof onFree === 'function') onFree();
+			return;
+		}
+		$.post('/facilities/checkFacilityName.php', {
+			name: name,
+			stateId: stateId,
+			districtId: districtId,
+			facilityId: ''
+		}, function (data) {
+			if (data && data.taken) {
+				alert('<?= _jsTranslate("A facility with this name already exists in the selected Province/State and District/County."); ?>');
+				$('#facilityName').focus();
+			} else if (typeof onFree === 'function') {
+				onFree();
+			}
+		}, 'json');
+	}
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
@@ -973,17 +997,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			});
 	}
 
-	$('#state').on('change', function() {
-		if (this.value == 'other') {
-			$('#provinceNew').show();
-			$('#provinceNew').addClass('isRequired');
-			$('#provinceNew').focus();
-		} else {
-			$('#provinceNew').hide();
-			$('#provinceNew').removeClass('isRequired');
-			$('#provinceNew').val('');
-		}
-	});
 
 	$('#facilityType').on('change', function() {
 		if (this.value == '2') {

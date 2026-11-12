@@ -87,25 +87,25 @@ try {
 
 	//Province Table
 	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== "") {
-		if (isset($_POST['provinceNew']) && $_POST['provinceNew'] != "" && $_POST['stateId'] == 'other') {
-			$_POST['stateId'] = $geolocation->addGeoLocation($_POST['provinceNew']);
-			$_POST['state'] = $_POST['provinceNew'];
-			$provinceName = (isset($_POST['provinceNew']) && trim((string) $_POST['provinceNew']) !== '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
-			$facilityQuery = "SELECT geo_name FROM geographical_divisions WHERE geo_name= ?";
-			$facilityInfo = $db->rawQueryOne($facilityQuery, [$provinceName]);
-			if (isset($facilityInfo['geo_name'])) {
-				$_POST['state'] = $facilityInfo['geo_name'];
-			} else {
-				$geoData = ['geo_name' => $_POST['provinceNew'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
-				$db->insert($provinceTable, $geoData);
-				$_POST['state'] = $_POST['provinceNew'];
-			}
+		// Province and district ids, and their names taken from those ids. A legacy
+		// facility with no ids keeps its typed names (oldState / oldDistrict).
+		$location = $geolocation->resolveFacilityLocation(
+			$_POST['stateId'] ?? null,
+			$_POST['provinceNew'] ?? null,
+			$_POST['districtId'] ?? null,
+			$_POST['districtNew'] ?? null,
+			$_POST['oldState'] ?? null,
+			$_POST['oldDistrict'] ?? null
+		);
+		if (!empty($location['error'])) {
+			$_SESSION['alertMsg'] = $location['error'];
+			header("Location:/facilities/editFacility.php?id=" . base64_encode((string) $facilityId));
+			exit;
 		}
-
-		if (isset($_POST['districtNew']) && $_POST['districtNew'] != "" && $_POST['districtId'] == 'other') {
-			$_POST['districtId'] = $geolocation->addGeoLocation($_POST['districtNew'], $_POST['stateId']);
-			$_POST['district'] = $_POST['districtNew'];
-		}
+		$_POST['stateId'] = $location['stateId'];
+		$_POST['state'] = $location['state'];
+		$_POST['districtId'] = $location['districtId'];
+		$_POST['district'] = $location['district'];
 
 		$email = '';
 		if (isset($_POST['reportEmail']) && trim((string) $_POST['reportEmail']) !== '') {
@@ -134,6 +134,13 @@ try {
 			$_POST['testingPoints'] = null;
 		}
 
+		// The same name is allowed, but not twice in the same province and district.
+		if ($facilityService->isFacilityNameTakenInArea((string) $_POST['facilityName'], $_POST['stateId'] ?? null, $_POST['districtId'] ?? null, (int) $facilityId)) {
+			$_SESSION['alertMsg'] = _translate("A facility with this name already exists in the selected Province/State and District/County.");
+			header("Location:/facilities/editFacility.php?id=" . base64_encode((string) $facilityId));
+			exit;
+		}
+
 		// Preserve an existing code the admin left untouched, so legacy non-alphabetic
 		// codes (e.g. "CSL2", "102207") are kept verbatim. Only normalise to A-Z when
 		// the code was actually changed, and only auto-generate when it is left blank.
@@ -157,8 +164,8 @@ try {
 			'country' => $_POST['country'] ?? null,
 			'facility_state_id' => $_POST['stateId'] ?? null,
 			'facility_district_id' => $_POST['districtId'] ?? null,
-			'facility_state' => (isset($_POST['oldState']) && $_POST['oldState'] != "") ? $_POST['oldState'] : $_POST['state'],
-			'facility_district' => (isset($_POST['oldDistrict']) && $_POST['oldDistrict'] != "") ? $_POST['oldDistrict'] : $_POST['district'],
+			'facility_state' => $_POST['state'],
+			'facility_district' => $_POST['district'],
 			'facility_hub_name' => $_POST['hubName'] ?? null,
 			'latitude' => $_POST['latitude'] ?? null,
 			'longitude' => $_POST['longitude'] ?? null,
@@ -424,6 +431,16 @@ try {
 		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
-	$_SESSION['alertMsg'] = _translate("Could not save the facility. Please check the facility code is unique and try again.");
+	// Say which value clashed instead of always blaming the facility code.
+	$reason = $e->getMessage();
+	if (stripos($reason, 'Duplicate entry') !== false && stripos($reason, 'facility_code') !== false) {
+		$_SESSION['alertMsg'] = _translate("Could not save the facility. This facility code is already used by another facility.");
+	} elseif (stripos($reason, 'Duplicate entry') !== false && stripos($reason, 'other_id') !== false) {
+		$_SESSION['alertMsg'] = _translate("Could not save the facility. This External Facility Code is already used by another facility.");
+	} elseif (stripos($reason, 'Duplicate entry') !== false && stripos($reason, 'facility_name') !== false) {
+		$_SESSION['alertMsg'] = _translate("Could not save the facility. A facility with this name already exists.");
+	} else {
+		$_SESSION['alertMsg'] = _translate("Could not save the facility. Please try again.");
+	}
 	header("Location:facilities.php");
 }

@@ -158,6 +158,36 @@ final class FacilitiesService
      *
      * @param int|null $excludeFacilityId Skip this facility when checking uniqueness (for edits).
      */
+    /**
+     * Whether another facility already has this name in the same province and
+     * district. The same name may be used in a different province/district.
+     * Case and accents are ignored by the column collation; surrounding and
+     * repeated spaces are ignored here. A missing province or district matches
+     * only facilities that are also missing it.
+     *
+     * @param int|null $excludeFacilityId Skip this facility (for edits).
+     */
+    public function isFacilityNameTakenInArea(string $facilityName, $stateId, $districtId, ?int $excludeFacilityId = null): bool
+    {
+        $name = trim(preg_replace('/\s+/u', ' ', $facilityName) ?? $facilityName);
+        if ($name === '') {
+            return false;
+        }
+        $stateId = (is_numeric($stateId) && (int) $stateId > 0) ? (int) $stateId : null;
+        $districtId = (is_numeric($districtId) && (int) $districtId > 0) ? (int) $districtId : null;
+
+        $sql = "SELECT 1 FROM facility_details
+                WHERE TRIM(facility_name) = ?
+                  AND facility_state_id <=> ?
+                  AND facility_district_id <=> ?";
+        $params = [$name, $stateId, $districtId];
+        if (!empty($excludeFacilityId)) {
+            $sql .= " AND facility_id != ?";
+            $params[] = $excludeFacilityId;
+        }
+        return !empty($this->db->rawQueryOne($sql . " LIMIT 1", $params));
+    }
+
     public function generateFacilityCode(string $facilityName, ?int $excludeFacilityId = null, int $maxLen = 4): string
     {
         $base = $this->buildFacilityCodeCandidate($facilityName, $maxLen);
