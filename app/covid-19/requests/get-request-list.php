@@ -13,6 +13,7 @@ use App\Utilities\DataTableUtility;
 use App\Utilities\ListingFilterClauseBuilder;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use App\Services\SampleAccessService;
 use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
 
@@ -35,6 +36,9 @@ try {
      /** @var TestRequestsService $testRequestsService */
      $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
      $testRequestsService->processSampleCodeQueue();
+
+     /** @var SampleAccessService $sampleAccess */
+     $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
      $gconfig = $general->getGlobalConfig();
 
@@ -337,7 +341,7 @@ try {
           $row[] = ($aRow['status_name']);
 
           if ($editRequest) {
-               $edit = '<a href="covid-19-edit-request.php?id=' . base64_encode((string) $aRow['covid19_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+               $edit = '<a href="' . $sampleAccess->url('/covid-19/requests/covid-19-edit-request.php', (int) $aRow['covid19_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/covid-19/requests/edit-locked-covid19-samples")) {
                     $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
                }

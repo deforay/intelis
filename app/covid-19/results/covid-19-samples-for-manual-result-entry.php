@@ -11,6 +11,7 @@ use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Services\SampleAccessService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -41,6 +42,9 @@ try {
      /** @var Covid19Service $covid19Service */
      $covid19Service = ContainerRegistry::get(Covid19Service::class);
      $covid19Results = $covid19Service->getCovid19Results();
+
+     /** @var SampleAccessService $sampleAccess */
+     $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
      $tableName = "form_covid19";
      $primaryKey = "covid19_id";
@@ -205,7 +209,7 @@ try {
 
      foreach ($rResult as $aRow) {
           $row = [];
-          $print = '<a href="covid-19-update-result.php?id=' . base64_encode((string) $aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
+          $print = '<a href="'.$sampleAccess->url('/covid-19/results/covid-19-update-result.php',(int) $aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/covid-19/requests/edit-locked-covid19-samples")) {
                $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title=' . _translate("Locked") . ' disabled><em class="fa-solid fa-lock"></em> ' . _translate("Locked") . '</a>';
           }

@@ -6,6 +6,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
+use App\Services\SampleAccessService;
 use App\Utilities\DateUtility;
 use App\Exceptions\SystemException;
 
@@ -48,6 +49,9 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 $healthFacilities = $facilitiesService->getHealthFacilities('covid19');
 $testingLabs = $facilitiesService->getTestingLabs('covid19');
 
@@ -65,11 +69,9 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-//$id = ($_GET['id']);
-$covid19Query = "SELECT * from form_covid19 WHERE covid19_id=?";
-$covid19Info = $db->rawQueryOne($covid19Query, [$id]);
+$covid19Info = $sampleAccess->load('covid19', $_GET['id'] ?? null);
+$id = (int) $covid19Info['covid19_id'];
 
 // A saved signer may now be outside the lab scope; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value.

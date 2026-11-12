@@ -64,7 +64,7 @@ final class ClinicReportUtility
             'reason' => 'reason_for_covid19_test',
             'sampleTypeTable' => 'r_covid19_sample_type', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
             'page' => '/covid-19/management/covid-19-clinic-report.php',
-            'edit' => '/covid-19/requests/covid-19-edit-request.php', 'editId' => 'base64',
+            'edit' => '/covid-19/requests/covid-19-edit-request.php', 'editId' => 'sample',
             'print' => '/covid-19/results/generate-result-pdf.php',
         ],
         'hepatitis' => [
