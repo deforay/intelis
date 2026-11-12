@@ -86,7 +86,7 @@ final class ClinicReportUtility
             'reason' => 'reason_for_tb_test',
             'sampleTypeTable' => 'r_tb_sample_type', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
             'page' => '/tb/management/tb-clinic-report.php',
-            'edit' => '/tb/requests/tb-edit-request.php', 'editId' => 'base64',
+            'edit' => '/tb/requests/tb-edit-request.php', 'editId' => 'sample',
             'print' => '/tb/results/generate-result-pdf.php',
         ],
         'cd4' => [
