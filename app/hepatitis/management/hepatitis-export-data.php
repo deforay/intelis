@@ -187,7 +187,7 @@ $state = $geolocationService->getProvinces("yes");
 									<option value="yes"><?php echo _translate("Yes"); ?></option>
 									<option value="no"><?php echo _translate("No"); ?></option>
 								</select>
-								<label style="font-weight:normal;margin-top:6px;display:block;" title="<?= _htmlTranslate('Add who tested, reviewed and approved each sample, its status, analyzer run and record history'); ?>"><input type="checkbox" id="withDetails" class="filter-panel-ignore" value="yes"> <?= _translate("Include lab and audit details"); ?></label>
+								<label style="font-weight:normal;margin-top:6px;display:block;" title="<?= _htmlTranslate('Add who tested, reviewed and approved each sample, its status and record history'); ?>"><input type="checkbox" id="withDetails" class="filter-panel-ignore" value="yes"> <?= _translate("Include lab and audit details"); ?></label>
 
 							</td>
 							<td><strong><?php echo _translate("Patient ID"); ?>&nbsp;:</strong></td>
