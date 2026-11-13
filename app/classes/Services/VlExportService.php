@@ -78,7 +78,7 @@ final class VlExportService extends AbstractSampleExportService
 
             X::text(_translate('Unique ART No.'), 'patient_art_no', ['pii' => true]),
             X::text(_translate('Patient Name'), 'patient_name', ['pii' => true] + $notDrc),
-            X::text(_translate('Patient Contact Number'), 'patient_mobile_number'),
+            X::text(_translate('Patient Contact Number'), 'patient_mobile_number', ['pii' => true]),
             X::date(_translate('Date of Birth'), 'patient_dob'),
             X::text(_translate('Age'), 'patient_age_in_years'),
             X::text(_translate('Age in Months'), 'patient_age_in_months', $drc),

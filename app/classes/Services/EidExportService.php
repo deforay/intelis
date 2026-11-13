@@ -52,7 +52,7 @@ final class EidExportService extends AbstractSampleExportService
             X::text(_translate('Health Facility Code'), 'facility_code'),
             X::text(_translate('District/County'), 'facility_district'),
             X::text(_translate('Province/State'), 'facility_state'),
-            X::text(_translate('Email'), 'infant_email', $drc),
+            X::text(_translate('Email'), 'infant_email', ['pii' => true] + $drc),
             X::date(_translate('Request Date'), 'test_request_date', false, $drc),
             X::text(_translate('Requesting Clinician'), 'clinician_name'),
             X::text(_translate("Clinician's Phone Number"), 'request_clinician_phone_number'),
@@ -76,7 +76,7 @@ final class EidExportService extends AbstractSampleExportService
 
             X::text(_translate('Child ID'), 'child_id', ['pii' => true]),
             X::text(_translate('Child Name'), 'child_full_name', ['pii' => true]),
-            X::text(_translate('Child Phone Number'), 'infant_phone', $drc),
+            X::text(_translate('Child Phone Number'), 'infant_phone', ['pii' => true] + $drc),
             X::date(_translate('Child Date of Birth'), 'child_dob'),
             X::text(_translate('Child Age in Months'), 'child_age'),
             X::text(_translate('Child Age in Weeks'), 'child_age_in_weeks', $drc),
