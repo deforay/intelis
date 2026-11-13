@@ -524,12 +524,12 @@ final class FacilitiesService
 
             $response = [];
 
-            $results = $this->db->get("facility_details", null, "facility_id,facility_name");
+            $results = $this->db->get("facility_details", null, "facility_id,facility_name,facility_district");
 
             foreach ($results as $row) {
                 $response[$row['facility_id']] = $row['facility_name'];
             }
-            return $response;
+            return self::addDistrictToRepeatedNames($response, array_column($results, 'facility_district', 'facility_id'));
         }
     }
 
@@ -622,20 +622,23 @@ final class FacilitiesService
         }
 
         $response = [];
-        $results = $this->db->get("facility_details", null, "facility_id,facility_name");
+        $results = $this->db->get("facility_details", null, "facility_id,facility_name,facility_district");
+        $districts = [];
         foreach ($results as $row) {
             $response[$row['facility_id']] = $row['facility_name'];
+            $districts[$row['facility_id']] = $row['facility_district'];
         }
         if ($keepLabId > 0 && !isset($response[$keepLabId])) {
             $missing = $this->db->rawQueryOne(
-                "SELECT facility_id, facility_name FROM facility_details WHERE facility_id = ? AND facility_type = 2",
+                "SELECT facility_id, facility_name, facility_district FROM facility_details WHERE facility_id = ? AND facility_type = 2",
                 [$keepLabId]
             );
             if (!empty($missing['facility_id'])) {
                 $response[$missing['facility_id']] = $missing['facility_name'];
+                $districts[$missing['facility_id']] = $missing['facility_district'];
             }
         }
-        return $response;
+        return self::addDistrictToRepeatedNames($response, $districts);
     }
 
     public function getOrCreateProvince(string $provinceName, ?string $provinceCode = null): int
@@ -713,6 +716,31 @@ final class FacilitiesService
         });
     }
 
+    /**
+     * Two facilities may share a name when they sit in different districts.
+     * Where a name appears more than once in a list, add the district so the
+     * user can tell them apart: "Health Centre A (North)". Names that appear
+     * once, and repeated names without a district, are left as they are.
+     *
+     * @param array<int|string, ?string> $names     facility_id => facility_name
+     * @param array<int|string, ?string> $districts facility_id => facility_district
+     * @return array<int|string, ?string> facility_id => label, in the same order
+     */
+    public static function addDistrictToRepeatedNames(array $names, array $districts): array
+    {
+        $counts = array_count_values(array_map(
+            static fn($name): string => mb_strtolower(trim((string) $name)),
+            $names
+        ));
+        foreach ($names as $id => $name) {
+            $district = trim((string) ($districts[$id] ?? ''));
+            if ($district !== '' && $counts[mb_strtolower(trim((string) $name))] > 1) {
+                $names[$id] = "$name ($district)";
+            }
+        }
+        return $names;
+    }
+
     public function getFacilitiesDropdown($testType, $facilityType, $provinceName = null, $districtRequested = null, $option = null, $comingFromUser = null): string
     {
         return MemoUtility::remember(function () use ($testType, $facilityType, $provinceName, $districtRequested, $option, $comingFromUser) {
@@ -748,13 +776,17 @@ final class FacilitiesService
             $facilityInfo = $this->db->get('facility_details f', null, 'f.* , u.user_name as contact_person');
             $facility = '';
             if ($facilityInfo) {
+                $labels = self::addDistrictToRepeatedNames(
+                    array_column($facilityInfo, 'facility_name', 'facility_id'),
+                    array_column($facilityInfo, 'facility_district', 'facility_id')
+                );
                 if (!isset($comingFromUser)) {
                     $facility .= $option;
                 }
                 foreach ($facilityInfo as $fDetails) {
                     $fcode = (isset($fDetails['facility_code']) && $fDetails['facility_code'] != "") ? ' - ' . $fDetails['facility_code'] : '';
 
-                    $facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (htmlspecialchars((string) $fDetails['facility_name'])) . $fcode . "</option>";
+                    $facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (htmlspecialchars((string) $labels[$fDetails['facility_id']])) . $fcode . "</option>";
                 }
             } else {
                 $facility .= $option;
