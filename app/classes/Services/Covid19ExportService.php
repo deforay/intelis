@@ -17,7 +17,8 @@ use const COUNTRY\RWANDA;
  * and audit columns only when asked for.
  *
  * DRC and Rwanda used to have their own Export Results sheets. Their extra
- * columns are tagged with their form here.
+ * columns are tagged with their form here. The old Rwanda sheet is still
+ * there as an override: the covid19_report_type setting 'rwanda' picks it.
  */
 final class Covid19ExportService extends AbstractSampleExportService
 {
@@ -32,6 +33,23 @@ final class Covid19ExportService extends AbstractSampleExportService
     protected function idColumn(): string
     {
         return 'covid19_id';
+    }
+
+    public function columns(bool $withPatientInfo, bool $withDetails = false): array
+    {
+        $formId = (int) $this->general->getGlobalConfig('vl_form');
+        if ($formId !== 1 && $this->general->getGlobalConfig('covid19_report_type') === 'rwanda') {
+            // Patient details and the STS-only Remote Sample ID follow the
+            // same rules as the universal sheet; it has no detail columns.
+            return X::forForm(
+                $this->rwandaColumns(),
+                $formId,
+                $withPatientInfo,
+                $this->general->isStandaloneInstance(),
+                $withDetails
+            );
+        }
+        return parent::columns($withPatientInfo, $withDetails);
     }
 
     /**
@@ -125,6 +143,49 @@ final class Covid19ExportService extends AbstractSampleExportService
                 _translate('Result Printed Date'),
                 _translate('Request Created On')
             ),
+        ];
+    }
+
+    /**
+     * The Rwanda sheet: the 26 columns of the old Rwanda Export Results sheet,
+     * under its headings and in its order.
+     */
+    private function rwandaColumns(): array
+    {
+        // Loaded on the first row, not when the columns are listed.
+        $results = null;
+        return [
+            X::column(_translate('S. No.'), static fn(array $r, int $no): int => $no),
+            X::text(_translate('Sample ID'), 'sample_code'),
+            X::text(_translate('Remote Sample ID'), 'remote_sample_code', ['sts' => true]),
+            X::text(_translate('Testing Lab Name'), 'lab_name'),
+            X::date(_translate('Sample Received On'), 'sample_received_at_lab_datetime'),
+            X::text(_translate('Health Facility Name'), 'facility_name'),
+            X::text(_translate('Health Facility Code'), 'facility_code'),
+            X::text(_translate('District/County'), 'facility_district'),
+            X::text(_translate('Province/State'), 'facility_state'),
+            X::text(_translate('Patient ID'), 'patient_id', ['pii' => true]),
+            X::text(_translate('Patient Name'), 'patient_full_name', ['pii' => true]),
+            X::date(_translate('Patient DoB'), 'patient_dob'),
+            X::column(
+                _translate('Patient Age'),
+                static fn(array $r): mixed => ($r['patient_age'] ?? 0) > 0 ? $r['patient_age'] : 0
+            ),
+            X::sex(_translate('Patient Sex'), 'patient_gender'),
+            X::date(_translate('Sample Collection Date'), 'sample_collection_date'),
+            X::text(_translate('Symptoms Presented in last 14 days'), 'symptoms'),
+            X::text(_translate('Co-morbidities'), 'comorbidities'),
+            ...X::without(X::rejectionColumns(), _translate('Rejection Date')),
+            X::text(_translate('Recommended Corrective Action'), 'recommended_corrective_action_name'),
+            X::date(_translate('Sample Tested On'), 'sample_tested_datetime'),
+            X::column(_translate('Result'), function (array $r) use (&$results): mixed {
+                $results ??= $this->covid19Service->getCovid19Results();
+                return $results[(string) $r['result']] ?? $r['result'];
+            }),
+            X::date(_translate('Date Result Dispatched'), 'result_printed_datetime'),
+            X::text(_translate('Comments'), 'lab_tech_comments'),
+            X::text(_translate('Funding Source'), 'funding_source_name'),
+            X::text(_translate('Implementing Partner'), 'i_partner_name'),
         ];
     }
 
