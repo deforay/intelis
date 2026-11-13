@@ -41,7 +41,7 @@ final class Cd4ExportService extends AbstractSampleExportService
             X::date(_translate('Date of Birth'), 'patient_dob'),
             X::text(_translate('Age'), 'patient_age_in_years'),
             X::sex(_translate('Sex'), 'patient_gender'),
-            X::text(_translate('Patient Cellphone Number'), 'patient_mobile_number'),
+            X::text(_translate('Patient Cellphone Number'), 'patient_mobile_number', ['pii' => true]),
             X::date(_translate('Date of Sample Collection'), 'sample_collection_date', true),
             X::text(_translate('Sample Type'), 'sample_name'),
             X::date(_translate('Date of Treatment Initiation'), 'treatment_initiated_date'),
