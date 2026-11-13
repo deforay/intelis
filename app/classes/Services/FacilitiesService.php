@@ -139,35 +139,6 @@ final class FacilitiesService
     }
 
     /**
-     * Build a short, human-readable facility code from a facility name and make
-     * it unique against existing facility_details.facility_code values
-     * (the column carries a UNIQUE index, so callers must persist what this returns).
-     *
-     * The result is strictly uppercase Latin letters (A-Z) -- no digits, accents or
-     * symbols -- so on STS the "-<code>" sample-code postfix never blurs into the
-     * trailing numeric sequence. Heuristics, in order:
-     *   1. Single word      -> first 3 letters                 ("Kinshasa" -> KIN)
-     *   2. Multi-word       -> initial of each word, but short
-     *      all-caps tokens are kept whole as acronyms          ("CH Monkole" -> CHM,
-     *                                                            "National Reference Lab" -> NRL)
-     *   3. Still under 3    -> padded from the first word       ("Saint Mary" -> SMA)
-     *   4. Nothing usable   -> letters-only hash of the name    (non-latin / empty names)
-     *
-     * Capped at $maxLen (default 4). On collision a letter-only suffix is appended
-     * (A..Z, then AA..ZZ) while keeping the total within $maxLen ("NRL" -> "NRLA").
-     *
-     * @param int|null $excludeFacilityId Skip this facility when checking uniqueness (for edits).
-     */
-    /**
-     * Whether another facility already has this name in the same province and
-     * district. The same name may be used in a different province/district.
-     * Case and accents are ignored by the column collation; surrounding and
-     * repeated spaces are ignored here. A missing province or district matches
-     * only facilities that are also missing it.
-     *
-     * @param int|null $excludeFacilityId Skip this facility (for edits).
-     */
-    /**
      * A facility name as it should be stored and compared: every run of
      * whitespace (tabs, line breaks, non-breaking spaces) becomes one space,
      * and none at either end.
@@ -178,6 +149,15 @@ final class FacilitiesService
         return trim(preg_replace('/[\s\p{Z}]+/u', ' ', $name) ?? $name);
     }
 
+    /**
+     * Whether another facility already has this name in the same province and
+     * district. The same name may be used in a different province/district.
+     * Case and accents are ignored by the column collation; surrounding and
+     * repeated spaces are ignored here. A missing province or district matches
+     * only facilities that are also missing it.
+     *
+     * @param int|null $excludeFacilityId Skip this facility (for edits).
+     */
     public function isFacilityNameTakenInArea(string $facilityName, $stateId, $districtId, ?int $excludeFacilityId = null): bool
     {
         $name = self::normalizeFacilityName($facilityName);
@@ -203,6 +183,26 @@ final class FacilitiesService
         return !empty($this->db->rawQueryOne($sql . " LIMIT 1", $params));
     }
 
+    /**
+     * Build a short, human-readable facility code from a facility name and make
+     * it unique against existing facility_details.facility_code values
+     * (the column carries a UNIQUE index, so callers must persist what this returns).
+     *
+     * The result is strictly uppercase Latin letters (A-Z) -- no digits, accents or
+     * symbols -- so on STS the "-<code>" sample-code postfix never blurs into the
+     * trailing numeric sequence. Heuristics, in order:
+     *   1. Single word      -> first 3 letters                 ("Kinshasa" -> KIN)
+     *   2. Multi-word       -> initial of each word, but short
+     *      all-caps tokens are kept whole as acronyms          ("CH Monkole" -> CHM,
+     *                                                            "National Reference Lab" -> NRL)
+     *   3. Still under 3    -> padded from the first word       ("Saint Mary" -> SMA)
+     *   4. Nothing usable   -> letters-only hash of the name    (non-latin / empty names)
+     *
+     * Capped at $maxLen (default 4). On collision a letter-only suffix is appended
+     * (A..Z, then AA..ZZ) while keeping the total within $maxLen ("NRL" -> "NRLA").
+     *
+     * @param int|null $excludeFacilityId Skip this facility when checking uniqueness (for edits).
+     */
     public function generateFacilityCode(string $facilityName, ?int $excludeFacilityId = null, int $maxLen = 4): string
     {
         $base = $this->buildFacilityCodeCandidate($facilityName, $maxLen);

@@ -334,13 +334,17 @@ final class FacilityImportService
                 $row['messages'][] = sprintf(_translate('Facility Code will be saved as %s.'), $code);
             }
 
-            $nameKey = mb_strtolower($name);
+            $nameKey = mb_strtolower(FacilitiesService::normalizeFacilityName($name));
+            // A name is unique only within its province and district, so a repeat
+            // is the same name in the same place. Compared by text, as the place
+            // may not exist yet.
+            $nameInAreaKey = $nameKey === '' ? '' : $nameKey . '|' . mb_strtolower($province) . '|' . mb_strtolower($district);
             $repeatLabels = [
                 'name' => _translate('Facility Name'),
                 'code' => _translate('Facility Code'),
                 'otherId' => _translate('External Facility Code'),
             ];
-            foreach (['name' => $nameKey, 'code' => strtoupper($code), 'otherId' => mb_strtolower($otherId)] as $kind => $key) {
+            foreach (['name' => $nameInAreaKey, 'code' => strtoupper($code), 'otherId' => mb_strtolower($otherId)] as $kind => $key) {
                 if ($key === '') {
                     continue;
                 }
@@ -353,7 +357,7 @@ final class FacilityImportService
 
             $looseName = $this->looseName($name);
             // Exact repeats are already errors; this catches "St. Mary's" vs "St Marys".
-            if ($looseName !== '' && ($seen['name'][$nameKey] ?? null) === $input['row']) {
+            if ($looseName !== '' && ($seen['name'][$nameInAreaKey] ?? null) === $input['row']) {
                 if (isset($seen['looseName'][$looseName])) {
                     $row['warnings'][] = sprintf(_translate('Name looks like the facility in row %d. Check this is not the same facility twice.'), $seen['looseName'][$looseName]);
                 } else {
@@ -367,7 +371,10 @@ final class FacilityImportService
                 continue;
             }
 
-            $byName = $this->idByName[$nameKey] ?? null;
+            $provinceId = $this->provinceIdByName[mb_strtolower($province)] ?? null;
+            $districtId = $provinceId !== null ? ($this->districtIdByKey[$provinceId . '|' . mb_strtolower($district)] ?? null) : null;
+            // A province or district that is new has no facilities yet, so no name match.
+            $byName = $districtId !== null ? ($this->idByName[$this->nameInAreaKey($name, $provinceId, $districtId)] ?? null) : null;
             $byCode = $code !== '' ? ($this->idByCode[strtoupper($code)] ?? null) : null;
 
             // Which existing facility (if any) this row updates, per the chosen option.
@@ -406,7 +413,8 @@ final class FacilityImportService
                 continue;
             }
 
-            // A value used by a different facility would break its unique index.
+            // A value used by a different facility would break its unique index
+            // (for the name: the same name in the same province and district).
             $conflicts = [];
             if ($byName !== null && $byName !== $targetId) {
                 $conflicts[] = _translate('Facility Name is already used by another facility.');
@@ -441,8 +449,6 @@ final class FacilityImportService
                 }
             }
 
-            $provinceId = $this->provinceIdByName[mb_strtolower($province)] ?? null;
-            $districtId = $provinceId !== null ? ($this->districtIdByKey[$provinceId . '|' . mb_strtolower($district)] ?? null) : null;
             if ($provinceId === null) {
                 $row['messages'][] = sprintf(_translate('New Province/State %s will be added.'), $province);
             }
@@ -631,7 +637,7 @@ final class FacilityImportService
             $id = (int) $f['facility_id'];
             unset($f['facility_id']);
             $this->facilitiesById[$id] = $f;
-            $this->idByName[mb_strtolower(trim((string) $f['facility_name']))] = $id;
+            $this->idByName[$this->nameInAreaKey((string) $f['facility_name'], $f['facility_state_id'], $f['facility_district_id'])] = $id;
             if (!empty($f['facility_code'])) {
                 $this->idByCode[strtoupper((string) $f['facility_code'])] = $id;
             }
@@ -665,6 +671,17 @@ final class FacilityImportService
         foreach ($this->db->rawQuery('SELECT facility_type_id, facility_type_name FROM facility_type') as $t) {
             $this->facilityTypes[(string) $t['facility_type_id']] = (string) $t['facility_type_name'];
         }
+    }
+
+    /**
+     * Key for a facility name within its province and district, the same rule
+     * as FacilitiesService::isFacilityNameTakenInArea(): whitespace folded, case
+     * ignored, and a missing province or district matches only a missing one.
+     */
+    private function nameInAreaKey(string $name, mixed $provinceId, mixed $districtId): string
+    {
+        $area = static fn(mixed $id): string => (is_numeric($id) && (int) $id > 0) ? (string) (int) $id : '';
+        return mb_strtolower(FacilitiesService::normalizeFacilityName($name)) . '|' . $area($provinceId) . '|' . $area($districtId);
     }
 
     private function batchDirectory(): string

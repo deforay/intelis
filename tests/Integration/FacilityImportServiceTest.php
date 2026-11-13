@@ -43,6 +43,10 @@ final class FacilityImportServiceTest extends TestCase
         LegacyAppHarness::withSession(['instanceId' => 'test-instance']);
         AppRegistry::set('request', LegacyAppHarness::withPost([]));
 
+        // sql/init.sql still carries the old country-wide unique name index;
+        // migration 5.8.7 drops it, so do the same here.
+        $this->db->rawQuery('ALTER TABLE facility_details DROP INDEX facility_name, DROP INDEX facility_name_2');
+
         $this->db->rawQuery(
             "INSERT INTO facility_type VALUES (1,'Health Facility'),(2,'Testing Lab'),(3,'Collection Site')"
         );
@@ -190,6 +194,83 @@ final class FacilityImportServiceTest extends TestCase
         self::assertSame([0, 0], [$result['updated'], $result['inserted']]);
         self::assertCount(2, $result['failed']);
         self::assertSame('Changed Elsewhere', $this->address(1));
+    }
+
+    public function testSameNameInAnotherDistrictIsAddedButNotInTheSameDistrict(): void
+    {
+        $batch = $this->stage(FacilityImportService::OPTION_DEFAULT, [
+            ['Riverside Clinic', '', '', 'South', 'Coast', '1', '', '', '', '', '', ''],
+            ['Lowoi PHCC', '', '', 'South', 'Coast', '1', '', '', '', '', '', ''],
+        ]);
+        $rows = $batch['rows'];
+
+        self::assertSame('insert', $rows[0]['action'], implode("\n", $rows[0]['messages']));
+        self::assertSame('skip', $rows[1]['action'], 'Lowoi PHCC is already in South / Coast');
+
+        $result = $this->service->apply($batch, [2]);
+        self::assertSame(1, $result['inserted']);
+        self::assertSame(
+            [
+                ['facility_state_id' => 1, 'facility_district_id' => 2],
+                ['facility_state_id' => 3, 'facility_district_id' => 4],
+            ],
+            array_map(
+                fn($r) => array_map('intval', $r),
+                $this->db->rawQuery(
+                    "SELECT facility_state_id, facility_district_id FROM facility_details
+                     WHERE facility_name = 'Riverside Clinic' ORDER BY facility_id"
+                )
+            )
+        );
+    }
+
+    public function testSameNameInTheSameDistrictIsRefused(): void
+    {
+        // Matched by code to Central Reference Lab, then renamed to a name that
+        // Riverside Clinic already uses in North / Capital.
+        $rows = $this->stage(FacilityImportService::OPTION_CODE, [
+            ['riverside  clinic', 'CRL', '', 'North', 'Capital', '2', '', '', '', '', '', ''],
+        ])['rows'];
+
+        self::assertSame('error', $rows[0]['action']);
+        self::assertStringContainsString('Facility Name is already used', $rows[0]['messages'][0]);
+
+        // The same name twice in one sheet is a repeat only within one district.
+        $rows = $this->stage(FacilityImportService::OPTION_DEFAULT, [
+            ['Hilltop Clinic', '', '', 'North', 'Capital', '1', '', '', '', '', '', ''],
+            ['Hilltop Clinic', '', '', 'South', 'Coast', '1', '', '', '', '', '', ''],
+            ['Hilltop Clinic', '', '', 'North', 'Capital', '1', '', '', '', '', '', ''],
+        ])['rows'];
+        self::assertSame(['insert', 'insert', 'error'], array_column($rows, 'action'));
+        self::assertStringContainsString('repeated from row 2', $rows[2]['messages'][0]);
+    }
+
+    public function testMatchByNameUpdatesTheFacilityInTheRowsDistrict(): void
+    {
+        // Loaded last, so a country-wide name key would pick this one.
+        $this->db->rawQuery(
+            "INSERT INTO facility_details
+                (facility_id, facility_name, facility_state, facility_state_id, facility_district,
+                 facility_district_id, facility_type, address, vlsm_instance_id, status)
+             VALUES (5, 'Riverside Clinic', 'South', 3, 'Coast', 4, 1, 'Coast Road', 'test-instance', 'active')"
+        );
+
+        $batch = $this->stage(FacilityImportService::OPTION_NAME, [
+            ['Riverside Clinic', '', '', 'North', 'Capital', '1', 'New Road', '', '', '', '', ''],
+        ]);
+        $row = $batch['rows'][0];
+        self::assertSame(['update', 1], [$row['action'], $row['facilityId']]);
+
+        $result = $this->service->apply($batch, [2]);
+        self::assertSame(1, $result['updated']);
+        self::assertSame('New Road', $this->address(1));
+        self::assertSame('Coast Road', $this->address(5));
+
+        // A district not on file yet has no facilities, so nothing is matched.
+        $rows = $this->stage(FacilityImportService::OPTION_NAME, [
+            ['Riverside Clinic', '', '', 'North', 'Uplands ' . bin2hex(random_bytes(3)), '1', '', '', '', '', '', ''],
+        ])['rows'];
+        self::assertSame(['insert', null], [$rows[0]['action'], $rows[0]['facilityId']]);
     }
 
     public function testBatchBelongsToTheUserWhoStagedIt(): void
