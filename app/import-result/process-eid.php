@@ -159,6 +159,8 @@ try {
                         $data['sample_code'] = $rResult['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
+                        // Created here, so this is its creation; an update above is not.
+                        $data['request_created_datetime'] = DateUtility::getCurrentDateTime();
                         $eidId = $db->insert("form_eid", $data);
                     }
                     $printSampleCode[] = "'" . $rResult['sample_code'] . "'";
@@ -167,7 +169,7 @@ try {
                 }
             }
             if (isset($eidId) && $eidId != "") {
-                $db->insert('log_result_updates', ["user_id" => $_SESSION['userId'], "vl_sample_id" => $eidId, "test_type" => "vl", "result_method" => "import", "file_name" => $rResult['import_machine_file_name'], "updated_datetime" => DateUtility::getCurrentDateTime()]);
+                $db->insert('log_result_updates', ["user_id" => $_SESSION['userId'], "vl_sample_id" => $eidId, "test_type" => "eid", "result_method" => "import", "file_name" => $rResult['import_machine_file_name'], "updated_datetime" => DateUtility::getCurrentDateTime()]);
             }
             $db->where('temp_sample_id', $id[$i]);
             $result = $db->update("temp_sample_import", [

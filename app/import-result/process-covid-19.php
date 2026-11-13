@@ -176,12 +176,18 @@ try {
 
                         $result = $db->update($tableName1, $data);
                         $covid19Id = $match['id'];
-                        $covid19Service->insertCovid19Tests($match['id'], $rResult['lot_number'], $rResult['lab_id'], $rResult['sample_tested_datetime'], $rResult['result']);
                     } else {
                         $data['sample_code'] = $rResult['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
+                        // Created here, so this is its creation; an update above is not.
+                        $data['request_created_datetime'] = DateUtility::getCurrentDateTime();
                         $covid19Id = $db->insert($tableName1, $data);
+                    }
+                    // covid19_tests.test_name is required, and the result page saves no test
+                    // row without one. The file gives only the lot number as the test name, so
+                    // a file without it adds no test row, the same as the page.
+                    if (trim((string) ($rResult['lot_number'] ?? '')) !== '') {
                         $covid19Service->insertCovid19Tests($covid19Id, $rResult['lot_number'], $rResult['lab_id'], $rResult['sample_tested_datetime'], $rResult['result']);
                     }
                     $printSampleIds[] = (int) $covid19Id;
@@ -190,7 +196,7 @@ try {
                 }
             }
             if (isset($covid19Id) && $covid19Id != "") {
-                $db->insert('log_result_updates', ["user_id" => $_SESSION['userId'], "vl_sample_id" => $covid19Id, "test_type" => "vl", "result_method" => "import", "file_name" => $rResult['import_machine_file_name'], "updated_datetime" => DateUtility::getCurrentDateTime()]);
+                $db->insert('log_result_updates', ["user_id" => $_SESSION['userId'], "vl_sample_id" => $covid19Id, "test_type" => "covid19", "result_method" => "import", "file_name" => $rResult['import_machine_file_name'], "updated_datetime" => DateUtility::getCurrentDateTime()]);
             }
             $db->where('temp_sample_id', $id[$i]);
             $result = $db->update($tableName, [
