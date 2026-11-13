@@ -398,8 +398,6 @@ try {
 		$_SESSION['alertMsg'] = _translate("Could not save the facility. This facility code is already used by another facility.");
 	} elseif (stripos($reason, 'Duplicate entry') !== false && stripos($reason, 'other_id') !== false) {
 		$_SESSION['alertMsg'] = _translate("Could not save the facility. This External Facility Code is already used by another facility.");
-	} elseif (stripos($reason, 'Duplicate entry') !== false && stripos($reason, 'facility_name') !== false) {
-		$_SESSION['alertMsg'] = _translate("Could not save the facility. A facility with this name already exists.");
 	} else {
 		$_SESSION['alertMsg'] = _translate("Could not save the facility. Please try again.");
 	}
