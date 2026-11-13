@@ -86,33 +86,6 @@ final class FacilitiesService
     }
 
 
-    public function searchOrAdd($facilityType, $facilityName = null, $facilityOtherId = null)
-    {
-        $this->db->orderBy("facility_name", "asc");
-
-        if (!empty($facilityOtherId)) {
-            $this->db->where("other_id", $facilityOtherId);
-        }
-        if (!empty($facilityName)) {
-            $this->db->where("facility_name", $facilityName);
-        }
-
-        if ($facilityType) {
-            $this->db->where('facility_type', $facilityType);
-        }
-
-        return $this->db->getOne("facility_details");
-    }
-
-    public function getFacilityByName($facilityName)
-    {
-        if (!empty($facilityName)) {
-            $this->db->where("facility_name", $facilityName);
-        }
-        $this->db->join("geographical_divisions g", "g.geo_id=f.facility_state_id", "INNER");
-        return $this->db->get("facility_details f");
-    }
-
     public function getFacilityName($facilityId)
     {
         if (!empty($facilityId)) {
