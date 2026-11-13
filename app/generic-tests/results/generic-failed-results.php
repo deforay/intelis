@@ -553,7 +553,8 @@ $state = $geolocationService->getProvinces("yes");
         // Runs in the background; progress shows in the navbar Exports menu and the
         // file downloads when ready, even if the user has moved to another page.
         IntelisExport.start("/generic-tests/requests/export-generic-tests-requests.php", {
-                reqSampleType: requestSampleType
+                reqSampleType: requestSampleType,
+                patientInfo: 'yes'
             }, <?= json_encode(_translate("Other Lab Tests Failed Results Export")) ?>);
     }
 
