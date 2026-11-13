@@ -167,6 +167,7 @@ try {
         $sQuery = $sQuery . " ORDER BY " . $sOrder;
     }
 
+    $_SESSION['genericRequestQuery'] = $sQuery;
     if (isset($sLimit) && isset($sOffset)) {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
@@ -176,6 +177,7 @@ try {
     /* Data set length after filtering */
     $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
     $iTotal = $aResultFilterTotal['totalCount'];
+    $_SESSION['genericRequestQueryCount'] = $iTotal;
 
     $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotal, "aaData" => []];
     $editRequest = false;
