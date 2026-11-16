@@ -358,7 +358,7 @@ try {
             $testTypeForm = JsonUtility::jsonToSetString(json_encode($data['testTypeForm']), 'test_type_form');
 
             $genericData = [
-                'vlsm_instance_id' => $data['instanceId'],
+                'vlsm_instance_id' => $instanceId,
                 'vlsm_country_id' => $formId,
                 'unique_id' => $uniqueId,
                 'test_type' => empty($data['testType']) ? null : $data['testType'],
@@ -380,7 +380,10 @@ try {
                 'patient_gender' => empty($data['patientGender']) ? null : $data['patientGender'],
                 'patient_age_in_years' => empty($data['patientAge']) ? null : $data['patientAge'],
                 'patient_address' => empty($data['patientAddress']) ? null : $data['patientAddress'],
-                'reason_for_testing' => empty($data['reasonForTest']) ? null : json_encode($data['reasonForTest']),
+                // The web form saves the plain reason id; an array keeps the older JSON shape.
+                'reason_for_testing' => empty($data['reasonForTest'])
+                    ? null
+                    : (is_array($data['reasonForTest']) ? json_encode($data['reasonForTest']) : $data['reasonForTest']),
                 'test_urgency' => empty($data['testUrgency']) ? null : $data['testUrgency'],
                 'specimen_type' => empty($data['specimenType']) ? null : $data['specimenType'],
                 'sample_collection_date' => $data['sampleCollectionDate'],
