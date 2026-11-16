@@ -380,8 +380,6 @@ try {
 
         if (!empty($data['revisedOn']) && trim((string) $data['revisedOn']) !== "") {
             $data['revisedOn'] = DateUtility::isoDateFormat($data['revisedOn'], true);
-        } else {
-            $data['revisedOn'] = null;
         }
 
         if (isset($data['approvedOn']) && trim((string) $data['approvedOn']) !== "") {
@@ -525,8 +523,6 @@ try {
             'lab_tech_comments' => empty($data['approverComments']) ? null : $data['approverComments'],
             'authorized_by' => empty($data['authorizedBy']) ? null : $data['authorizedBy'],
             'authorized_on' => empty($data['authorizedOn']) ? null : DateUtility::isoDateFormat($data['authorizedOn']),
-            'revised_by' => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
-            'revised_on' => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : null,
             'result_reviewed_by' => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
             'result_reviewed_datetime' => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'result_approved_by' => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] : null,
@@ -547,9 +543,16 @@ try {
             $covid19Data['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
             $covid19Data['request_created_by'] = $user['user_id'];
         }
-
-        $covid19Data['request_created_by'] = $user['user_id'];
         $covid19Data['last_modified_by'] = $user['user_id'];
+
+        // The API body is JSON, so these come from the record. An update that leaves
+        // a key out keeps the saved value; one that sends it, even empty, writes it.
+        if (array_key_exists('revisedBy', $data)) {
+            $covid19Data['revised_by'] = $data['revisedBy'];
+        }
+        if (array_key_exists('revisedOn', $data)) {
+            $covid19Data['revised_on'] = $data['revisedOn'];
+        }
         if (isset($data['asymptomatic']) && $data['asymptomatic'] != "yes") {
             $db->where('covid19_id', $data['covid19SampleId']);
             $db->delete("covid19_patient_symptoms");
@@ -596,8 +599,11 @@ try {
             $db->insert("covid19_reasons_for_testing", $reasonData);
         }
 
-        $db->where('covid19_id', $data['covid19SampleId']);
-        $db->delete("covid19_patient_comorbidities");
+        // A record without the comorbidities key keeps the saved ones.
+        if (array_key_exists('comorbidityDetected', $data)) {
+            $db->where('covid19_id', $data['covid19SampleId']);
+            $db->delete("covid19_patient_comorbidities");
+        }
         if (!empty($data['comorbidityDetected'])) {
             $counter = count($data['comorbidityDetected']);
             for ($i = 0; $i < $counter; $i++) {
