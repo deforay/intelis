@@ -8,6 +8,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
 use App\Exceptions\SystemException;
 
@@ -33,6 +34,9 @@ $vlService = ContainerRegistry::get(VlService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 $userId = $_SESSION['userId'];
 $checkNonAdminUser = $general->isNonAdmin($userId);
 
@@ -49,9 +53,9 @@ $reasonForFailure = $vlService->getReasonForFailure();
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = isset($_GET['id']) ? MiscUtility::desqid($_GET['id']) : null;
 
-
+$vlQueryInfo = $sampleAccess->load('vl', $_GET['id'] ?? null);
+$id = (int) $vlQueryInfo['vl_sample_id'];
 // get instruments
 // Include active instruments plus this record's currently-saved platform even if it
 // has since been made inactive, so the testing platform doesn't render blank on edit.
@@ -89,9 +93,6 @@ $sResult = $db->query($sQuery);
 $vlTestReasonQuery = "SELECT * FROM r_vl_test_reasons
                          WHERE test_reason_status = 'active'";
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
-
-$vlQuery = "SELECT * FROM form_vl WHERE vl_sample_id=?";
-$vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);
 
 // A saved signer may now be outside the lab scope; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value.

@@ -11,6 +11,7 @@ use App\Services\CommonService;
 use App\Services\StorageService;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
+use App\Services\SampleAccessService;
 use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
@@ -29,6 +30,9 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 
 /** @var StorageService $storageService */
 $storageService = ContainerRegistry::get(StorageService::class);
+
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
 $formId = (int) $general->getGlobalConfig('vl_form');
 
@@ -101,7 +105,7 @@ try {
           $_POST['sampleCollectionDate']
      ];
      // Back to this sample's edit page, not the add page, when the save is refused
-     $editPage = "/vl/requests/editVlRequest.php?id=" . MiscUtility::sqid((int) ($_POST['vlSampleId'] ?? 0));
+     $editPage = $sampleAccess->url('/vl/requests/editVlRequest.php', (int) $_POST['vlSampleId']);
      if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
           $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
           MiscUtility::redirect($editPage);

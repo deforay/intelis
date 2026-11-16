@@ -8,6 +8,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
 use App\Exceptions\SystemException;
 
@@ -32,6 +33,9 @@ $vlService = ContainerRegistry::get(VlService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 //Funding source list
@@ -48,8 +52,9 @@ $reasonForFailure = $vlService->getReasonForFailure();
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = isset($_GET['id']) ? MiscUtility::desqid((string) $_GET['id']) : null;
 
+$vlQueryInfo = $sampleAccess->load('vl', $_GET['id'] ?? null);
+$id = (int) $vlQueryInfo['vl_sample_id'];
 
 // get instruments
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
@@ -79,9 +84,6 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 //Recommended corrective actgions
 $condition = "status ='active' AND test_type='vl'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
-
-$vlQuery = "SELECT * from form_vl where vl_sample_id=?";
-$vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);
 
 // A saved signer may now be outside the lab scope; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value.
@@ -304,8 +306,8 @@ $fileArray = [
 	COUNTRY\BURKINA_FASO => 'forms/update-burkina-faso-result.php'
 ];
 
-$canEdit = ($tbInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
-	|| ($tbInfo['locked'] != 'yes' && _isAllowed("/vl/requests/editVlRequest.php"));
+$canEdit = ($vlQueryInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
+	|| ($vlQueryInfo['locked'] != 'yes' && _isAllowed("/vl/requests/editVlRequest.php"));
 
 if (!$canEdit) {
 	http_response_code(403);
