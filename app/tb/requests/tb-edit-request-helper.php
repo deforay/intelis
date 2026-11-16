@@ -8,6 +8,7 @@ use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Services\TbTestsService;
 use App\Services\TbPoolService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,6 +29,9 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);
+
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -488,7 +492,8 @@ try {
     }
 
     if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-        header("Location:/tb/requests/tb-edit-request.php?id=" . base64_encode((string) $_POST['tbSampleId']));
+        $tbId = $_POST['tbSampleId'];
+        header("Location:' . $sampleAccess->url('/tb/requests/tb-edit-request.php', (int) $tbId) . '");
     } else {
         header("Location:/tb/requests/tb-requests.php");
     }

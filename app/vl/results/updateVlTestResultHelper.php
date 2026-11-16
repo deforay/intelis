@@ -9,6 +9,7 @@ use App\Utilities\SampleStatusUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\SampleAccessService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\SecurityService;
@@ -22,6 +23,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
+
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
 $formId = (int) $general->getGlobalConfig('vl_form');
 
@@ -134,7 +138,7 @@ foreach ($resultColumnsOwnedByTheForm as $column => $postKey) {
 
     if (VlService::refusesResultWithoutPlatform((array) $_POST, $processedResults, $keepSavedResult)) {
         $_SESSION['alertMsg'] = _translate("Nothing was saved. Please choose the testing platform for the result.");
-        MiscUtility::redirect("/vl/results/updateVlTestResult.php?id=" . MiscUtility::sqid((int) $_POST['vlSampleId']));
+        MiscUtility::redirect($sampleAccess->url('/vl/results/updateVlTestResult.php',(int) $_POST['vlSampleId']));
     }
 
     // The result-change reason is appended (preserving prior history) further below, after the

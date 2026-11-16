@@ -42,7 +42,7 @@ final class ClinicReportUtility
             'reason' => 'reason_for_vl_testing',
             'sampleTypeTable' => 'r_vl_sample_type', 'sampleTypeId' => 'sample_id', 'sampleTypeName' => 'sample_name',
             'page' => '/vl/program-management/vl-clinic-reports.php',
-            'edit' => '/vl/requests/editVlRequest.php', 'editId' => 'sqid',
+            'edit' => '/vl/requests/editVlRequest.php', 'editId' => 'sample',
             'print' => '/vl/results/generate-result-pdf.php',
         ],
         'eid' => [

@@ -8,6 +8,7 @@ use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\SampleAccessService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use const SAMPLE_STATUS\ACCEPTED;
@@ -48,6 +49,9 @@ try {
 
      /** @var UsersService $usersService */
      $usersService = ContainerRegistry::get(UsersService::class);
+
+     /** @var SampleAccessService $sampleAccess */
+     $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
      $barCodePrinting = (string) $general->getGlobalConfig('bar_code_printing');
      $key = (string) $general->getGlobalConfig('key');
@@ -437,7 +441,7 @@ try {
                if ($general->isLISInstance() && $aRow['result_status'] == RECEIVED_AT_CLINIC) {
                     $edit = '';
                } else {
-                    $edit = '<a href="/vl/requests/editVlRequest.php?id=' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . $editButtonTitle . '"><em class="fa-solid fa-pen-to-square"></em> ' . $editButtonText . '</em></a>';
+                    $edit = '<a href="' . $sampleAccess->url('/vl/requests/editVlRequest.php', (int) $aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . $editButtonTitle . '"><em class="fa-solid fa-pen-to-square"></em> ' . $editButtonText . '</em></a>';
                }
                if ($aRow['result_status'] == 7 && $isLocked && !_isAllowed("/vl/requests/edit-locked-vl-samples")) {
                     $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _htmlTranslate("Cannot Edit Locked Sample") . '" disabled><em class="fa-solid fa-lock"></em>' . $editButtonText . '</a>';
