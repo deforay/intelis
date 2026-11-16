@@ -1,7 +1,7 @@
 <?php
 
-use App\Utilities\SampleCountUtility;
-use App\Utilities\DateUtility;
+use App\Services\SampleStatusDetailsService;
+use App\Utilities\SampleStatusUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -26,58 +26,13 @@ $_POST = _sanitizeInput($request->getParsedBody());
  * of these conditions, so changing a filter moved some charts and left others
  * describing a different population of samples.
  */
-$filters = [];
-$params = [];
-
-$filters[] = SampleCountUtility::countableWhere('sample');
-if (!empty($_SESSION['facilityMap'])) {
-    $filters[] = " sample.facility_id IN (" . $_SESSION['facilityMap'] . ")";
-}
-if ($labScope = $general->labScopeWhere('sample')) {
-    $filters[] = $labScope;
-}
-
-
-if (!empty($_POST['batchCode'])) {
-    $filters[] = ' batch.batch_code = ?';
-    $params[] = (string) $_POST['batchCode'];
-}
-if (!empty($_POST['sampleCollectionDate'])) {
-    [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
-    if ($startDate !== '' && $endDate !== '') {
-        $filters[] = " DATE(sample.sample_collection_date) BETWEEN ? AND ?";
-        $params[] = $startDate;
-        $params[] = $endDate;
-    }
-}
-if (!empty($_POST['sampleReceivedDateAtLab'])) {
-    [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab']);
-    if ($labStartDate !== '' && $labEndDate !== '') {
-        $filters[] = " DATE(sample.sample_received_at_lab_datetime) BETWEEN ? AND ?";
-        $params[] = $labStartDate;
-        $params[] = $labEndDate;
-    }
-}
-if (!empty($_POST['sampleTestedDate'])) {
-    [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate']);
-    if ($testedStartDate !== '' && $testedEndDate !== '') {
-        $filters[] = " DATE(sample.sample_tested_datetime) BETWEEN ? AND ?";
-        $params[] = $testedStartDate;
-        $params[] = $testedEndDate;
-    }
-}
-if (!empty($_POST['sampleType'])) {
-    // This used to read s.sample_id against queries that never joined the
-    // sample type table, so picking a sample type failed with an SQL error.
-    $filters[] = ' sample.specimen_type = ?';
-    $params[] = (string) $_POST['sampleType'];
-}
-if (!empty($_POST['labName'])) {
-    // The test reason chart filtered vl.lab_id against a query that aliased
-    // the form table as c, so picking a testing lab failed with an SQL error.
-    $filters[] = ' sample.lab_id = ?';
-    $params[] = (int) $_POST['labName'];
-}
+/*
+ * The drilldown behind each status slice reads the same conditions, so the
+ * samples it lists are the ones the slice counted.
+ */
+/** @var SampleStatusDetailsService $statusDetails */
+$statusDetails = ContainerRegistry::get(SampleStatusDetailsService::class);
+[$filters, $params] = $statusDetails->conditions('covid19', $_POST);
 
 $whereCondition = implode(" AND ", $filters);
 $joins = "JOIN r_sample_status AS status ON status.status_id = sample.result_status
@@ -85,18 +40,6 @@ $joins = "JOIN r_sample_status AS status ON status.status_id = sample.result_sta
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
-
-$sampleStatusColors = [];
-
-$sampleStatusColors[1] = "#dda41b"; // HOLD
-$sampleStatusColors[2] = "#9a1c64"; // LOST
-$sampleStatusColors[3] = "grey"; // Sample Reordered
-$sampleStatusColors[4] = "#d8424d"; // Rejected
-$sampleStatusColors[5] = "black"; // Invalid
-$sampleStatusColors[6] = "#e2d44b"; // Sample Received at lab
-$sampleStatusColors[7] = "#639e11"; // Accepted
-$sampleStatusColors[8] = "#7f22e8"; // Sent to Lab
-$sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 
 $tQuery = "SELECT COUNT(sample.covid19_id) as total, status.status_id, status.status_name
         FROM form_covid19 AS sample
@@ -139,7 +82,11 @@ $testReasonResult = $db->rawQuery($testReasonQuery, $params);
 
 ?>
 <div class="col-xs-12">
-
+    <div class="box">
+        <div class="box-body">
+            <div id="covid19SampleStatusOverviewContainer" style="float:left;width:100%; margin: 0 auto;"></div>
+        </div>
+    </div>
     <div class="box">
         <div class="box-body">
             <div id="covid19TestReasonContainer" style="float:left;width:100%; margin: 0 auto;"></div>
@@ -161,6 +108,68 @@ $testReasonResult = $db->rawQuery($testReasonQuery, $params);
 </div>
 <script>
     <?php
+    if (!empty($tResult)) {
+        ?>
+        $('#covid19SampleStatusOverviewContainer').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: "<?= _jsTranslate("COVID-19 Samples Status Overview"); ?>"
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                pointFormat: "<?= _jsTranslate("COVID-19 Samples"); ?>: <strong>{point.y}</strong>"
+            },
+            plotOptions: {
+                pie: {
+                    size: '100%',
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        useHTML: true,
+                        format: '<div style="padding-bottom:10px;"><strong>{point.name}</strong>: {point.y}</div>',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        },
+                        distance: 10
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                colorByPoint: false,
+                point: {
+                    events: {
+                        click: function (e) {
+                            window.open(e.point.url, '_blank');
+                            e.preventDefault();
+                        }
+                    }
+                },
+                data: [
+                    <?php
+                    foreach ($tResult as $tRow) {
+                        ?> {
+                            name: <?= json_encode(_translate((string) $tRow['status_name']), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
+                            y: <?= (int) $tRow['total']; ?>,
+                            color: '<?= SampleStatusUtility::chartColor((int) $tRow['status_id']); ?>',
+                            url: <?= json_encode(SampleStatusDetailsService::pageUrl('covid19', (int) $tRow['status_id'], $_POST), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>
+                        },
+                        <?php
+                    }
+                    ?>
+                ]
+            }]
+        });
+        <?php
+    }
     if (isset($vlSuppressionResult) && (isset($vlSuppressionResult['positiveResult']) || isset($vlSuppressionResult['negativeResult']) || isset($vlSuppressionResult['rejectedResult']))) {
 
         ?>

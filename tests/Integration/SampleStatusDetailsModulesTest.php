@@ -49,12 +49,13 @@ final class SampleStatusDetailsModulesTest extends TestCase
 
         $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
             'r_sample_status', 'facility_details', 'batch_details', 'roles', 'user_details',
-            'r_eid_sample_type', 'r_tb_sample_type', 'r_cd4_sample_types', 'r_hepatitis_sample_type',
-            'r_generic_sample_types',
-            'r_eid_sample_rejection_reasons', 'r_tb_sample_rejection_reasons', 'r_cd4_sample_rejection_reasons',
-            'r_hepatitis_sample_rejection_reasons', 'r_generic_sample_rejection_reasons',
+            'r_eid_sample_type', 'r_covid19_sample_type', 'r_tb_sample_type', 'r_cd4_sample_types',
+            'r_hepatitis_sample_type', 'r_generic_sample_types',
+            'r_eid_sample_rejection_reasons', 'r_covid19_sample_rejection_reasons', 'r_tb_sample_rejection_reasons',
+            'r_cd4_sample_rejection_reasons', 'r_hepatitis_sample_rejection_reasons',
+            'r_generic_sample_rejection_reasons', 'r_covid19_test_reasons',
             'r_test_failure_reasons', 'r_vl_test_failure_reasons', 'r_generic_test_failure_reasons',
-            'form_eid', 'form_tb', 'form_cd4', 'form_hepatitis', 'form_generic',
+            'form_eid', 'form_covid19', 'form_tb', 'form_cd4', 'form_hepatitis', 'form_generic',
             'system_config', 'global_config',
         ]);
         LegacyAppHarness::withSession(['roleId' => 1]);
@@ -72,6 +73,15 @@ final class SampleStatusDetailsModulesTest extends TestCase
                 (7, 'Accepted', 'active'), (12, 'Cancelled', 'active'), (13, 'Referred', 'active')"
         );
         $db->rawQuery("INSERT INTO r_eid_sample_type (sample_id, sample_name, status) VALUES (2, 'DBS', 'active')");
+        $db->rawQuery(
+            "INSERT INTO r_covid19_sample_type (sample_id, sample_name, status)
+             VALUES (4, 'Nasopharyngeal swab', 'active')"
+        );
+        $db->rawQuery(
+            "INSERT INTO r_covid19_sample_rejection_reasons
+                (rejection_reason_id, rejection_reason_name, rejection_type, rejection_reason_status)
+             VALUES (8, 'Leaking tube', 'general', 'active')"
+        );
         $db->rawQuery(
             "INSERT INTO r_generic_sample_types (sample_type_id, sample_type_code, sample_type_name, sample_type_status)
              VALUES (5, 'SW', 'Swab', 'active')"
@@ -240,6 +250,55 @@ final class SampleStatusDetailsModulesTest extends TestCase
         $link = json_decode('"' . $slice[2] . '"');
         self::assertStringStartsWith('/reports/sample-status-details.php?testType=eid&status=6&', $link);
         self::assertStringNotContainsString('vlTestResultStatus', $body);
+    }
+
+    #[RunInSeparateProcess]
+    public function testCovid19RejectionsReadTheCovid19TableAndItsOwnReasons(): void
+    {
+        $this->seed('form_covid19', [
+            'result_status' => 4, 'patient_id' => 'CV-1', 'specimen_type' => '4',
+            'reason_for_sample_rejection' => 8, 'rejection_on' => date('Y-m-d', strtotime('-2 days')),
+        ]);
+        $this->seed('form_covid19', ['result_status' => 4, 'patient_id' => 'CV-2', 'specimen_type' => '9']);
+
+        $json = $this->drive(['testType' => 'covid19', 'status' => 4, 'sampleType' => '4']);
+        self::assertSame(1, $json['recordsTotal'], json_encode($json));
+
+        $row = self::rows('covid19', 4, $json)[0];
+        self::assertSame('CV-1', $row['patientId']);
+        self::assertSame('Nasopharyngeal swab', $row['sampleType']);
+        self::assertSame('Leaking tube', $row['rejectionReason']);
+        self::assertArrayNotHasKey('rejectedBy', $row, 'form_covid19 records no rejecting facility');
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheCovid19PieLinksEachSliceToTheCovid19Listing(): void
+    {
+        $this->seed('form_covid19', ['result_status' => 6]);
+        $this->seed('form_covid19', ['result_status' => 6]);
+        $this->seed('form_covid19', ['result_status' => 12]);
+
+        $request = LegacyAppHarness::withPost(
+            ['labName' => self::LAB_ID, 'sampleCollectionDate' => ''],
+            '/covid-19/management/getSampleStatus.php'
+        );
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $body = (string) $handler->handle($request)->getBody();
+
+        self::assertStringContainsString("$('#covid19SampleStatusOverviewContainer')", $body);
+        self::assertStringContainsString('window.open(e.point.url', $body);
+        self::assertSame(
+            1,
+            preg_match_all('/y:\s*(\d+),\s*color:\s*\'#[0-9a-f]{6}\',\s*url:\s*"([^"]*)"/', $body, $slices),
+            'the cancelled sample is not a slice: ' . $body
+        );
+        self::assertSame('2', $slices[1][0]);
+        $link = json_decode('"' . $slices[2][0] . '"');
+        self::assertStringStartsWith('/reports/sample-status-details.php?testType=covid19&status=6&', $link);
+
+        // The listing behind the slice counts what the slice counted.
+        $json = $this->drive(['testType' => 'covid19', 'status' => 6, 'labName' => (string) self::LAB_ID]);
+        self::assertSame(2, $json['recordsTotal'], json_encode($json));
     }
 
     #[RunInSeparateProcess]

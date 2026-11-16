@@ -49,10 +49,11 @@ $sharedPrivileges = [
     '/common/reference/funding-sources.php' => '/common/reference/geographical-divisions-details.php',
     '/common/reference/add-funding-sources.php' => '/common/reference/geographical-divisions-details.php',
     '/common/reference/edit-funding-sources.php' => '/common/reference/geographical-divisions-details.php',
-    // Sample status drilldown (5.7.68, 5.7.69)
+    // Sample status drilldown (5.7.68, 5.7.69, 5.8.8)
     '/reports/sample-status-details.php?testType=vl' => '/vl/program-management/vl-sample-status.php',
     '/reports/sample-status-details.php?testType=recency' => '/vl/program-management/vl-sample-status.php',
     '/reports/sample-status-details.php?testType=eid' => '/eid/management/eid-sample-status.php',
+    '/reports/sample-status-details.php?testType=covid19' => '/covid-19/management/covid-19-sample-status.php',
     '/reports/sample-status-details.php?testType=tb' => '/tb/management/tb-sample-status.php',
     '/reports/sample-status-details.php?testType=cd4' => '/cd4/management/cd4-sample-status.php',
     '/reports/sample-status-details.php?testType=hepatitis' => '/hepatitis/management/hepatitis-sample-status.php',
