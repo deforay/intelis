@@ -355,7 +355,11 @@ try {
                 $reasonForChanges = json_encode($allChange);
             }
 
-            $testTypeForm = JsonUtility::jsonToSetString(json_encode($data['testTypeForm']), 'test_type_form');
+            // A record without testTypeForm leaves the saved dynamic fields alone.
+            $hasTestTypeForm = array_key_exists('testTypeForm', $data);
+            $testTypeForm = $hasTestTypeForm
+                ? JsonUtility::jsonToSetString(json_encode($data['testTypeForm']), 'test_type_form')
+                : null;
 
             $genericData = [
                 'vlsm_instance_id' => $instanceId,
@@ -411,6 +415,9 @@ try {
                 'source_of_request' => $data['sourceOfRequest'] ?? "API",
                 'form_attributes' => $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes)
             ];
+            if (!$hasTestTypeForm) {
+                unset($genericData['test_type_form']);
+            }
             if (!empty($rowData)) {
                 $genericData['last_modified_datetime'] = (empty($data['updatedOn'])) ? DateUtility::getCurrentDateTime() : DateUtility::isoDateFormat($data['updatedOn'], true);
                 $genericData['last_modified_by'] = $user['user_id'];
