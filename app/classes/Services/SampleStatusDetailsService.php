@@ -103,6 +103,24 @@ final class SampleStatusDetailsService
             'excludeCancelled' => true,
             'sampleTypeIsText' => true,
         ],
+        'covid19' => [
+            'table' => 'form_covid19',
+            'primaryKey' => 'covid19_id',
+            'module' => 'covid19',
+            'statusReport' => '/covid-19/management/covid-19-sample-status.php',
+            'patientId' => 'patient_id',
+            'resultColumns' => ['result'],
+            'sampleTypes' => ['r_covid19_sample_type', 'sample_id', 'sample_name'],
+            'rejectionReasons' => 'r_covid19_sample_rejection_reasons',
+            'failureReasons' => 'shared',
+            'platform' => 'covid19_test_platform',
+            'rejectionFacility' => false,
+            'smsChannel' => false,
+            'referralColumns' => false,
+            'excludeClinicOnLis' => false,
+            'excludeCancelled' => true,
+            'sampleTypeIsText' => true,
+        ],
         'tb' => [
             'table' => 'form_tb',
             'primaryKey' => 'tb_id',
@@ -252,6 +270,7 @@ final class SampleStatusDetailsService
             'vl' => _translate('VL'),
             'recency' => _translate('Recency'),
             'eid' => _translate('EID'),
+            'covid19' => _translate('COVID-19'),
             'tb' => _translate('TB'),
             'cd4' => _translate('CD4'),
             'hepatitis' => _translate('Hepatitis'),
@@ -341,7 +360,7 @@ final class SampleStatusDetailsService
         }
 
         if (!empty($filters['sampleType'])) {
-            // Bound the way each module's pie bound it: EID, TB and Hepatitis
+            // Bound the way each module's pie bound it: EID, COVID-19, TB and Hepatitis
             // keep specimen_type as text, where an integer would match
             // differently.
             $conditions[] = 'sample.specimen_type = ?';

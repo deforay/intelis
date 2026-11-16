@@ -13,3 +13,15 @@ UPDATE `system_config` SET `value` = '5.8.7' WHERE `system_config`.`name` = 'sc_
 ALTER TABLE `facility_details` DROP INDEX `facility_name`;
 ALTER TABLE `facility_details` DROP INDEX `facility_name_2`;
 ALTER TABLE `facility_details` ADD INDEX `idx_facility_name` (`facility_name`);
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
