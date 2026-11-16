@@ -130,7 +130,7 @@ final class Covid19ExportService extends AbstractSampleExportService
             X::date(_translate('Sample Tested Date'), 'sample_tested_datetime', true),
             X::text(_translate('Testing Platform'), 'test_platform'),
             X::text(_translate('Test Method'), 'test_method'),
-            X::label(_translate('Result'), 'result', $this->covid19Service->getCovid19Results()),
+            X::label(_translate('Result'), 'result', fn(): array => $this->covid19Service->getCovid19Results()),
             X::date(_translate('Date result released'), 'result_printed_datetime', true),
             X::text(_translate('Comments'), 'lab_tech_comments', $rwanda),
             X::text(_translate('Funding Source'), 'funding_source_name', $rwanda),

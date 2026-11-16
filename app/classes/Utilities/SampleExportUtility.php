@@ -275,10 +275,19 @@ final class SampleExportUtility
         ));
     }
 
-    /** A field saved as an id or code, shown by its label from $labels when there is one. */
-    public static function label(string $heading, string $field, array $labels, array $rules = []): array
+    /**
+     * A field saved as an id or code, shown by its label from $labels when there is one.
+     * $labels can be a callable that loads them: it runs once, for the first row, so the
+     * column list itself can be built without a database.
+     *
+     * @param array<string, mixed>|callable(): array<string, mixed> $labels
+     */
+    public static function label(string $heading, string $field, array|callable $labels, array $rules = []): array
     {
-        return self::column($heading, static function (array $r) use ($field, $labels): mixed {
+        return self::column($heading, static function (array $r) use ($field, &$labels): mixed {
+            if (!is_array($labels)) {
+                $labels = $labels();
+            }
             $value = $r[$field] ?? null;
             $value = $labels[(string) $value] ?? $value;
             return is_string($value) ? html_entity_decode($value, ENT_QUOTES) : $value;
