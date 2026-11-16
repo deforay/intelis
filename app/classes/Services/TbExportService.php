@@ -59,7 +59,7 @@ final class TbExportService extends AbstractSampleExportService
             X::date(_translate('Date specimen Tested'), 'sample_tested_datetime', true),
             X::text(_translate('Testing Platform'), 'tb_test_platform'),
             X::text(_translate('Test Method'), 'test_methods'),
-            X::label(_translate('Result'), 'result', $this->tbService->getTbResults()),
+            X::label(_translate('Result'), 'result', fn(): array => $this->tbService->getTbResults()),
             X::date(_translate('Date result released'), 'result_printed_datetime', true),
             // The entry date, the status and the printed date are above, under the
             // headings this sheet has always had.

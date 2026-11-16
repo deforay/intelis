@@ -144,4 +144,19 @@ final class SampleExportUtilityTest extends TestCase
         $this->assertSame('< 40', $result(['result' => '&lt; 40']), 'saved HTML-escaped, shown as typed');
         $this->assertNull($result(['result' => null]));
     }
+
+    public function testLabelsFromALoaderAreLoadedOnceAtTheFirstRow(): void
+    {
+        $loads = 0;
+        $column = SampleExportUtility::label('Result', 'result', static function () use (&$loads): array {
+            $loads++;
+            return ['1' => 'Positive'];
+        });
+        $this->assertSame(0, $loads, 'building the column list loads nothing');
+
+        $result = $column['value'];
+        $this->assertSame('Positive', $result(['result' => '1']));
+        $this->assertSame('9', $result(['result' => '9']));
+        $this->assertSame(1, $loads);
+    }
 }
