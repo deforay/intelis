@@ -48,6 +48,8 @@ final class FacilityImportService
 
     private array $facilitiesById = [];
     private array $idByName = [];
+    /** Facilities saved without a district id, keyed on name and the stored place text. */
+    private array $idByNameInText = [];
     private array $idByCode = [];
     private array $idByOtherId = [];
     private array $idByLooseName = [];
@@ -375,6 +377,10 @@ final class FacilityImportService
             $districtId = $provinceId !== null ? ($this->districtIdByKey[$provinceId . '|' . mb_strtolower($district)] ?? null) : null;
             // A province or district that is new has no facilities yet, so no name match.
             $byName = $districtId !== null ? ($this->idByName[$this->nameInAreaKey($name, $provinceId, $districtId)] ?? null) : null;
+            // A facility saved without province and district ids is matched by
+            // the place names stored on it instead. Not a unique-index clash, so
+            // it only chooses the facility to update, never blocks another row.
+            $nameMatch = $byName ?? ($this->idByNameInText[$this->nameInTextKey($name, $province, $district)] ?? null);
             $byCode = $code !== '' ? ($this->idByCode[strtoupper($code)] ?? null) : null;
 
             // Which existing facility (if any) this row updates, per the chosen option.
@@ -382,32 +388,32 @@ final class FacilityImportService
             $skipReason = null;
             switch ($option) {
                 case self::OPTION_NAME:
-                    $targetId = $byName;
+                    $targetId = $nameMatch;
                     break;
                 case self::OPTION_CODE:
                     $targetId = $byCode;
-                    if ($code === '' && $byName !== null) {
+                    if ($code === '' && $nameMatch !== null) {
                         $skipReason = _translate('Facility Code is blank, so this row cannot be matched by code.');
                     }
                     break;
                 case self::OPTION_NAME_CODE:
-                    if ($code === '' && $byName !== null) {
+                    if ($code === '' && $nameMatch !== null) {
                         $skipReason = _translate('Facility Code is blank, so this row cannot be matched by code.');
-                    } elseif ($byName !== null && $byName === $byCode) {
-                        $targetId = $byName;
-                    } elseif ($byName !== null || $byCode !== null) {
+                    } elseif ($nameMatch !== null && $nameMatch === $byCode) {
+                        $targetId = $nameMatch;
+                    } elseif ($nameMatch !== null || $byCode !== null) {
                         $skipReason = _translate('Facility Name and Facility Code do not both match the same facility.');
                     }
                     break;
                 default:
-                    if ($byName !== null || $byCode !== null) {
+                    if ($nameMatch !== null || $byCode !== null) {
                         $skipReason = _translate('A facility with this name or code already exists.');
                     }
             }
 
             if ($skipReason !== null) {
                 $row['action'] = self::ACTION_SKIP;
-                $row['facilityId'] = $byName ?? $byCode;
+                $row['facilityId'] = $nameMatch ?? $byCode;
                 $row['messages'][] = $skipReason;
                 $planned[] = $row;
                 continue;
@@ -624,7 +630,7 @@ final class FacilityImportService
 
     private function loadReferenceData(): void
     {
-        $this->facilitiesById = $this->idByName = $this->idByCode = $this->idByOtherId = [];
+        $this->facilitiesById = $this->idByName = $this->idByNameInText = $this->idByCode = $this->idByOtherId = [];
         $this->idByLooseName = $this->idsByDistrict = $this->idByCoordinates = [];
         $this->provinceIdByName = $this->districtIdByKey = $this->facilityTypes = [];
 
@@ -638,6 +644,9 @@ final class FacilityImportService
             unset($f['facility_id']);
             $this->facilitiesById[$id] = $f;
             $this->idByName[$this->nameInAreaKey((string) $f['facility_name'], $f['facility_state_id'], $f['facility_district_id'])] = $id;
+            if (empty($f['facility_district_id'])) {
+                $this->idByNameInText[$this->nameInTextKey((string) $f['facility_name'], (string) $f['facility_state'], (string) $f['facility_district'])] ??= $id;
+            }
             if (!empty($f['facility_code'])) {
                 $this->idByCode[strtoupper((string) $f['facility_code'])] = $id;
             }
@@ -682,6 +691,13 @@ final class FacilityImportService
     {
         $area = static fn(mixed $id): string => (is_numeric($id) && (int) $id > 0) ? (string) (int) $id : '';
         return mb_strtolower(FacilitiesService::normalizeFacilityName($name)) . '|' . $area($provinceId) . '|' . $area($districtId);
+    }
+
+    /** Key for a facility name within the province and district text, case and whitespace ignored. */
+    private function nameInTextKey(string $name, string $province, string $district): string
+    {
+        $fold = static fn(string $v): string => mb_strtolower(FacilitiesService::normalizeFacilityName($v));
+        return $fold($name) . '|' . $fold($province) . '|' . $fold($district);
     }
 
     private function batchDirectory(): string

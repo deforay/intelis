@@ -273,6 +273,30 @@ final class FacilityImportServiceTest extends TestCase
         self::assertSame(['insert', null], [$rows[0]['action'], $rows[0]['facilityId']]);
     }
 
+    public function testMatchByNameFindsAFacilitySavedWithoutPlaceIds(): void
+    {
+        $this->db->rawQuery(
+            "INSERT INTO facility_details
+                (facility_id, facility_name, facility_state, facility_state_id, facility_district,
+                 facility_district_id, facility_type, address, vlsm_instance_id, status)
+             VALUES (5, 'Hilltop Clinic', 'South', NULL, 'Coast', NULL, 1, 'Old Road', 'test-instance', 'active')"
+        );
+
+        $batch = $this->stage(FacilityImportService::OPTION_NAME, [
+            ['hilltop  clinic', '', '', 'South', 'coast', '1', 'New Road', '', '', '', '', ''],
+        ]);
+        $row = $batch['rows'][0];
+        self::assertSame(['update', 5], [$row['action'], $row['facilityId']], implode("\n", $row['messages']));
+
+        $result = $this->service->apply($batch, [2]);
+        self::assertSame(1, $result['updated']);
+        self::assertSame('New Road', $this->address(5));
+        $saved = $this->db->rawQueryOne(
+            'SELECT facility_state_id, facility_district_id FROM facility_details WHERE facility_id = 5'
+        );
+        self::assertSame([3, 4], [(int) $saved['facility_state_id'], (int) $saved['facility_district_id']]);
+    }
+
     public function testBatchBelongsToTheUserWhoStagedIt(): void
     {
         $batch = $this->stage(FacilityImportService::OPTION_NAME, [
