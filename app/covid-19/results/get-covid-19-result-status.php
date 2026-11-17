@@ -162,9 +162,7 @@ if ($labScope = $general->labScopeWhere('vl')) {
 if (!$cancellableFilter) {
     $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
 }
-if ($sWhere !== []) {
-    $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
-}
+$sWhere = $sWhere !== [] ? ' WHERE ' . implode(' AND ', $sWhere) : '';
 
 $sQuery = $sQuery . ' ' . $sWhere;
 

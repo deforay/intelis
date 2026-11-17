@@ -101,9 +101,7 @@ if (!$cancellableFilter) {
      $sWhere[] = ' vl.result not like "" AND vl.result is not null ';
 }
 
-if ($sWhere !== []) {
-     $sWhere = ' WHERE ' . implode(" AND ", $sWhere);
-}
+$sWhere = $sWhere !== [] ? ' WHERE ' . implode(' AND ', $sWhere) : '';
 
 $sQuery .= $sWhere;
 if (!empty($sOrder) && $sOrder !== '') {
