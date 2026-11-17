@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
 use Tests\Support\TestRun;
+use App\Services\SampleAccessService;
 
 /**
  * The TB request, result-entry, print, failed and result-status listings, driven
@@ -252,5 +253,63 @@ final class TbListingSqlEncodingTest extends TestCase
         self::assertSame([], $this->listed('/tb/results/get-tb-result-status.php', [
             'batchCode' => 'B-ONE%" OR "1"="1',
         ]));
+    }
+
+            #[RunInSeparateProcess]
+    public function testRequestListEditLinkOpensItsOwnSample(): void
+    {
+        $this->assertLinksOpenTheirOwnSample(
+            '/tb/requests/get-request-list.php',
+            ['childId' => 'CH-7', 'hidesrcofreq' => ''],
+            '/tb/requests/tb-edit-request.php',
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testManualResultEntryLinkOpensItsOwnSample(): void
+    {
+        $this->assertLinksOpenTheirOwnSample(
+            '/tb/results/tb-samples-for-manual-result-entry.php',
+            ['hidesrcofreq' => ''],
+            '/tb/results/tb-update-result.php',
+        );
+    }
+
+    /**
+     * Every link to $page in the listing opens the sample its row shows. In #472
+     * the result page read the id one way while its links wrote it another, and
+     * the link for sample 123 opened sample 15948.
+     *
+     * @param array<string, mixed> $post
+     */
+    private function assertLinksOpenTheirOwnSample(string $endpoint, array $post, string $page): void
+    {
+        $request = LegacyAppHarness::withPost($post + [
+            'sEcho' => 1, 'iDisplayStart' => 0, 'iDisplayLength' => 25, 'sSearch' => '',
+        ], $endpoint);
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $body = (string) $handler->handle($request)->getBody();
+        $json = json_decode($body, true);
+        self::assertIsArray($json, "Endpoint did not return JSON: $body");
+
+        $access = ContainerRegistry::get(SampleAccessService::class);
+        $checked = 0;
+        foreach ($json['aaData'] ?? [] as $row) {
+            $cells = implode(' ', array_map('strval', $row));
+            if (preg_match('/TB00\d/', strip_tags($cells), $code) !== 1) {
+                continue;
+            }
+            $pattern = '#href="' . preg_quote($page, '#') . '\?id=([^"]+)"#';
+            self::assertSame(1, preg_match($pattern, $cells, $link), $cells);
+            $id = $access->decode(rawurldecode($link[1]));
+            $opened = LegacyAppHarness::db()->rawQueryOne('SELECT sample_code FROM form_tb WHERE tb_id = ?', [$id]);
+            self::assertSame(
+                $code[0],
+                $opened['sample_code'] ?? null,
+                "the link in row {$code[0]} opens another sample"
+            );
+            $checked++;
+        }
+        self::assertGreaterThan(0, $checked, "no row of $endpoint linked to $page");
     }
 }

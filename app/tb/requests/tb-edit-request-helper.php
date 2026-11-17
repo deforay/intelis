@@ -493,7 +493,8 @@ try {
 
     if (!empty($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
         $tbId = $_POST['tbSampleId'];
-        header("Location:' . $sampleAccess->url('/tb/requests/tb-edit-request.php', (int) $tbId) . '");
+        header("Location: " . $sampleAccess->url('/tb/requests/tb-edit-request.php', (int) $tbId));
+exit;
     } else {
         header("Location:/tb/requests/tb-requests.php");
     }
