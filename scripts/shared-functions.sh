@@ -6,7 +6,7 @@
 # script never runs against an older copy than the one it was written for.
 # To raise it everywhere: php bin/dev/bump-shared-fn-version.php
 # bin/build/check-shell-loaders.php fails a push that changes this file without it.
-SHARED_FN_VERSION=2
+SHARED_FN_VERSION=3
 
 # Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
 export LANG="${LANG:-en_US.UTF-8}"
@@ -2818,50 +2818,81 @@ ensure_composer_runnable_by_wwwdata() {
     fi
 }
 
+# True when the Composer at <path> starts. A file that exists is not enough: a
+# download cut short leaves a composer.phar with a broken signature, which PHP
+# refuses with "PharException ... has a broken signature" the first time setup
+# runs it.
+composer_starts() { # composer_starts <path>
+    [ -x "$1" ] && COMPOSER_ALLOW_SUPERUSER=1 "$1" --version --no-ansi --no-interaction >/dev/null 2>&1
+}
+
+# Install Composer into /usr/local/bin from getcomposer.org, checking the
+# installer against its published signature first.
+install_composer_verified() {
+    local sig installer actual
+    sig="$(curl -fsSL --proto =https https://composer.github.io/installer.sig)" || {
+        print error "Could not download the Composer installer signature. Check this machine's internet connection, then run the same command again."; return 1; }
+    installer="$(mktemp)"
+    curl -fsSL --proto =https --proto-redir =https https://getcomposer.org/installer -o "$installer" || {
+        print error "Could not download the Composer installer. Check this machine's internet connection, then run the same command again."; rm -f "$installer"; return 1; }
+    actual="$(php -r "echo hash_file('sha384', '${installer}');")"
+    if [ "$sig" != "$actual" ]; then
+        print error "The Composer installer does not match its signature, so it was not run. Run the same command again."
+        rm -f "$installer"; return 1
+    fi
+    php "$installer" --no-ansi --quiet --install-dir=/usr/local/bin --filename=composer || {
+        print error "Composer installation failed."; rm -f "$installer"; return 1; }
+    rm -f "$installer"
+    chmod 0755 /usr/local/bin/composer 2>/dev/null || true
+}
+
 ensure_composer() {
     ensure_path
 
-    if command -v composer >/dev/null 2>&1; then
-        echo "✓ Composer found: $(command -v composer)"
-        return 0
-    fi
+    local found
+    found="$(command -v composer 2>/dev/null || true)"
+    if [ -n "$found" ]; then
+        if composer_starts "$found"; then
+            echo "✓ Composer found: ${found}"
+            export COMPOSER_ALLOW_SUPERUSER=1
+            return 0
+        fi
+        # Damaged: replace it rather than let the composer step crash later.
+        print warning "Composer at ${found} is damaged and does not start. Installing a fresh copy..."
+        rm -f "$(readlink -f "$found")" "$found" /usr/local/bin/composer 2>/dev/null || true
+        hash -r 2>/dev/null || true
+        install_composer_verified || exit 1
+    else
+        echo "Composer not on PATH. Using switch-php to install it…"
+        ensure_switch_php
 
-    echo "Composer not on PATH. Using switch-php to install it…"
-    ensure_switch_php
+        TARGET_PHP="${TARGET_PHP:-8.4}"
+        switch-php "$TARGET_PHP"
+        hash -r 2>/dev/null || true
 
-    TARGET_PHP="${TARGET_PHP:-8.4}"
-    switch-php "$TARGET_PHP"
-
-    # Re-check PATH; some cron envs miss /usr/local/bin, so add a safety symlink
-    if ! command -v composer >/dev/null 2>&1; then
-        if [ -x /usr/local/bin/composer ] && [ -w /usr/bin ]; then
-            if [ ! -e /usr/bin/composer ] || [ "$(readlink -f /usr/bin/composer)" != "/usr/local/bin/composer" ]; then
-            ln -sf /usr/local/bin/composer /usr/bin/composer
-            fi
+        # Fallback: verified install if switch-php did not leave a working one.
+        found="$(command -v composer 2>/dev/null || true)"
+        if [ -z "$found" ] || ! composer_starts "$found"; then
+            print warning "switch-php did not leave a working Composer. Installing a verified copy…"
+            [ -n "$found" ] && rm -f "$(readlink -f "$found")" "$found" 2>/dev/null || true
+            install_composer_verified || exit 1
         fi
     fi
 
-    # Fallback: verified install if still missing after switch-php
-    if ! command -v composer >/dev/null 2>&1; then
-    print warning "Composer still missing after switch-php; installing verified global composer…"
-
-    sig="$(curl -fsSL --proto =https https://composer.github.io/installer.sig)" || {
-        print error "Failed to fetch Composer installer signature."; exit 1; }
-
-    installer="$(mktemp)"
-    curl -fsSL --proto =https --proto-redir =https https://getcomposer.org/installer -o "$installer" || {
-        print error "Failed to download Composer installer."; rm -f "$installer"; exit 1; }
-
-    actual="$(php -r "echo hash_file('sha384', '${installer}');")"
-    if [ "$sig" != "$actual" ]; then
-        print error "Composer installer signature mismatch."; rm -f "$installer"; exit 1
+    # Some cron environments miss /usr/local/bin on PATH, so link it from /usr/bin.
+    if [ -x /usr/local/bin/composer ] && [ -w /usr/bin ]; then
+        if [ ! -e /usr/bin/composer ] || [ "$(readlink -f /usr/bin/composer)" != "/usr/local/bin/composer" ]; then
+            ln -sf /usr/local/bin/composer /usr/bin/composer
+        fi
     fi
+    hash -r 2>/dev/null || true
 
-    php "$installer" --no-ansi --quiet --install-dir=/usr/local/bin --filename=composer || {
-        print error "Composer installation failed."; rm -f "$installer"; exit 1; }
-    rm -f "$installer"
+    found="$(command -v composer 2>/dev/null || true)"
+    if [ -z "$found" ] || ! composer_starts "$found"; then
+        print error "Composer still does not start after a fresh install. Check this machine's internet connection, then run the same command again."
+        exit 1
     fi
-    print success "✓ Composer installed: $(command -v composer)"
+    print success "Composer installed and working: ${found}"
     export COMPOSER_ALLOW_SUPERUSER=1
 }
 

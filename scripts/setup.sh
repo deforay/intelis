@@ -153,7 +153,7 @@ fi
 
 # Source the shared functions
 source "$SHARED_FN_PATH"
-intelis_require_shared_fn_version 2
+intelis_require_shared_fn_version 3
 
 # Existing is not the same as usable — check for a function it must define
 # before prepare_system runs anything as root.
@@ -1482,6 +1482,10 @@ if ! ensure_php_cli_extensions "${PHP_VERSION}"; then
     print error "Aborting: required PHP CLI extensions are unavailable for Composer."
     exit 1
 fi
+
+# A Composer that exists but does not start (a download cut short) crashed
+# setup here with "PharException ... broken signature". Repair it first.
+ensure_composer
 
 # Configure composer timeout regardless of installation path
 wwwdata_composer config process-timeout 30000
