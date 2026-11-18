@@ -249,7 +249,6 @@ const COVERED_FILES = [
     'app/tb/results/generate-result-pdf.php',
     'app/tb/results/get-failed-results.php',
     'app/tb/results/get-results-for-print.php',
-    'app/tb/results/get-samples.php',
     'app/tb/results/get-tb-result-status.php',
     'app/tb/results/getRequestSampleCodeDetails.php',
     'app/tb/results/getTbReferralDetails.php',
