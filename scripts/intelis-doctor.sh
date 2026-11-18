@@ -986,9 +986,9 @@ check_hosts_names() {
   report "names this machine cannot look up: ${MISSING_NAMES:-none}"
   [ -n "$MISSING_NAMES" ] || return 0
   first="${MISSING_NAMES%% *}"
-  finding warning hosts \
-    "This computer does not know the name ${MISSING_NAMES// / or }." \
-    "InteLIS answers to it, but opening http://${first}/ in a browser here fails with \"Server Not Found\". The repair adds the name to /etc/hosts."
+  local detail
+  detail="InteLIS answers to it, but opening http://${first}/ in a browser here fails with \"Server Not Found\". The repair adds the name to /etc/hosts." # NOSONAR: an address shown to the operator, not a request
+  finding warning hosts "This computer does not know the name ${MISSING_NAMES// / or }." "$detail"
 }
 
 check_permissions() {
@@ -1327,7 +1327,7 @@ render_checks() {
   elif [ -z "$PROBE_STATUS" ] || [ "$PROBE_STATUS" = 000 ]; then
     if $APACHE_UP; then row bad "Site" "no answer"; else row skip "Site" "not checked"; fi
   elif [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null; then row bad "Site" "error ${PROBE_STATUS}"
-  elif has_finding hosts; then row warn "Site" "opens, but not as http://${MISSING_NAMES%% *}/ here"
+  elif has_finding hosts; then row warn "Site" "opens, but not as http://${MISSING_NAMES%% *}/ here" # NOSONAR: an address shown to the operator, not a request
   else row ok "Site" "opens"
   fi
 
