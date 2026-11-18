@@ -25,7 +25,7 @@ try {
     // Validate required fields
     if (empty($_POST['referralToLabId'])) {
         $_SESSION['alertMsg'] = _translate("Please select a referral to lab");
-        header("Location: /tb/results/tb-referral.php");
+        header("Location: /tb/results/tb-referral-list.php");
         exit;
     }
 
@@ -41,13 +41,13 @@ try {
     // crafted POST -- a dropdown is not a control.
     if ((int) $_POST['referralToLabId'] === $referredBy) {
         $_SESSION['alertMsg'] = _translate("A sample cannot be referred to the lab that is sending it");
-        header("Location: /tb/results/tb-referral.php");
+        header("Location: /tb/results/tb-referral-list.php");
         exit;
     }
 
     if (empty($_POST['referralSamples']) || !is_array($_POST['referralSamples'])) {
         $_SESSION['alertMsg'] = _translate("Please select at least one sample");
-        header("Location: /tb/results/tb-referral.php");
+        header("Location: /tb/results/tb-referral-list.php");
         exit;
     }
 
