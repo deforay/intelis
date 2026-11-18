@@ -553,21 +553,32 @@ active_mpm() {
   return 1
 }
 
-# Taking the FIRST DocumentRoot in sites-enabled picks whatever sorts first --
-# usually 000-default.conf. On a box that also serves an unrelated default site
-# that is the wrong vhost entirely, so the doctor probed a site it was never
-# asked about. Prefer the vhost pointing at this install.
+# The DocumentRoots a file declares, without quotes or trailing slashes, so
+# "/var/www/intelis/public/" names the same folder as /var/www/intelis/public.
+doc_roots_in() { # doc_roots_in <file|directory>
+  grep -rhi '^[[:space:]]*DocumentRoot' "$1" 2>/dev/null |
+    awk '{print $2}' | tr -d '"'"'" | sed 's#/*$##' | grep . || true
+}
+
+# Two spellings of one folder: a symlinked install path is still this install.
+same_dir() {
+  [ "$(readlink -f -- "$1" 2>/dev/null || echo "$1")" = "$(readlink -f -- "$2" 2>/dev/null || echo "$2")" ]
+}
+
+# The site Apache serves this install from. When no enabled site points at the
+# install, there is no answer: falling back to another site's folder put the
+# probe in Apache's welcome page folder, PHP ran it there, and a machine that
+# showed "Not Found" for InteLIS was reported healthy.
 apache_doc_root() {
   local roots root
-  roots="$(grep -rhi '^[[:space:]]*DocumentRoot' /etc/apache2/sites-enabled/ 2>/dev/null |
-           awk '{print $2}' | tr -d '"'"'" || true)"
+  roots="$(doc_roots_in /etc/apache2/sites-enabled/)"
   [ -n "$roots" ] || return 1
 
   if [ -n "${INSTALL_PATH:-}" ]; then
-    root="$(printf '%s\n' "$roots" | grep -Fx "${INSTALL_PATH}/public" | head -n1 || true)"
-    [ -n "$root" ] && { echo "$root"; return 0; }
-    root="$(printf '%s\n' "$roots" | grep -F "$INSTALL_PATH" | head -n1 || true)"
-    [ -n "$root" ] && { echo "$root"; return 0; }
+    while IFS= read -r root; do
+      same_dir "$root" "${INSTALL_PATH}/public" && { echo "$root"; return 0; }
+    done <<<"$roots"
+    return 1
   fi
 
   root="$(printf '%s\n' "$roots" | head -n1)"
@@ -580,14 +591,13 @@ apache_doc_root() {
 # Host header, a probe file written into the InteLIS docroot is fetched from
 # some other site, which reads as a broken InteLIS when it is nothing of the kind.
 apache_vhost_file_for_root() {
-  local root="$1" f
+  local root="$1" f r
   [ -n "$root" ] || return 1
   for f in /etc/apache2/sites-enabled/*; do
     [ -f "$f" ] || continue
-    if grep -hi '^[[:space:]]*DocumentRoot' "$f" 2>/dev/null |
-         awk '{print $2}' | tr -d '"'"'" | grep -qFx "$root"; then
-      echo "$f"; return 0
-    fi
+    while IFS= read -r r; do
+      [ -n "$r" ] && same_dir "$r" "$root" && { echo "$f"; return 0; }
+    done <<<"$(doc_roots_in "$f")"
   done
   return 1
 }
@@ -598,8 +608,35 @@ apache_server_name() {
   [ -n "$f" ] || return 1
   name="$(grep -i '^[[:space:]]*ServerName' "$f" 2>/dev/null |
           head -n1 | awk '{print $2}' | tr -d '"'"'" || true)"
-  [ -n "$name" ] && { echo "$name"; return 0; }
+  [ -n "$name" ] && { echo "${name%%:*}"; return 0; }
   return 1
+}
+
+# Every name a site file answers to: its ServerName and all its ServerAliases.
+apache_site_names() { # apache_site_names <file>
+  grep -iE '^[[:space:]]*(ServerName|ServerAlias)[[:space:]]' "$1" 2>/dev/null |
+    awk '{for (i = 2; i <= NF; i++) print $i}' | tr -d '"'"'" | sed 's/:[0-9]*$//' |
+    awk 'NF && !seen[$0]++' || true
+}
+
+# Requests by IP address, and any name no site claims, go to the first site
+# Apache loads: the alphabetically first file in sites-enabled.
+default_site_file() {
+  LC_ALL=C ls -1 /etc/apache2/sites-enabled/*.conf 2>/dev/null | head -n 1
+}
+
+# The default site is Apache's own welcome page, or there is none. Only then is
+# it safe to hand the default site to InteLIS: anything else is serving
+# something a person put there.
+default_site_is_stock() {
+  local f root
+  f="$(default_site_file || true)"
+  [ -n "$f" ] || return 0
+  while IFS= read -r root; do
+    [ -n "$root" ] || continue
+    same_dir "$root" /var/www/html || return 1
+  done <<<"$(doc_roots_in "$f")"
+  return 0
 }
 
 port_80_owner() {
@@ -918,6 +955,42 @@ check_foreign_server() {
     "Port 80 is held by ${owner}, not by Apache. While that is running, nothing Apache is configured to do reaches the browser."
 }
 
+# Is any enabled site serving this install? Without one, Apache answers every
+# request with its welcome page or "Not Found", whatever PHP and the files are
+# like, so nothing else below can be judged.
+INSTALL_VHOST=""
+check_vhost() {
+  [ -n "$INSTALL_PATH" ] || return 0
+  INSTALL_VHOST="$(apache_vhost_file_for_root "${INSTALL_PATH}/public" || true)"
+  report "install site=${INSTALL_VHOST:-none} default site=$(default_site_file || echo none)"
+  [ -n "$INSTALL_VHOST" ] && return 0
+  finding critical vhost \
+    "Apache is not serving InteLIS." \
+    "No enabled site points at ${INSTALL_PATH}/public, so the browser gets the Apache welcome page or \"Not Found\" instead of InteLIS."
+}
+
+# Names the InteLIS site answers to that this machine cannot look up, so typing
+# http://intelis/ in its browser fails with "Server Not Found". Only one-word
+# names: a name with a dot belongs in DNS, and writing a real domain into
+# /etc/hosts is how a lab was once cut off from its STS.
+MISSING_NAMES=""
+check_hosts_names() {
+  local name first
+  [ -n "$INSTALL_VHOST" ] || return 0
+  while IFS= read -r name; do
+    [[ "$name" =~ ^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?$ ]] || continue
+    [ "$name" = localhost ] && continue
+    getent hosts "$name" >/dev/null 2>&1 && continue
+    MISSING_NAMES+="${MISSING_NAMES:+ }${name}"
+  done <<<"$(apache_site_names "$INSTALL_VHOST")"
+  report "names this machine cannot look up: ${MISSING_NAMES:-none}"
+  [ -n "$MISSING_NAMES" ] || return 0
+  first="${MISSING_NAMES%% *}"
+  finding warning hosts \
+    "This computer does not know the name ${MISSING_NAMES// / or }." \
+    "InteLIS answers to it, but opening http://${first}/ in a browser here fails with \"Server Not Found\". The repair adds the name to /etc/hosts."
+}
+
 check_permissions() {
   local dir
   [ -n "$INSTALL_PATH" ] || return 0
@@ -1154,13 +1227,16 @@ only_database_finding() { [ ${#FINDING_KEYS[@]} -eq 1 ] && has_finding database;
 
 check_config_valid
 check_foreign_server
+check_vhost
+check_hosts_names
 check_php_packages
 check_php_handler
 check_maintenance_marker
 check_permissions
 check_disk
 check_database
-$APACHE_UP && check_probe
+# Without a site for the install, the probe would be answered by some other site.
+$APACHE_UP && ! has_finding vhost && check_probe
 check_update
 
 if ! $APACHE_UP && ! has_finding config; then
@@ -1230,7 +1306,7 @@ render_checks() {
 
   if has_finding permissions; then row bad "Files" "the web server cannot use them"
   elif has_finding maintenance; then row warn "Files" "the update page is still on"
-  elif has_finding docroot; then row warn "Files" "the web server is not pointed at them"
+  elif has_finding docroot || has_finding vhost; then row warn "Files" "the web server is not pointed at them"
   elif [ -z "$INSTALL_PATH" ]; then row warn "Files" "no InteLIS install under /var/www"
   else row ok "Files" "readable and writable"
   fi
@@ -1247,9 +1323,11 @@ render_checks() {
     *)       row skip "Database" "not checked" ;;
   esac
 
-  if [ -z "$PROBE_STATUS" ] || [ "$PROBE_STATUS" = 000 ]; then
+  if has_finding vhost; then row bad "Site" "Apache shows another site instead"
+  elif [ -z "$PROBE_STATUS" ] || [ "$PROBE_STATUS" = 000 ]; then
     if $APACHE_UP; then row bad "Site" "no answer"; else row skip "Site" "not checked"; fi
   elif [ "$PROBE_STATUS" -ge 500 ] 2>/dev/null; then row bad "Site" "error ${PROBE_STATUS}"
+  elif has_finding hosts; then row warn "Site" "opens, but not as http://${MISSING_NAMES%% *}/ here"
   else row ok "Site" "opens"
   fi
 
@@ -1407,6 +1485,56 @@ fix_stop_foreign() {
   return 0
 }
 
+# Pointing Apache at the install is default-host-setup.sh's job, so run it
+# rather than write a site here. The install's own copy when it takes -y (copies
+# older than July 2026 ask instead), otherwise the one from the same commit as
+# this script.
+HOST_SETUP_TMP=""
+locate_host_setup() {
+  local own="${INSTALL_PATH}/scripts/default-host-setup.sh"
+  if [ -f "$own" ] && grep -q 'assume_yes' "$own" 2>/dev/null; then
+    echo "$own"; return 0
+  fi
+  HOST_SETUP_TMP="$(mktemp /tmp/intelis-host-setup.XXXXXX 2>/dev/null)" || return 1
+  if download_to "$HOST_SETUP_TMP" "${RAW_BASE}/default-host-setup.sh" &&
+     [ -s "$HOST_SETUP_TMP" ] && head -n1 "$HOST_SETUP_TMP" | grep -q '^#!'; then
+    echo "$HOST_SETUP_TMP"; return 0
+  fi
+  return 1
+}
+
+# The site keeps the name the install is known by, and answers to both intelis
+# and vlsm either way.
+fix_vhost() {
+  local script name=intelis rc=0
+  [ -n "$INSTALL_PATH" ] || return 1
+  [ "$(basename "$INSTALL_PATH")" = vlsm ] && name=vlsm
+  if ! script="$(locate_host_setup)"; then
+    [ -n "$HOST_SETUP_TMP" ] && rm -f -- "$HOST_SETUP_TMP"
+    print error "The site setup script could not be downloaded. Check this machine's internet connection."
+    return 1
+  fi
+  report "running ${script} -p ${INSTALL_PATH} -n ${name} -y"
+  bash "$script" -p "$INSTALL_PATH" -n "$name" -y || rc=$?
+  [ -n "$HOST_SETUP_TMP" ] && rm -f -- "$HOST_SETUP_TMP"
+  [ "$rc" -eq 0 ] || return 1
+  [ -n "$(apache_vhost_file_for_root "${INSTALL_PATH}/public" || true)" ]
+}
+
+# Only the one-word names check_hosts_names collected. The shared helper also
+# refuses a name that already resolves to another machine.
+fix_hosts() {
+  local name rc=0
+  for name in $MISSING_NAMES; do
+    if declare -F hosts_file_add_local >/dev/null 2>&1; then
+      hosts_file_add_local "$name" || rc=1
+    else
+      printf '127.0.0.1 %s # added by intelis doctor\n' "$name" >>/etc/hosts || rc=1
+    fi
+  done
+  return "$rc"
+}
+
 # Fetch the database doctor rather than reimplementing any part of it. Same
 # order the intelis command uses: the copy shipped with the install, then the
 # one installed on the machine, then the internet.
@@ -1453,6 +1581,19 @@ DB_DOCTOR_RC=0
 if [ ${#FINDING_TITLES[@]} -gt 0 ] && ! only_database_finding; then
   print header "Repairs"
 
+  if has_finding vhost; then
+    if default_site_is_stock; then
+      run_fix "Point Apache at ${INSTALL_PATH} and make it the site this machine opens by name and by address." fix_vhost || true
+    else
+      # The default site serves something a person put there. Replacing it is
+      # their decision, and never one for an unattended run.
+      print warning "Apache's default site serves $(doc_roots_in "$(default_site_file)" | head -n1), not InteLIS."
+      print plain   "     Making InteLIS the default site replaces it. If that site is not needed, run:"
+      print plain   "     sudo bash ${INSTALL_PATH}/scripts/default-host-setup.sh -p ${INSTALL_PATH}"
+      report "NOT OFFERED: default site is not stock ($(default_site_file || echo none))"
+    fi
+  fi
+  has_finding hosts       && { run_fix "Add ${MISSING_NAMES// / and } to /etc/hosts so this computer can open the site by name." fix_hosts || true; }
   has_finding maintenance && { run_fix "Take the site out of update mode." fix_maintenance || true; }
   has_finding stale       && { run_fix "Restart the web server so it picks up its settings." fix_stale || true; }
   has_finding ppa         && { run_fix "Restore the PHP repository so the packages can be installed." fix_add_ppa || true; }

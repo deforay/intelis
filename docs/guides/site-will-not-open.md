@@ -179,6 +179,62 @@ computer.
 
             See [Update Stuck at Database Migrations](update-stuck-at-migrations.md).
 
+=== "Apache page or Not Found"
+
+    The browser shows one of these instead of the InteLIS login page:
+
+    - `Apache2 Default Page` with `It works!`
+    - `Not Found` with `The requested URL was not found on this server`
+    - `Server Not Found` for `http://intelis/` or `http://vlsm/`
+
+    1. Check the address in the browser. The login page is at
+       `http://intelis/login/login.php`. An extra folder name, as in
+       `http://vlsm/vlsm/login/login.php`, gives `Not Found` on a healthy
+       machine.
+    2. Open a terminal on the InteLIS machine and run:
+
+        ```bash
+        sudo intelis doctor
+        ```
+
+        ??? info "If `intelis` is not recognised, or `doctor` does not exist"
+
+            The install is older. Run the same tool straight from the internet:
+
+            ```bash
+            sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/intelis-doctor.sh)"
+            ```
+
+            Type it exactly as shown. Piping the download into `bash` instead
+            feeds the script its own text as the answers to its questions.
+
+    3. Enter the password for the account when asked.
+    4. Answer `y` at each `Do this now?` question under **Repairs**.
+
+        ??? info "If it says `Apache is not serving InteLIS.`"
+
+            No web server site points at the InteLIS folder. The doctor offers
+            `Point Apache at ...`. It makes InteLIS the site this machine opens
+            by `http://intelis/`, by `http://vlsm/` and by its IP address.
+
+        ??? info "If it says `Apache's default site serves ..., not InteLIS.`"
+
+            The default site serves another application. The doctor does not
+            replace it. If that application is not needed, run the command the
+            doctor prints. Otherwise, ask for help.
+
+        ??? info "If it says `This computer does not know the name intelis.`"
+
+            The site works, but this machine cannot look up the name. The
+            doctor adds the name to `/etc/hosts`. Other computers open the site
+            by the machine's IP address.
+
+    5. Reload the browser when the doctor shows `InteLIS is working again.`
+
+        ??? failure "If the site still does not open"
+
+            Send the report. See [Send the report](#send-the-report).
+
 === "Nothing loads"
 
     The browser says the site cannot be reached, the connection was refused,

@@ -191,6 +191,64 @@ un autre ordinateur.
 
             Voir [Mise à jour bloquée aux migrations de la base de données](update-stuck-at-migrations.md).
 
+=== "Page Apache ou Not Found"
+
+    Le navigateur affiche l'un de ces messages au lieu de la page de connexion
+    d'InteLIS :
+
+    - `Apache2 Default Page` avec `It works!`
+    - `Not Found` avec `The requested URL was not found on this server`
+    - `Server Not Found` pour `http://intelis/` ou `http://vlsm/`
+
+    1. Vérifier l'adresse dans le navigateur. La page de connexion est à
+       `http://intelis/login/login.php`. Un nom de dossier en trop, comme dans
+       `http://vlsm/vlsm/login/login.php`, donne `Not Found` sur une machine
+       en bon état.
+    2. Ouvrir un terminal sur la machine InteLIS et lancer :
+
+        ```bash
+        sudo intelis doctor
+        ```
+
+        ??? info "Si `intelis` n'est pas reconnu, ou si `doctor` n'existe pas"
+
+            L'installation est ancienne. Lancer le même outil directement depuis
+            Internet :
+
+            ```bash
+            sudo bash -c "$(wget -qO- https://raw.githubusercontent.com/deforay/intelis/master/scripts/intelis-doctor.sh)"
+            ```
+
+            Saisir la commande exactement comme indiqué. Rediriger le
+            téléchargement vers `bash` donne au script son propre texte comme
+            réponses à ses questions.
+
+    3. Saisir le mot de passe du compte quand il est demandé.
+    4. Répondre `y` à chaque question `Do this now?` sous **Repairs**.
+
+        ??? info "S'il indique `Apache is not serving InteLIS.`"
+
+            Aucun site du serveur web ne pointe vers le dossier d'InteLIS. Le doctor propose `Point Apache at ...`. Cette réparation fait
+            d'InteLIS le site que cette machine ouvre par `http://intelis/`,
+            par `http://vlsm/` et par son adresse IP.
+
+        ??? info "S'il indique `Apache's default site serves ..., not InteLIS.`"
+
+            Le site par défaut sert une autre application. Le doctor ne la
+            remplace pas. Si cette application n'est pas utile, lancer la
+            commande que le doctor affiche. Sinon, demander de l'aide.
+
+        ??? info "S'il indique `This computer does not know the name intelis.`"
+
+            Le site fonctionne, mais cette machine ne trouve pas le nom. Le doctor ajoute le nom dans `/etc/hosts`. Les autres ordinateurs
+            ouvrent le site par l'adresse IP de la machine.
+
+    5. Recharger le navigateur quand le doctor affiche `InteLIS is working again.`
+
+        ??? failure "Si le site ne s'ouvre toujours pas"
+
+            Envoyer le rapport. Voir [Envoyer le rapport](#envoyer-le-rapport).
+
 === "Rien ne s'affiche"
 
     Le navigateur indique que le site est inaccessible, que la connexion a été
