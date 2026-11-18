@@ -380,6 +380,8 @@ try {
 
         if (!empty($data['revisedOn']) && trim((string) $data['revisedOn']) !== "") {
             $data['revisedOn'] = DateUtility::isoDateFormat($data['revisedOn'], true);
+        } elseif (array_key_exists('revisedOn', $data)) {
+            $data['revisedOn'] = null;
         }
 
         if (isset($data['approvedOn']) && trim((string) $data['approvedOn']) !== "") {
@@ -438,7 +440,7 @@ try {
         $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
         $covid19Data = [
-            'vlsm_instance_id' => $data['instanceId'],
+            'vlsm_instance_id' => $instanceId,
             'external_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
             'app_sample_code' => $data['appSampleCode'] ?? $data['externalSampleCode'] ?? null,
             'lab_assigned_code' => $data['labSampleCode'] ?? null,

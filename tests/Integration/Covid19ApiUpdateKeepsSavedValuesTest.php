@@ -151,6 +151,21 @@ final class Covid19ApiUpdateKeepsSavedValuesTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testABlankRevisedOnIsSavedAsNull(): void
+    {
+        $db = LegacyAppHarness::db();
+        $db->where('covid19_id', 40);
+        $db->update('form_covid19', ['revised_on' => '2026-09-22 10:00:00']);
+
+        // Spaces used to reach revised_on as they were, which strict MySQL rejects.
+        $this->post(self::CLINIC_TOKEN, ['revisedOn' => ' ', 'patientId' => 'P-2']);
+
+        [$form] = $this->saved();
+        self::assertSame('P-2', $form['patient_id']);
+        self::assertNull($form['revised_on']);
+    }
+
+    #[RunInSeparateProcess]
     public function testAnUpdateWithoutTheKeysKeepsTheSavedValues(): void
     {
         $db = LegacyAppHarness::db();

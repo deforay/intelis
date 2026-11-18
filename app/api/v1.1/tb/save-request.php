@@ -393,7 +393,7 @@ try {
         }
 
         $tbData = [
-            'vlsm_instance_id' => $data['instanceId'],
+            'vlsm_instance_id' => $instanceId,
             'vlsm_country_id' => $formId,
             'unique_id' => $uniqueId,
             'external_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
