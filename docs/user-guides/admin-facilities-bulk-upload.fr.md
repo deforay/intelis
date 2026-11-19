@@ -3,8 +3,8 @@ description: Ajouter ou mettre à jour de nombreuses structures depuis un fichie
 audience: [system-admin, lab-admin]
 module: [all]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 # Ajouter ou mettre à jour plusieurs structures à la fois
 
@@ -55,7 +55,7 @@ revue n'est pas acceptée.
         | Résultat | Signification |
         | --- | --- |
         | Nouveau | La ligne est ajoutée |
-        | Ignorée | Une structure de ce nom ou de ce code existe déjà |
+        | Ignorée | Une structure de ce code, ou de ce nom dans la même Province et le même District, existe déjà |
         | Erreur | La ligne ne peut pas être enregistrée. **Détails** en donne la raison |
 
     9. Sélectionner la tuile **Avertissements** au-dessus du tableau. Lire
@@ -84,8 +84,9 @@ revue n'est pas acceptée.
 
         ??? failure "Si des lignes n'ont pas été enregistrées"
 
-            Une ligne n'est pas enregistrée lorsque son nom, son code ou son
-            code externe est déjà utilisé par une autre structure. Sélectionner
+            Une ligne n'est pas enregistrée lorsque son code ou son code
+            externe est déjà utilisé par une autre structure. Il en va de même
+            pour son nom dans la même Province et le même District. Sélectionner
             **Télécharger les lignes non enregistrées**. Corriger les lignes,
             puis charger ce fichier à partir de l'étape 5.
 
@@ -115,10 +116,18 @@ revue n'est pas acceptée.
         | --- | --- |
         | Rapprocher par nom et code | Met à jour seulement lorsque le nom et le code appartiennent à la même structure. La mise à jour la plus sûre |
         | Rapprocher par code | Met à jour la structure qui porte le même code. À utiliser pour renommer des structures |
-        | Rapprocher par nom | Met à jour la structure qui porte le même nom |
+        | Rapprocher par nom | Met à jour la structure qui porte le même nom dans la même Province et le même District |
 
         Les lignes qui ne correspondent à rien sont ajoutées comme nouvelles
         structures.
+
+        ??? warning "Pour déplacer une structure vers une autre Province ou un autre District"
+
+            Choisir **Rapprocher par code**. Un nom n'est rapproché que dans sa
+            Province et son District. Avec **Rapprocher par nom**, une ligne
+            portant le nouvel emplacement ne trouve aucune structure et en
+            ajoute une seconde. Avec **Rapprocher par nom et code**, la ligne
+            est ignorée.
 
     6. Déposer le fichier sur la page, ou sélectionner **parcourir** et le choisir.
     7. Sélectionner **Vérifier le téléversement**. Rien n'est encore
@@ -165,8 +174,9 @@ revue n'est pas acceptée.
             Une ligne n'est pas enregistrée pour l'une de deux raisons :
 
             - Sa structure a été modifiée par quelqu'un d'autre après la revue.
-            - Son nom, son code ou son code externe est déjà utilisé par une
-              autre structure.
+            - Son code ou son code externe est déjà utilisé par une autre
+              structure, ou son nom est utilisé par une autre structure dans la
+              même Province et le même District.
 
             Sélectionner **Télécharger les lignes non enregistrées**, corriger
             les lignes, puis charger ce fichier à partir de l'étape 5.

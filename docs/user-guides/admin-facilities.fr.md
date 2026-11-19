@@ -3,8 +3,8 @@ description: Ajouter des structures et des laboratoires, les rattacher aux types
 audience: [system-admin, lab-admin]
 module: [all]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 # Gérer les structures et les laboratoires d'analyse
 
@@ -37,7 +37,10 @@ D'autres tâches de la même page ont leur propre guide :
 
 1. Aller à **ADMIN → Structures sanitaires**.
 2. Sélectionner **Ajouter une structure**.
-3. Saisir **Nom de la structure**. Il ne doit pas déjà être utilisé.
+3. Saisir **Nom de la structure**. Deux structures ne peuvent porter le même
+   nom que si elles sont dans une **Province** ou un **District** différent.
+   Lorsqu'un nom se répète, les listes déroulantes de structures affichent le
+   district après lui.
 4. Saisir éventuellement **Code de la structure**, le code national unique. Il
    accepte les lettres, les chiffres et les traits d'union et est enregistré en
    majuscules. Laissé vide sur un laboratoire d'analyse, InteLIS en génère un.
