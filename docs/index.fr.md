@@ -3,8 +3,8 @@ description: Point d'entrée de la documentation InteLIS pour le laboratoire, la
 audience: [lab-staff, lab-supervisor, lab-admin, system-admin, requesting-facility, developer]
 module: [all]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 # Documentation InteLIS
 
@@ -16,6 +16,23 @@ InteLIS s'appelait auparavant VLSM. Certains chemins et la base de données
 conservent l'ancien nom, et les guides le précisent là où cela compte.
 
 <div class="grid cards" markdown>
+
+-   :material-lifebuoy:{ .lg .middle } __Quelque chose ne va pas__
+
+    ---
+
+    Trouver le problème dans un tableau, au laboratoire ou sur la machine, et
+    suivre la page indiquée.
+
+    [:octicons-arrow-right-24: Par où commencer](guides/troubleshooting.md)
+
+    [:octicons-arrow-right-24: Problèmes en utilisant
+    InteLIS](guides/troubleshooting.md#problemes-en-utilisant-intelis)
+
+    [:octicons-arrow-right-24: Le site ne s'ouvre
+    pas](guides/site-will-not-open.md)
+
+    [:octicons-arrow-right-24: Les mots de ces guides](user-guides/glossary.md)
 
 -   :material-flask-outline:{ .lg .middle } __Utiliser InteLIS__
 
@@ -29,6 +46,9 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
 
     [:octicons-arrow-right-24: Enregistrer une demande de
     test](user-guides/register-a-request.md)
+
+    [:octicons-arrow-right-24: Trouver un
+    échantillon](user-guides/signing-in.md#trouver-un-echantillon-qui-nest-ni-dans-un-lot-ni-sur-un-manifeste)
 
 -   :material-server:{ .lg .middle } __Administrer la machine__
 
@@ -51,25 +71,6 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
 
     [:octicons-arrow-right-24: Configurer les sauvegardes hors
     machine](guides/setting-up-off-machine-backups.md)
-
--   :material-lifebuoy:{ .lg .middle } __Quelque chose ne va pas__
-
-    ---
-
-    Commencer sur la machine par `intelis check`, ou `intelis doctor` quand le
-    site ne s'ouvre pas. Ces pages traitent les problèmes qu'elles signalent.
-
-    [:octicons-arrow-right-24: MySQL ne démarre
-    pas](guides/mysql-will-not-start.md)
-
-    [:octicons-arrow-right-24: Le navigateur affiche du code
-    PHP](guides/browser-shows-php-code.md)
-
-    [:octicons-arrow-right-24: Corriger une erreur de
-    permission](guides/permission-denied-issue.md)
-
-    [:octicons-arrow-right-24: Corriger une incohérence de
-    collation](guides/fix-collation-issue.md)
 
 -   :material-printer-outline:{ .lg .middle } __Aide-mémoires imprimables__
 

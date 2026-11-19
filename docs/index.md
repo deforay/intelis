@@ -3,8 +3,8 @@ description: Entry point to InteLIS documentation for lab work, machine care, tr
 audience: [lab-staff, lab-supervisor, lab-admin, system-admin, requesting-facility, developer]
 module: [all]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 # InteLIS Documentation
 
@@ -16,6 +16,21 @@ name, and the guides say so where it matters.
 
 <div class="grid cards" markdown>
 
+-   :material-lifebuoy:{ .lg .middle } __Something is wrong__
+
+    ---
+
+    Find the problem in a table, in the lab or on the machine, and follow the
+    page it points to.
+
+    [:octicons-arrow-right-24: Where to start](guides/troubleshooting.md)
+
+    [:octicons-arrow-right-24: Problems while using InteLIS](guides/troubleshooting.md#problems-while-using-intelis)
+
+    [:octicons-arrow-right-24: The site will not open](guides/site-will-not-open.md)
+
+    [:octicons-arrow-right-24: Words used in these guides](user-guides/glossary.md)
+
 -   :material-flask-outline:{ .lg .middle } __Using InteLIS__
 
     ---
@@ -26,6 +41,8 @@ name, and the guides say so where it matters.
     [:octicons-arrow-right-24: How a sample moves through InteLIS](user-guides/index.md)
 
     [:octicons-arrow-right-24: Register a test request](user-guides/register-a-request.md)
+
+    [:octicons-arrow-right-24: Find a sample](user-guides/signing-in.md#find-a-sample-that-is-not-in-a-batch-or-on-a-manifest)
 
 -   :material-server:{ .lg .middle } __Looking after the machine__
 
@@ -43,21 +60,6 @@ name, and the guides say so where it matters.
     [:octicons-arrow-right-24: Connect an instrument](guides/setting-up-interfacing-tool.md)
 
     [:octicons-arrow-right-24: Set up off-machine backups](guides/setting-up-off-machine-backups.md)
-
--   :material-lifebuoy:{ .lg .middle } __Something is wrong__
-
-    ---
-
-    Start on the machine with `intelis check`, or `intelis doctor` when the
-    site will not open. These pages cover the problems they point to.
-
-    [:octicons-arrow-right-24: MySQL will not start](guides/mysql-will-not-start.md)
-
-    [:octicons-arrow-right-24: Browser shows PHP code](guides/browser-shows-php-code.md)
-
-    [:octicons-arrow-right-24: Permission denied errors](guides/permission-denied-issue.md)
-
-    [:octicons-arrow-right-24: Collation errors](guides/fix-collation-issue.md)
 
 -   :material-printer-outline:{ .lg .middle } __Printable job aids__
 
