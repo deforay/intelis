@@ -1286,16 +1286,16 @@ $userModules = $_SESSION['modules'] ?? [];
 			url: "/eid/management/getEidMonthlyThresholdReport.php",
 			type: 'POST',
 			data: {
-				targetType: '1',
+				labsBelowTarget: 'yes',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
 			async: true,
 			success: function(data) {
 				var dataObj = JSON.parse(data);
-				if (dataObj['aaData'].length > 0) {
+				if (dataObj.labsBelowTarget > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + dataObj['aaData'].length + ' <?= _translate("EID testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span>' + dataObj.labsBelowTarget + ' <?= _translate("EID testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contEid").html(div);
 				}
@@ -1315,16 +1315,16 @@ $userModules = $_SESSION['modules'] ?? [];
 			url: "/vl/program-management/getVlMonthlyThresholdReport.php",
 			type: 'POST',
 			data: {
-				targetType: '1',
+				labsBelowTarget: 'yes',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
 			async: true,
 			success: function(data) {
 				var dataObj = JSON.parse(data);
-				if (dataObj['aaData'].length > 0) {
+				if (dataObj.labsBelowTarget > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + dataObj['aaData'].length + ' <?= _translate("VL testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span>' + dataObj.labsBelowTarget + ' <?= _translate("VL testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#cont").html(div);
 				}
@@ -1372,16 +1372,16 @@ $userModules = $_SESSION['modules'] ?? [];
 			url: "/covid-19/management/getCovid19MonthlyThresholdReport.php",
 			type: 'POST',
 			data: {
-				targetType: '1',
+				labsBelowTarget: 'yes',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
 			async: true,
 			success: function(data) {
 				var dataObj = JSON.parse(data);
-				if (dataObj['aaData'].length > 0) {
+				if (dataObj.labsBelowTarget > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span >' + dataObj['aaData'].length + ' <?= _translate("Covid-19 testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span >' + dataObj.labsBelowTarget + ' <?= _translate("Covid-19 testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contCovid").html(div);
 				}
@@ -1401,16 +1401,16 @@ $userModules = $_SESSION['modules'] ?? [];
 			url: "/hepatitis/management/get-hepatitis-monthly-threshold-report.php",
 			type: 'POST',
 			data: {
-				targetType: '1',
+				labsBelowTarget: 'yes',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
 			async: true,
 			success: function(data) {
 				var dataObj = JSON.parse(data);
-				if (dataObj['aaData'].length > 0) {
+				if (dataObj.labsBelowTarget > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + dataObj['aaData'].length + ' <?= _translate("Hepatitis testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
+				<span >' + dataObj.labsBelowTarget + ' <?= _translate("Hepatitis testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 				</div>';
 					$("#contHepatitis").html(div);
 				}
@@ -1430,16 +1430,16 @@ $userModules = $_SESSION['modules'] ?? [];
 			url: "/tb/management/get-tb-monthly-threshold-report.php",
 			type: 'POST',
 			data: {
-				targetType: '1',
+				labsBelowTarget: 'yes',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
 			async: true,
 			success: function(data) {
 				var dataObj = JSON.parse(data);
-				if (dataObj['aaData'].length > 0) {
+				if (dataObj.labsBelowTarget > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + dataObj['aaData'].length + ' <?= _translate("TB testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/tb/management/tb-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span>' + dataObj.labsBelowTarget + ' <?= _translate("TB testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/tb/management/tb-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contTb").html(div);
 				}
@@ -1459,16 +1459,16 @@ $userModules = $_SESSION['modules'] ?? [];
 			url: "/cd4/management/get-cd4-monthly-threshold-report.php",
 			type: 'POST',
 			data: {
-				targetType: '1',
+				labsBelowTarget: 'yes',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
 			async: true,
 			success: function(data) {
 				var dataObj = JSON.parse(data);
-				if (dataObj['aaData'].length > 0) {
+				if (dataObj.labsBelowTarget > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + dataObj['aaData'].length + ' <?= _translate("CD4 testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/cd4/management/cd4-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
+				<span >' + dataObj.labsBelowTarget + ' <?= _translate("CD4 testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/cd4/management/cd4-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 				</div>';
 					$("#contCd4").html(div);
 				}
