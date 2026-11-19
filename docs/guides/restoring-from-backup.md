@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-10-29
 reviewed_against: 5.8.5
 ---
-# How to restore from a backup
+# Restore from a backup
 
 Put the database back from a backup on a machine where InteLIS already runs.
 A restore from the off-machine backup also brings back the lab settings,
@@ -248,7 +248,7 @@ was made are lost.
         are there.
     15. Open the result PDF of that request, and check its signatures and logo
         appear.
-    16. If the lab uses the interfacing tool, restore its database too. Type
+    16. If the lab uses the Interface Tool, restore its database too. Type
         this, followed by a space. Do not press Enter yet:
 
         ```bash
@@ -432,7 +432,7 @@ was made are lost.
         are there.
     16. Open the result PDF of that request, and check its signatures and logo
         appear.
-    17. If the lab uses the interfacing tool, its database stays as it is. To
+    17. If the lab uses the Interface Tool, its database stays as it is. To
         put it back to the same day too, contact support.
 
     18. When the lab works, run the exact cleanup command printed by the script.
@@ -636,7 +636,7 @@ was made are lost.
         are there.
     20. Open a result PDF, and check its signatures and logo appear.
     21. Open an attachment, and check it displays.
-    22. If the lab uses the interfacing tool, restore its database too. Type
+    22. If the lab uses the Interface Tool, restore its database too. Type
         this, followed by a space. Do not press Enter yet:
 
         ```bash
@@ -891,7 +891,7 @@ was made are lost.
     10. Reinstall Ubuntu on the lab machine, or use a new machine. A hacked
         machine cannot be trusted again, even after cleaning.
     11. On the rebuilt machine, follow the **Backups on a server or share** tab
-        of [Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md).
+        of [Migrate from one Ubuntu machine to another](migrating-ubuntu-machines.md).
         It installs InteLIS and restores the backup in one step. At step 3 of
         that tab, choose the folder from step 9 above instead of the lab's own
         folder.

@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-10-26
 reviewed_against: 5.8.3
 ---
-# Forgotten Password
+# Forgotten password
 
 Use this page when a user has forgotten their password and no admin can reset
 it from the browser. It also covers the case where the only admin is the one

@@ -6,7 +6,7 @@ type: how-to
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# How to capture viral load results
+# Capture viral load results
 
 Get the results of a finished analyzer run into InteLIS.
 
@@ -26,7 +26,7 @@ Test Result Management**.
     Use this when the analyzer is connected to the Interface Tool. The Interface
     Tool carries HIV viral load, EID, hepatitis and TB (GeneXpert) results. It
     does not carry Custom Tests results. For pooled TB samples, see
-    [How to test pooled TB samples on GeneXpert](test-pooled-tb-samples.md).
+    [Test pooled TB samples on GeneXpert](test-pooled-tb-samples.md).
 
     1. On the analyzer, release the run. Skip this step if the analyzer releases
        results on its own.
@@ -68,7 +68,7 @@ Test Result Management**.
 
             The lab's support contact has turned off automatic approval of
             interface results for this installation. Approve them. See
-            [How to review and approve results](approve-results.md).
+            [Review and approve results](approve-results.md).
 
 === "File import"
 
@@ -174,11 +174,11 @@ Test Result Management**.
             2. Choose the **Reason for Failure**.
 
             The sample moves to **Failed/Hold Samples** for a retest. See
-            [How to handle failed and held samples](failed-and-held-samples.md).
+            [Handle failed and held samples](failed-and-held-samples.md).
 
     5. Read the result on the screen against the analyzer printout.
     6. Select **Save**. The result waits at **Awaiting Approval**. See
-       [How to review and approve results](approve-results.md).
+       [Review and approve results](approve-results.md).
 
 === "Custom Tests"
 

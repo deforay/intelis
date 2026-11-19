@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# Maintenance Scripts and Tools
+# Maintenance scripts and tools
 
 Commands, scheduled tasks and scripts for keeping an InteLIS server running.
 
@@ -26,24 +26,24 @@ asks for the password.
 | --- | --- | --- |
 | `intelis` | Shows a numbered menu of the most common commands. Outside a terminal, prints the help instead. | Any time the exact command is not known. |
 | `intelis help` | Prints the list of commands. | To look up a command. |
-| `intelis update` | Downloads the current updater and updates InteLIS to the current release. Options are passed to the updater, for example `-s` to skip Ubuntu system updates. | To install a new release. See [Updating InteLIS on Ubuntu](updating-intelis-on-ubuntu.md). |
+| `intelis update` | Downloads the current updater and updates InteLIS to the current release. Options are passed to the updater, for example `-s` to skip Ubuntu system updates. | To install a new release. See [Update InteLIS on Ubuntu](updating-intelis-on-ubuntu.md). |
 | `intelis backup` | Saves a fresh copy of the database and settings on this machine, then sends it to the off-machine destination. Offers to set up a destination if none exists. | Before an update, a move, or any risky change. |
 | `intelis backup status` | Shows when the last off-machine backup ran and whether it worked. | To confirm backups are working. |
 | `intelis backup test` | Checks the backup destination. Changes nothing. | After changing the destination, or when `backup status` reports a failure. |
 | `intelis backup setup` | Chooses or changes where backups are sent: another Linux machine, a Windows shared folder, or a USB drive. | Once per machine, or when the destination changes. |
 | `intelis backup disable` | Stops the scheduled off-machine backups. | Before taking the destination offline. |
 | `intelis backup enable` | Starts the scheduled off-machine backups again. | After `backup disable`. |
-| `intelis restore` | Connects to the backup destination, lists the labs stored there, and copies the chosen backup back. On a working install it restores the database in place. `--list` only lists the labs. | To recover from a failed machine or lost data. See [Restoring from a Backup](restoring-from-backup.md). |
+| `intelis restore` | Connects to the backup destination, lists the labs stored there, and copies the chosen backup back. On a working install it restores the database in place. `--list` only lists the labs. | To recover from a failed machine or lost data. See [Restore from a backup](restoring-from-backup.md). |
 | `intelis check` | Checks PHP, the web server's PHP settings, `vendor/`, the configuration file, writable paths and the database. Prints the command that fixes each failure. `--quiet` prints only warnings and failures. Also runs as `intelis preflight`. | When InteLIS will not start, and after any change to the server. |
 | `intelis health` | Checks disk usage, MySQL response time, writable paths and off-machine backups. | To see whether a running server is well right now. |
-| `intelis doctor` | Finds out why InteLIS will not open in the browser and offers each safe repair. Runs `fix-database` itself when the database is at fault. `--check` only reports. `--yes` applies every safe repair without asking. `--quiet` prints only the verdict and the report path. | When the site will not open. See [Browser Shows PHP Code Instead of InteLIS](browser-shows-php-code.md). |
-| `intelis fix-database` | Finds out why MySQL is down and offers each safe repair. Takes the same options as `doctor`. | When MySQL will not start. See [MySQL Will Not Start](mysql-will-not-start.md). |
-| `intelis sts-setup` | Sets the STS address and the lab this machine serves, brings the lists down from the STS, and gets an STS token. Lab machines only. | Once per lab, or when the STS address or the lab changes. See [Connect a Lab to the STS](connect-lab-to-sts.md). |
-| `intelis sync-sts` | Runs a full sync with the STS now: token, lists, results, requests and remote commands. | To sync now instead of waiting for the scheduled sync. See [Results Not Reaching the STS](sts-sync-not-working.md). |
-| `intelis interface` | Imports the results the Interfacing Tool is holding. | To import results now instead of waiting for the scheduled import. See [Analyzer Results Not Arriving](interfacing-results-not-arriving.md). |
-| `intelis interface setup` | Creates the interfacing database and the account the Interfacing Tool connects with, and writes the settings. | Once, when connecting the Interfacing Tool. See [Connect an Instrument to InteLIS](setting-up-interfacing-tool.md). |
-| `intelis interface migrate` | Brings the interfacing database up to date with the Interfacing Tool's own migrations. | When `intelis check` or support asks for it. |
-| `intelis reset-password` | Sets a new password for a user who cannot sign in, including the only admin. Lists the active users to choose from. Takes the options of `bin/reset-user-password.php`. Also runs as `intelis password`. | When nobody can reset the password from the browser. See [Forgotten Password](forgotten-password.md). |
+| `intelis doctor` | Finds out why InteLIS will not open in the browser and offers each safe repair. Runs `fix-database` itself when the database is at fault. `--check` only reports. `--yes` applies every safe repair without asking. `--quiet` prints only the verdict and the report path. | When the site will not open. See [Browser shows PHP code instead of InteLIS](browser-shows-php-code.md). |
+| `intelis fix-database` | Finds out why MySQL is down and offers each safe repair. Takes the same options as `doctor`. | When MySQL will not start. See [MySQL will not start](mysql-will-not-start.md). |
+| `intelis sts-setup` | Sets the STS address and the lab this machine serves, brings the lists down from the STS, and gets an STS token. Lab machines only. | Once per lab, or when the STS address or the lab changes. See [Connect a lab to the STS](connect-lab-to-sts.md). |
+| `intelis sync-sts` | Runs a full sync with the STS now: token, lists, results, requests and remote commands. | To sync now instead of waiting for the scheduled sync. See [Results not reaching the STS](sts-sync-not-working.md). |
+| `intelis interface` | Imports the results the Interface Tool is holding. | To import results now instead of waiting for the scheduled import. See [Analyzer results not arriving](interfacing-results-not-arriving.md). |
+| `intelis interface setup` | Creates the interfacing database and the account the Interface Tool connects with, and writes the settings. | Once, when connecting the Interface Tool. See [Connect an instrument to InteLIS](setting-up-interfacing-tool.md). |
+| `intelis interface migrate` | Brings the interfacing database up to date with the Interface Tool's own migrations. | When `intelis check` or support asks for it. |
+| `intelis reset-password` | Sets a new password for a user who cannot sign in, including the only admin. Lists the active users to choose from. Takes the options of `bin/reset-user-password.php`. Also runs as `intelis password`. | When nobody can reset the password from the browser. See [Forgotten password](forgotten-password.md). |
 | `intelis provision` | Creates the directories InteLIS writes to and fixes their owner and permissions. | When `intelis check` reports a path that is missing or not writable. |
 | `intelis migrate` | Runs the database migrations. | When `intelis check` reports pending migrations. |
 | `intelis install` | Installs the PHP dependencies in `vendor/`. | When `intelis check` reports `vendor/` missing or out of date. |
@@ -219,7 +219,7 @@ stop.
 
 Use these steps to return the database on this machine to an earlier local
 backup. To restore on a new machine, see
-[Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md).
+[Migrate from one Ubuntu machine to another](migrating-ubuntu-machines.md).
 
 1. Go to the installation directory:
 

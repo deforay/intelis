@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-10-23
 reviewed_against: 5.8.2
 ---
-# Site Will Not Open: Using the Doctor
+# Site will not open: use the doctor
 
 `intelis doctor` finds out why the InteLIS site will not open in the browser.
 It explains what it found and asks before each repair. When the database is at
@@ -81,7 +81,7 @@ computer.
             `Start the database again.` That start is the usual repair after a
             crash or a power cut. If the database refuses to start, the doctor
             prints the last errors it wrote. See
-            [MySQL Will Not Start](mysql-will-not-start.md).
+            [MySQL will not start](mysql-will-not-start.md).
 
         ??? info "If it offers `Update InteLIS to the current release.`"
 
@@ -126,7 +126,7 @@ computer.
 
         The doctor installs the PHP module for the web server, restores the PHP
         package repository when an Ubuntu upgrade removed it, and restarts the
-        web server. [Browser Shows PHP Code](browser-shows-php-code.md) explains
+        web server. [Browser shows PHP code](browser-shows-php-code.md) explains
         each cause.
 
     5. Reload the browser when the doctor shows `InteLIS is working again.`
@@ -177,7 +177,7 @@ computer.
 
         ??? failure "If the update stops at `Running database migrations...`"
 
-            See [Update Stuck at Database Migrations](update-stuck-at-migrations.md).
+            See [Update stuck at database migrations](update-stuck-at-migrations.md).
 
 === "Apache page or Not Found"
 

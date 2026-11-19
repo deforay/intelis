@@ -6,7 +6,7 @@ type: how-to
 reviewed: 2026-11-19
 reviewed_against: 5.8.9
 ---
-# How to sign in and navigate InteLIS
+# Sign in and navigate InteLIS
 
 New users need a login and a short tour of the screen before they can do
 anything else. This guide covers both.

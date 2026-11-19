@@ -72,20 +72,20 @@ what to do when something goes wrong.
 | Card | Full guide |
 |---|---|
 | Lab 1 | [How a viral load sample moves through InteLIS](../user-guides/index.md) |
-| Lab 2 | [How to register a viral load test request](../user-guides/register-a-request.md) |
-| Lab 3 | [How to batch samples for testing](../user-guides/batch-samples.md) |
-| Lab 4 | [How to capture viral load results](../user-guides/capture-results.md) |
-| Lab 5 | [How to review and approve results](../user-guides/approve-results.md) and [How to release results](../user-guides/release-results.md) |
-| Lab 6 | [How to handle failed and held samples](../user-guides/failed-and-held-samples.md) |
+| Lab 2 | [Register a viral load test request](../user-guides/register-a-request.md) |
+| Lab 3 | [Batch samples for testing](../user-guides/batch-samples.md) |
+| Lab 4 | [Capture viral load results](../user-guides/capture-results.md) |
+| Lab 5 | [Review and approve results](../user-guides/approve-results.md) and [Release results](../user-guides/release-results.md) |
+| Lab 6 | [Handle failed and held samples](../user-guides/failed-and-held-samples.md) |
 | Lab 7 | [Sample statuses](../user-guides/sample-statuses.md) |
-| Admin 1 | [How to administer InteLIS](../user-guides/administer-intelis.md) |
-| Admin 2 | [How to manage users and roles](../user-guides/admin-users-and-roles.md) |
-| Admin 3 | [How to manage facilities and testing labs](../user-guides/admin-facilities.md) and [How to set up instruments and interfacing](../user-guides/admin-instruments.md) |
-| Admin 4 | [How to maintain the request form lists](../user-guides/admin-module-configuration.md) |
-| Admin 5 | [How to monitor and audit InteLIS](../user-guides/admin-monitoring.md) |
+| Admin 1 | [Administer InteLIS](../user-guides/administer-intelis.md) |
+| Admin 2 | [Manage users and roles](../user-guides/admin-users-and-roles.md) |
+| Admin 3 | [Manage facilities and testing labs](../user-guides/admin-facilities.md) and [Set up instruments and interfacing](../user-guides/admin-instruments.md) |
+| Admin 4 | [Maintain the request form lists](../user-guides/admin-module-configuration.md) |
+| Admin 5 | [Monitor and audit InteLIS](../user-guides/admin-monitoring.md) |
 | Machine 1 | [Maintenance scripts and tools](../guides/maintenance.md) |
 | Machine 2 | [Installing InteLIS on Ubuntu](../guides/installing-intelis-on-ubuntu.md) |
-| Machine 3 | [Updating InteLIS on Ubuntu](../guides/updating-intelis-on-ubuntu.md) |
+| Machine 3 | [Update InteLIS on Ubuntu](../guides/updating-intelis-on-ubuntu.md) |
 | Machine 4 | [Setting up off-machine backups](../guides/setting-up-off-machine-backups.md) |
-| Machine 5 | [Migrating Ubuntu machines](../guides/migrating-ubuntu-machines.md) to rebuild a machine that died, and [Restoring from a backup](../guides/restoring-from-backup.md) to restore in place |
+| Machine 5 | [Migrating Ubuntu machines](../guides/migrating-ubuntu-machines.md) to rebuild a machine that died, and [Restore from a backup](../guides/restoring-from-backup.md) to restore in place |
 | Machine 6 | [MySQL will not start](../guides/mysql-will-not-start.md), [Browser shows PHP code](../guides/browser-shows-php-code.md), [Permission denied errors](../guides/permission-denied-issue.md) and [Fix collation errors](../guides/fix-collation-issue.md) |

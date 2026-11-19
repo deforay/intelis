@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-09-22
 reviewed_against: 5.7.78
 ---
-# Update Stuck at Database Migrations
+# Update stuck at database migrations
 
 An update prints `Running database migrations...` and then nothing more. In
 almost every case the database step is waiting for another query to finish. The

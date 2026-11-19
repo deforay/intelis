@@ -7,14 +7,14 @@ reviewed: 2026-11-19
 reviewed_against: 5.8.8
 ---
 
-# How to release results to the requesting facility
+# Release results to the requesting facility
 
 Approved results reach the requesting facility as a printed PDF report, as an
 email attachment, or as a spreadsheet export.
 
 ## Before starting
 
-- Results approved. See [How to review and approve results](approve-results.md)
+- Results approved. See [Review and approve results](approve-results.md)
 - Permission to print, email or export results
 
 Two kinds of sample can be released:

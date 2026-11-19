@@ -6,7 +6,7 @@ type: how-to
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# How to batch samples for testing
+# Batch samples for testing
 
 Group registered samples into a batch for one analyzer run, and print the batch
 PDF that carries their Sample IDs to the analyzer.
@@ -115,7 +115,7 @@ Each row in **Manage Batch** offers these actions.
 | **Delete** | Remove the batch and return its samples to the list waiting for a batch. Shown only while no sample in the batch has a result or a rejection |
 
 To retest samples in a batch that already has results, see
-[How to handle failed and held samples](failed-and-held-samples.md).
+[Handle failed and held samples](failed-and-held-samples.md).
 
 ## Confirm it worked
 

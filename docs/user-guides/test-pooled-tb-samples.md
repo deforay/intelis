@@ -6,7 +6,7 @@ type: how-to
 reviewed: 2026-11-19
 reviewed_against: 5.8.8
 ---
-# How to test pooled TB samples on GeneXpert
+# Test pooled TB samples on GeneXpert
 
 Test up to 4 sputum samples on one GeneXpert MTB/RIF Ultra cartridge. A negative
 pool is recorded as negative on every sample in it. Any other pool result means

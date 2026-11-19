@@ -6,7 +6,7 @@ type: how-to
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# How to monitor and audit InteLIS
+# Monitor and audit InteLIS
 
 Find who changed a record, check that data and analyzer results are moving, and
 read how the lab is performing. Most pages sit under **ADMIN → Monitoring**.

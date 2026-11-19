@@ -66,6 +66,6 @@ sets each one, and how each one counts in reports.
 
 ## Related guides
 
-- [How to review and approve results](approve-results.md)
-- [How to handle failed and held samples](failed-and-held-samples.md)
-- [How to release results to the requesting facility](release-results.md)
+- [Review and approve results](approve-results.md)
+- [Handle failed and held samples](failed-and-held-samples.md)
+- [Release results to the requesting facility](release-results.md)

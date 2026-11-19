@@ -13,7 +13,7 @@ This page describes which code an InteLIS installation receives when it runs
 `intelis update`, and how that code is published. It applies to Ubuntu
 installations updated through `scripts/upgrade.sh`, as of version 5.7.72.
 
-To update a lab, follow [Updating InteLIS on Ubuntu](guides/updating-intelis-on-ubuntu.md).
+To update a lab, follow [Update InteLIS on Ubuntu](guides/updating-intelis-on-ubuntu.md).
 
 ## The `stable` branch
 

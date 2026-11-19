@@ -77,7 +77,7 @@ when the installation runs that module.
     emailing results or importing analyzer results. To stop a practice
     installation from syncing with the live STS, set its **Instance Type** to
     **Standalone** under **System Admin**. See
-    [How to use the System Admin area](admin-system-administration.md).
+    [Use the System Admin area](admin-system-administration.md).
 
 ## Module panels
 
@@ -108,7 +108,7 @@ reach the others.
 
 | Setting | Default | Controls |
 | --- | --- | --- |
-| Record a negative GeneXpert pool on every sample in it | **No** | Whether InteLIS records a negative GeneXpert pool result as **MTB not detected** on every sample in the pool. Set it to **Yes** only if the national programme accepts pooled testing for release. InteLIS never records a pool that is not negative this way. Set it on the STS, which sends it to every lab. See [How to test pooled TB samples on GeneXpert](test-pooled-tb-samples.md) |
+| Record a negative GeneXpert pool on every sample in it | **No** | Whether InteLIS records a negative GeneXpert pool result as **MTB not detected** on every sample in the pool. Set it to **Yes** only if the national programme accepts pooled testing for release. InteLIS never records a pool that is not negative this way. Set it on the STS, which sends it to every lab. See [Test pooled TB samples on GeneXpert](test-pooled-tb-samples.md) |
 
 ??? warning "Auto Approve API Results"
 

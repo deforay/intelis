@@ -7,7 +7,7 @@ reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
 
-# How to use the System Admin area
+# Use the System Admin area
 
 System Admin is a second administration area at `/system-admin` on the
 installation's own address. It holds the settings that decide what kind of

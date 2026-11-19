@@ -17,7 +17,7 @@ Applies to InteLIS 5.8.8.
 
 Every report page uses the same controls. Set the filters, select **Search**, and
 use the export control if the page has one. See
-[How to sign in and navigate InteLIS](signing-in.md) for those controls.
+[Sign in and navigate InteLIS](signing-in.md) for those controls.
 
 A menu entry shows only when the installation runs that test and the role has
 permission for that report.

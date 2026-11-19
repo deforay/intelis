@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# Running Commands on a Lab from the STS
+# Run commands on a lab from the STS
 
 Resend data, refresh, upgrade or roll back a connected lab from the STS, with
 nobody at the lab machine.

@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-10-23
 reviewed_against: 5.8.2
 ---
-# Browser Shows PHP Code Instead of InteLIS
+# Browser shows PHP code instead of InteLIS
 
 The browser shows text starting with `<?php declare(strict_types=1);`, or offers
 a file to download, instead of the InteLIS sign-in page.
@@ -38,7 +38,7 @@ a file to download, instead of the InteLIS sign-in page.
         ```
 
 2. Answer its questions. It asks before each repair.
-   [Site Will Not Open](site-will-not-open.md) covers every other symptom.
+   [Site will not open](site-will-not-open.md) covers every other symptom.
 3. Reload the browser when the doctor shows `InteLIS is working again.`
 
     ??? failure "If the site still does not open"
@@ -56,7 +56,7 @@ a file to download, instead of the InteLIS sign-in page.
 
     An interrupted setup or release upgrade can also leave file ownership and
     database migrations unfinished. The update settles both. See
-    [Updating InteLIS on Ubuntu](updating-intelis-on-ubuntu.md).
+    [Update InteLIS on Ubuntu](updating-intelis-on-ubuntu.md).
 
 ## If the site opens but shows an error
 

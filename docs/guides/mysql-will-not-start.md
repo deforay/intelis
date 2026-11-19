@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-10-23
 reviewed_against: 5.8.2
 ---
-# MySQL Will Not Start
+# MySQL will not start
 
 MySQL refuses to start, so InteLIS cannot open and nothing can be backed up.
 
@@ -134,7 +134,7 @@ The doctor checks each cause below. Open one to repair it by hand.
     Send `mysql-report.txt` and ask for help. Do not change
     `innodb_force_recovery`. If `/var/www/intelis/backups/db` holds a recent
     backup, restoring it is usually faster and safer than repairing the files.
-    See [Restoring from a backup](restoring-from-backup.md).
+    See [Restore from a backup](restoring-from-backup.md).
 
 The doctor also checks for a blocked MySQL service, a missing connection folder,
 settings placed under the wrong heading in a MySQL configuration file (the
