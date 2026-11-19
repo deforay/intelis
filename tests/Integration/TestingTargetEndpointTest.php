@@ -299,5 +299,11 @@ final class TestingTargetEndpointTest extends TestCase
         }
         $this->assertCount(3, $written);
         $this->assertCount(2, preg_grep('/-Suppression-Target-Report-/', $written));
+        // The two runs may fall in different seconds, so the count alone cannot
+        // show the random part. Every name must carry it.
+        $stampAndRandom = '/-\d{2}-[A-Za-z]{3}-\d{4}-\d{2}-\d{2}-\d{2}-[0-9a-f]{8}\.xlsx$/';
+        foreach ($written as $file) {
+            $this->assertMatchesRegularExpression($stampAndRandom, $file);
+        }
     }
 }
