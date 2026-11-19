@@ -362,6 +362,10 @@ Opens with hepatitis selected. See
 Shows the same counts and charts as the viral load tab. See
 [Dashboard](reports.md#dashboard).
 
+When **VL Monthly Target** is on, the tab also shows a line saying how many
+CD4 testing labs did not meet the monthly test target. Its **more** link opens
+the [CD4 Testing Target Report](#cd4-testing-target-report).
+
 ### Sample Status Report
 
 **Location:** **CD4 → Management → Sample Status Report**
@@ -395,6 +399,13 @@ Works like the viral load version. See
 Works like the viral load **Clinic Reports**. See
 [Clinic Reports](reports.md#clinic-reports). The tabs are listed in
 [Clinic report tabs per test](#clinic-report-tabs-per-test) lists the tabs.
+
+### CD4 Testing Target Report
+
+**Location:** **CD4 → Management → CD4 Testing Target Report**
+
+Has the same filters and columns as the
+[EID Testing Target Report](#eid-testing-target-report), for CD4 samples.
 
 ### Sample Ageing Report
 
