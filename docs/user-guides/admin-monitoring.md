@@ -292,14 +292,20 @@ sample tested twice counts as two tests, so a retest does not hide a failure.
 ## Find where samples are lost
 
 1. Go to **ADMIN → Monitoring → Source of Requests**.
-2. Set **Date Range** and **Test Type**. The page shows nothing until both are
-   set.
-3. Narrow it with **Province/State**, **Name of the Clinic**, **Name of the
-   Testing Lab** or **Source of Request** if needed.
+2. Choose the **Test Type**. **Request Date** covers the last 180 days unless
+   you change it.
+3. Narrow it with **Province/State**, **District/County**, **Name of the
+   Clinic**, **Name of the Testing Lab**, **Source of Request** or **Stage** if
+   needed.
 4. Select **Search**.
-5. Compare the counts along each row: **No. of Samples Requested**,
-   **Acknowledged**, **Received at Testing Lab**, **Tested** and **Results
+5. On the **By Source** tab, compare the counts along each row:
+   **Requested**, **Received at Lab**, **Rejected**, **Tested** and **Results
    Returned**. The count that drops shows where samples stop.
+6. Check the overdue columns. **Not Received After** counts samples that never
+   reached the lab. **Not Returned After** counts results that never went
+   back. Select a number to list those samples.
+7. To see the same counts per clinic, open **By Clinic**. To see them over
+   time, open **Trend**.
 
 ## Read the record behind a result
 
