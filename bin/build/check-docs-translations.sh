@@ -23,13 +23,14 @@ cd "$(dirname "$0")/../.."
 FOLDERS=(docs/user-guides docs/guides docs/job-aids)
 
 # Counts the lines that give a page its shape: headings, fence lines, content
-# tabs and admonitions (open or collapsed). Fenced code is skipped for the
-# heading count, because a `#` comment in a shell block is not a heading.
+# tabs and admonitions (open or collapsed). Headings count at any indent,
+# because the steps inside a content tab sit four spaces in. Fenced code is
+# skipped, because a `#` comment in a shell block is not a heading.
 shape() {
     awk '
         /^[[:space:]]*```/ { fences++; in_code = !in_code; next }
         in_code { next }
-        /^#{1,6} /                         { headings++ }
+        /^[[:space:]]*#{1,6} /             { headings++ }
         /^[[:space:]]*=== "/               { tabs++ }
         /^[[:space:]]*(!!!|\?\?\?\+?) /    { boxes++ }
         END { printf "headings=%d code-fences=%d tabs=%d boxes=%d", headings, fences, tabs, boxes }
