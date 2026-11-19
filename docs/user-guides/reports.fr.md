@@ -174,9 +174,10 @@ Voir [Enregistrer le stockage d'un échantillon](store-samples.md).
 
 ## Rapport d'ancienneté des échantillons
 
-**Emplacement :** absent du menu. Ouvrir `/reports/sample-ageing.php` à
-l'adresse web d'InteLIS. Le rôle doit disposer de la permission **Rapport
-d'ancienneté des échantillons**.
+**Emplacement :** **CHARGE VIRALE DU VIH → Gestion → Rapport d'ancienneté des
+échantillons**. Chaque autre test a la même entrée dans son propre menu
+**Gestion**. Le rôle doit disposer de la permission **Rapport d'ancienneté des
+échantillons**.
 
 Indique depuis combien de temps les échantillons attendent à chaque étape,
 afin de retrouver les échantillons bloqués avant leur expiration.
