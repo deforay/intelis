@@ -6,6 +6,7 @@ use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -22,9 +23,12 @@ try {
     // Start transaction
     $db->beginTransaction();
     $_POST['insertOperation'] = true;
-    $response = $vlService->insertSample($_POST);
+    $inserted = $vlService->insertSample($_POST, true);
+    $response = $inserted['id'];
     // Commit transaction
     $db->commitTransaction();
+    // Assign the code now, not at the next cron run (see assignCodeNow)
+    ContainerRegistry::get(TestRequestsService::class)->assignCodeNow($inserted);
 } catch (Throwable $e) {
     // Rollback transaction in case of error
     $db->rollbackTransaction();
