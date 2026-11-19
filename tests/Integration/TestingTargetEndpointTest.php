@@ -1,0 +1,144 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Integration;
+
+use Tests\Support\TestRun;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use App\Services\CommonService;
+use Tests\Support\LegacyAppHarness;
+use App\Registries\ContainerRegistry;
+use App\HttpHandlers\LegacyRequestHandler;
+
+use const SAMPLE_STATUS\ACCEPTED;
+
+/**
+ * Each test's Testing Target Report endpoint is a few lines that set the test
+ * type and include app/reports/_testing-target-data.php. This drives one of
+ * them through the request handler, to pin the scope it applies and the two
+ * answers it gives: the grid's rows and the dashboard's count of labs.
+ *
+ * One drive per test: the handler uses require_once. Set INTELIS_TEST_DB_HOST/
+ * _PORT/_USER/_PASS to run; skipped without them.
+ */
+final class TestingTargetEndpointTest extends TestCase
+{
+    private const DATABASE = 'intelis_testing_target_endpoint';
+    private const TABLES = ['form_eid', 'testing_labs', 'facility_details', 'system_config', 'global_config'];
+    private const ENDPOINT = '/eid/management/getEidMonthlyThresholdReport.php';
+
+    private static function booted(): bool
+    {
+        return getenv('INTELIS_TEST_DB_HOST') !== false
+            && getenv('INTELIS_TEST_DB_HOST') !== ''
+            && getenv('INTELIS_TEST_DB_USER') !== false
+            && getenv('INTELIS_TEST_DB_USER') !== '';
+    }
+
+    protected function setUp(): void
+    {
+        if (!self::booted()) {
+            self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
+        }
+        require_once ROOT_PATH . '/app/system/version.php';
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES);
+
+        $db = LegacyAppHarness::db();
+        foreach ([[10, 'Lab A'], [30, 'Lab C'], [101, 'Clinic 1'], [102, 'Clinic 2']] as [$id, $name]) {
+            $db->insert('facility_details', ['facility_id' => $id, 'facility_name' => $name, 'status' => 'active']);
+        }
+        $db->insert('testing_labs', ['test_type' => 'eid', 'facility_id' => 10, 'monthly_target' => '2']);
+        $db->insert('testing_labs', ['test_type' => 'eid', 'facility_id' => 30, 'monthly_target' => '5']);
+        // Lab A tests two in September (target met), one from each clinic.
+        foreach ([101, 102] as $facility) {
+            $db->insert('form_eid', [
+                'lab_id' => 10,
+                'facility_id' => $facility,
+                'result_status' => ACCEPTED,
+                'is_sample_rejected' => 'no',
+                'sample_received_at_lab_datetime' => '2026-09-02 09:00:00',
+                'sample_tested_datetime' => '2026-09-03 09:00:00',
+            ]);
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        if (self::booted()) {
+            LegacyAppHarness::shutdown();
+        }
+        $_SESSION = [];
+    }
+
+    /** @return array<string, mixed> */
+    private function drive(array $post): array
+    {
+        $request = LegacyAppHarness::withPost($post, self::ENDPOINT);
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        ob_start();
+        try {
+            $response = $handler->handle($request);
+        } finally {
+            $printed = (string) ob_get_clean();
+        }
+        $body = $printed . $response->getBody();
+        return json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    /** @return list<string> "lab|month|tested|target|met" per row */
+    private static function cells(array $answer): array
+    {
+        return array_map(
+            static fn(array $r): string => implode('|', [$r[0], $r[1], $r[4], $r[5], $r[6]]),
+            $answer['aaData']
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheStsGridHasOneRowPerLabMonthWithZeroFilledTargetLabs(): void
+    {
+        LegacyAppHarness::withSession(['roleId' => 1, 'instance' => ['type' => 'remoteuser']]);
+
+        $answer = $this->drive(['dateRange' => '01-Sep-2026 to 30-Sep-2026', 'targetType' => '3']);
+
+        $this->assertSame(['Lab A|Sep-2026|2|2|Yes', 'Lab C|Sep-2026|0|5|No'], self::cells($answer));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAFacilityUserSeesOnlyTheirSamplesAndNoZeroFilledLabs(): void
+    {
+        LegacyAppHarness::withSession([
+            'roleId' => 1,
+            'instance' => ['type' => 'remoteuser'],
+            'facilityMap' => '101',
+        ]);
+
+        $answer = $this->drive(['dateRange' => '01-Sep-2026 to 30-Sep-2026', 'targetType' => '3']);
+
+        $this->assertSame(['Lab A|Sep-2026|1|2|No'], self::cells($answer));
+    }
+
+    #[RunInSeparateProcess]
+    public function testALabInstallSeesItsOwnLabOnly(): void
+    {
+        LegacyAppHarness::withSession(['roleId' => 1, 'instance' => ['type' => 'vluser'], 'labId' => 30]);
+
+        $answer = $this->drive(['dateRange' => '01-Sep-2026 to 30-Sep-2026', 'targetType' => '3']);
+
+        $this->assertSame(['Lab C|Sep-2026|0|5|No'], self::cells($answer));
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheDashboardGetsTheNumberOfLabsBelowTarget(): void
+    {
+        LegacyAppHarness::withSession(['roleId' => 1, 'instance' => ['type' => 'remoteuser']]);
+
+        // September and October are complete by now. Lab A misses October,
+        // Lab C misses both: two labs.
+        $answer = $this->drive(['labsBelowTarget' => 'yes', 'sampleTestDate' => '01-Sep-2026 to 31-Oct-2026']);
+
+        $this->assertSame(['labsBelowTarget' => 2], $answer);
+    }
+}

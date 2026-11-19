@@ -38107,3 +38107,22 @@ msgstr "Télécharger la feuille Excel des contrôles non importés"
 
 msgid "Download the Excel Sheet with not uploaded storages"
 msgstr "Télécharger la feuille Excel des stockages non importés"
+
+msgid "Choose the months to show"
+msgstr "Choisir les mois à afficher"
+
+
+msgid "Target Met"
+msgstr "Objectif atteint"
+
+msgid "Received counts samples received at the lab in the month."
+msgstr "Reçus compte les échantillons reçus au laboratoire dans le mois."
+
+msgid "Rejected counts those received in the month and rejected."
+msgstr "Rejetés compte ceux reçus dans le mois puis rejetés."
+
+msgid "Tested counts samples tested in the month that were not rejected."
+msgstr "Testés compte les échantillons testés dans le mois qui n'ont pas été rejetés."
+
+msgid "Cancelled samples are left out."
+msgstr "Les échantillons annulés ne sont pas comptés."
