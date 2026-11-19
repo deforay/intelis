@@ -84,12 +84,21 @@ sudo intelis interface
         ??? failure "S'il affiche `Another instance of the script : interface.php is already running.`"
 
             L'import planifié est en cours. Attendre une minute, puis refaire
-            l'étape 1. Si le message se répète pendant plus de 15 minutes, une
-            exécution est bloquée. Forcer une nouvelle exécution :
+            l'étape 1.
+
+            Si le message se répète pendant plus de 15 minutes, l'import en
+            cours traite encore un gros arriéré. Vérifier qu'il tourne :
 
             ```bash
-            sudo intelis interface force
+            pgrep -af bin/interface.php
             ```
+
+            S'il affiche une ligne, attendre la fin de l'import. Ne pas lancer
+            un autre import avec `force`. `force` écrase aussi les résultats des
+            échantillons verrouillés.
+
+            S'il n'affiche rien, refaire l'étape 1. Un import arrêté libère son
+            verrou en moins de 15 minutes.
 
         ??? failure "S'il compte `0` enregistrement"
 

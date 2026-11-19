@@ -79,12 +79,21 @@ sudo intelis interface
         ??? failure "If it prints `Another instance of the script : interface.php is already running.`"
 
             The scheduled import is running now. Wait one minute, then repeat
-            step 1. If the message repeats for more than 15 minutes, a run is
-            stuck. Force a new run:
+            step 1.
+
+            If the message repeats for more than 15 minutes, the running import
+            is still working through a large backlog. Confirm it is running:
 
             ```bash
-            sudo intelis interface force
+            pgrep -af bin/interface.php
             ```
+
+            If it prints a line, wait for the import to finish. Do not use
+            `force` to start another one. `force` also overwrites results in
+            locked samples.
+
+            If it prints nothing, repeat step 1. A stopped import releases its
+            lock within 15 minutes.
 
         ??? failure "If it counts `0` records"
 
