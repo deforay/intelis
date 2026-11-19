@@ -66,7 +66,9 @@ foreach ($rows as $row) {
 }
 
 // The grid's search box: a row stays when any cell shown contains the text.
-$search = mb_strtolower(trim((string) ($_POST['sSearch'] ?? '')));
+// The request is entity-encoded on the way in, so "A & B" arrives as
+// "A &amp; B": decode it to compare with what the reader sees.
+$search = mb_strtolower(trim(html_entity_decode((string) ($_POST['sSearch'] ?? ''), ENT_QUOTES, 'UTF-8')));
 if ($search !== '') {
     $aaData = array_values(array_filter($aaData, static function (array $cells) use ($search): bool {
         $shown = $cells;
