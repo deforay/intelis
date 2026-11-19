@@ -1,6 +1,6 @@
 ---
-description: Match what is going wrong on an InteLIS machine to the command that diagnoses it and the page that fixes it.
-audience: [system-admin, lab-admin]
+description: Match what is going wrong, in the lab or on the InteLIS machine, to the page that fixes it.
+audience: [lab-staff, lab-supervisor, lab-admin, system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
@@ -9,9 +9,41 @@ reviewed_against: 5.8.3
 ---
 # Where to Start
 
-Find the symptom in the table, run its command on the InteLIS machine, and
-follow the page it points to. Each command reports what it found and prints
-the next command to run.
+Find the problem in one of the two tables below. Each row points to the page
+that fixes it.
+
+- [Problems while using InteLIS](#problems-while-using-intelis): a sample,
+  a result, a manifest or a form in the browser.
+- [Problems with the machine](#problems-with-the-machine): the site will not
+  open, MySQL, an update, backups or the analyzer connection.
+
+## Problems while using InteLIS
+
+| Problem | Read |
+| --- | --- |
+| Sign-in fails, or asks for the text in an image | **If sign-in fails** in [How to sign in and navigate InteLIS](../user-guides/signing-in.md) |
+| A password is forgotten | Ask the administrator to set a new one. If no administrator can sign in, see [Forgotten Password](forgotten-password.md) |
+| The sidebar is empty, or a menu or button is missing | The role lacks the permission. Ask the administrator. See [How to manage users and roles](../user-guides/admin-users-and-roles.md) |
+| A facility is missing from the request form | **If the facility is missing from the list** in [How to register a viral load test request](../user-guides/register-a-request.md) |
+| A sample cannot be found | [Find a sample that is not in a batch or on a manifest](../user-guides/signing-in.md#find-a-sample-that-is-not-in-a-batch-or-on-a-manifest) |
+| A **Needs attention** box shows above the request list | [Act on the Needs attention box](../user-guides/signing-in.md#act-on-the-needs-attention-box) |
+| A sample is missing from the list when making a batch | **If a sample is missing from the list** in [How to batch samples for testing](../user-guides/batch-samples.md) |
+| A sample is missing from the list when making a manifest | **If a sample is missing from the list** in [How to send samples on a manifest](../user-guides/send-samples-on-a-manifest.md) |
+| **Edit** is greyed out on a manifest | **If Edit is greyed out** in [How to send samples on a manifest](../user-guides/send-samples-on-a-manifest.md) |
+| A message shows instead of the samples when receiving a manifest | **If a message appears instead of the samples** in [How to receive samples sent on a manifest](../user-guides/receive-referred-samples.md) |
+| Analyzer results do not appear in InteLIS | **If results do not arrive** in [How to capture viral load results](../user-guides/capture-results.md), then [Analyzer Results Not Arriving](interfacing-results-not-arriving.md) |
+| Imported results show **Awaiting Approval** | **If the results show Awaiting Approval** in [How to capture viral load results](../user-guides/capture-results.md) |
+| A sample failed on the analyzer, or is on hold | [How to handle failed and held samples](../user-guides/failed-and-held-samples.md) |
+| A result shows **Locked** and cannot be corrected | **If the row shows Locked** in [How to review and approve results](../user-guides/approve-results.md) |
+| A rejected sample is missing from the email list | **If a rejected sample is missing from the list** in [How to release results](../user-guides/release-results.md) |
+| The facility cannot see an approved result | [Results Not Reaching the STS](sts-sync-not-working.md) |
+| A status name is unclear | [Sample statuses](../user-guides/sample-statuses.md) |
+| A word in these guides is unclear | [Words used in these guides](../user-guides/glossary.md) |
+
+## Problems with the machine
+
+Run the command on the InteLIS machine, then follow the page it points to.
+Each command reports what it found and prints the next command to run.
 
 | Symptom | Run first | Then read |
 | --- | --- | --- |
@@ -31,6 +63,7 @@ the next command to run.
 | Results or requests are not reaching the STS | `sudo intelis check` | [Results Not Reaching the STS](sts-sync-not-working.md) |
 | Analyzer results are not arriving in InteLIS | `sudo intelis interface` | [Analyzer Results Not Arriving](interfacing-results-not-arriving.md) |
 | The site is slow, or the disk is nearly full | `sudo intelis health` | [Free disk space](maintenance.md#free-disk-space) |
+| Data or a file was lost or deleted by mistake | `sudo intelis restore` | [Restoring from a Backup](restoring-from-backup.md) |
 | Backups are not running, or are old | `sudo intelis backup status` | [Setting Up Off-Machine Backups](setting-up-off-machine-backups.md) |
 | Scheduled work stopped: no imports, no sync, no backups | `sudo crontab -l \| grep cron.sh` | [Check the scheduled tasks are running](maintenance.md#check-the-scheduled-tasks-are-running) |
 
