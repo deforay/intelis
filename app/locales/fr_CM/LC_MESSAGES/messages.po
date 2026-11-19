@@ -38062,3 +38062,54 @@ msgstr "Cet ID de l'échantillon peut changer lors de l'enregistrement."
 
 msgid "The form shows the next free Sample ID. If another sample is saved first, this sample gets the next ID after it. Use the Sample ID shown after saving."
 msgstr "Le formulaire affiche le prochain ID de l'échantillon disponible. Si un autre échantillon est enregistré avant, cet échantillon reçoit l'ID suivant. Utilisez l'ID de l'échantillon affiché après l'enregistrement."
+
+msgid "%d cancelled"
+msgstr "%d annulé(s)"
+
+msgid "%d rejected"
+msgstr "%d rejeté(s)"
+
+msgid "Add who tested, reviewed and approved each sample, its status, analyzer run and record history"
+msgstr "Ajouter qui a testé, vérifié et approuvé chaque échantillon, son statut, la série sur l'automate et l'historique de l'enregistrement"
+
+msgid "Another sync with the STS is running. Try again in a minute."
+msgstr "Une autre synchronisation avec le STS est en cours. Réessayez dans une minute."
+
+msgid "Batch / Manifest"
+msgstr "Lot / Manifeste"
+
+msgid "Include lab and audit details"
+msgstr "Inclure les détails du laboratoire et de l'audit"
+
+msgid "Instrument not found"
+msgstr "Instrument introuvable"
+
+msgid "Keep them cancelled or rejected at their current lab"
+msgstr "Les garder annulés ou rejetés dans leur laboratoire actuel"
+
+msgid "Make"
+msgstr "Marque"
+
+msgid "Not in a batch"
+msgstr "Pas dans un lot"
+
+msgid "Not on a manifest"
+msgstr "Pas sur un manifeste"
+
+msgid "Please choose what should happen to the cancelled and rejected samples"
+msgstr "Veuillez choisir ce que deviennent les échantillons annulés et rejetés"
+
+msgid "Please select the instrument make"
+msgstr "Veuillez sélectionner la marque de l'instrument"
+
+msgid "Send them to the new lab to be tested"
+msgstr "Les envoyer au nouveau laboratoire pour être testés"
+
+msgid "The selected manifests have %1$d cancelled and %2$d rejected sample(s). What should happen to them at the new lab?"
+msgstr "Les manifestes sélectionnés contiennent %1$d échantillon(s) annulé(s) et %2$d rejeté(s). Que doivent-ils devenir au nouveau laboratoire ?"
+
+msgid "Download the Excel Sheet with not uploaded controls"
+msgstr "Télécharger la feuille Excel des contrôles non importés"
+
+msgid "Download the Excel Sheet with not uploaded storages"
+msgstr "Télécharger la feuille Excel des stockages non importés"
