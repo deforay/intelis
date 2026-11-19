@@ -166,8 +166,8 @@ manifeste dans le groupe de ce test.
 
         | Choix | Ce qui se passe |
         | --- | --- |
-        | **Send them to the new lab to be tested** | Ces échantillons partent avec les autres et attendent d'être testés au nouveau laboratoire. |
-        | **Keep them cancelled or rejected at their current lab** | Ces échantillons restent au premier laboratoire avec leur statut. |
+        | **Les envoyer au nouveau laboratoire pour être testés** | Ces échantillons partent avec les autres et attendent d'être testés au nouveau laboratoire. |
+        | **Les garder annulés ou rejetés dans leur laboratoire actuel** | Ces échantillons restent au premier laboratoire avec leur statut. |
 
     9. Sélectionner **Déplacer**.
     10. Si un manifeste a déjà été réceptionné au premier laboratoire, InteLIS

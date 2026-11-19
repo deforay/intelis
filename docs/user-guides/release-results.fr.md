@@ -137,7 +137,7 @@ l'impression ni au courriel.
        analyse. **Non** retire le numéro ART, le nom et le numéro de téléphone
        du patient.
     6. Pour ajouter le parcours de chaque échantillon au laboratoire, cocher
-       **Include lab and audit details**. Le tableur ajoute alors le lot, la
+       **Inclure les détails du laboratoire et de l'audit**. Le tableur ajoute alors le lot, la
        plateforme, la série de l'automate, les personnes qui ont testé, révisé
        et approuvé le résultat, le statut de l'échantillon, les délais et les
        personnes qui ont créé et modifié en dernier l'enregistrement. Laisser

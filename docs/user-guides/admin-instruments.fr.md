@@ -36,16 +36,16 @@ Deux tâches voisines ont leur propre guide :
 3. Saisir **Nom de l'instrument**, le nom que le laboratoire donne à cet
    automate, par exemple Cobas 6800 NRL. Chaque instrument doit avoir son
    propre nom.
-4. Renseigner **Make** avec le fabricant de l'automate, par exemple Roche ou
+4. Renseigner **Marque** avec le fabricant de l'automate, par exemple Roche ou
    Abbott. Si le fabricant n'est pas dans la liste, choisir **Autre**.
 
-    ??? info "À quoi sert Make"
+    ??? info "À quoi sert Marque"
 
         **ADMIN → Rapports → Activité des instruments** regroupe les tests de
         **Tests par instrument** par fabricant sous **Par type d'instrument**.
         Laissé vide, le rapport déduit le fabricant du **Fichier des
         instruments** et du **Nom de l'instrument**. Sur la page Modifier
-        l'instrument, **Make** affiche cette déduction tant qu'aucun fabricant
+        l'instrument, **Marque** affiche cette déduction tant qu'aucun fabricant
         n'est enregistré.
 
 5. Renseigner **Laboratoire d'analyse** avec le laboratoire où se trouve
@@ -149,7 +149,7 @@ est enregistré comme actif.
 | Modification | Contrôle |
 | --- | --- |
 | Nouvel instrument | Il est proposé comme plateforme de test à la création d'un lot |
-| Make | **Par type d'instrument** dans **Activité des instruments** compte les tests de l'instrument sous ce fabricant |
+| Marque | **Par type d'instrument** dans **Activité des instruments** compte les tests de l'instrument sous ce fabricant |
 | Fichier des instruments | Importer un fichier de résultats de l'automate et lire les lignes importées |
 | Format de date | Les dates de test importées correspondent à celles de l'automate |
 | Faible VL Texte de résultat | Un résultat indétectable est importé comme indétectable |
