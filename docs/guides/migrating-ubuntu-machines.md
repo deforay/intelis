@@ -21,6 +21,11 @@ internet.
 
     ### On the old machine
 
+    !!! warning "Stop data entry first"
+
+        Ask everyone to stop entering data on the old machine until the new one
+        is ready. Anything entered after the backup in step 1 is not moved.
+
     1. Open a terminal and take a fresh backup, so nothing entered since the last
        automatic backup is lost:
 
@@ -67,30 +72,40 @@ internet.
        terminal window. Its path appears after the command.
     5. Press Enter. The `backups` folder is copied onto the USB drive.
     6. Unplug the USB drive.
+    7. Shut down the old machine:
+
+        ```bash
+        sudo poweroff
+        ```
+
+        A running old machine keeps sending to the STS and taking analyzer
+        results, for the same lab as the new one. Keep it unchanged until the
+        new machine passes the checks at the end of this guide. If the new
+        machine fails, turn the old one back on and carry on with it.
 
     ### On the new machine
 
-    7. Plug in the USB drive.
-    8. Open a terminal and download the installer:
+    8. Plug in the USB drive.
+    9. Open a terminal and download the installer:
 
         ```bash
         cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)"
         ```
 
-    9. Type this, followed by a space. Do not press Enter yet:
+    10. Type this, followed by a space. Do not press Enter yet:
 
         ```bash
         sudo bash setup.sh --restore-from-backup-folder
         ```
 
-    10. Open the USB drive in the **Files** app. Drag the `backups` folder onto
+    11. Open the USB drive in the **Files** app. Drag the `backups` folder onto
         the terminal window. Its path appears after the command.
 
         Instead of dragging, click the folder once and press **Ctrl+C**. Then
         click in the terminal and press **Ctrl+Shift+V**. If the path has spaces
         and no quotes around it, add `'` at both ends.
 
-    11. Press Enter, then answer the installer's questions:
+    12. Press Enter, then answer the installer's questions:
 
         | Question | Answer |
         | --- | --- |
@@ -101,7 +116,7 @@ internet.
         | New MySQL root password | A new password for this machine, typed twice. Write it down. |
         | Is this correct? | Check the summary, then press Enter (Yes). |
 
-    12. Wait 10 to 20 minutes. The installer ends with the line `Setup is complete.`
+    13. Wait 10 to 20 minutes. The installer ends with the line `Setup is complete.`
 
         Near the end it prints `Signatures, report templates and logos restored`.
         The lab settings, such as the STS address and the enabled modules, and
@@ -134,7 +149,7 @@ internet.
             cd /var/www/intelis && sudo -u www-data php bin/backup-key-admin.php approve --lab <lab-id>
             ```
 
-            Then repeat steps 9 to 11, adding the STS address and the token after
+            Then repeat steps 10 to 12, adding the STS address and the token after
             the folder path:
 
             ```bash
@@ -147,14 +162,14 @@ internet.
 
     ### Check the lab
 
-    13. Open InteLIS in the browser.
-    14. Log in with an administrator account from the old machine. Do not create
+    14. Open InteLIS in the browser.
+    15. Log in with an administrator account from the old machine. Do not create
         a new one. The restored database already holds the users, the lab
         settings and all the data.
-    15. Check the lab settings under **Admin → Settings → General Configuration**.
-    16. Open the result PDF of a recent request, and check its signatures and
+    16. Check the lab settings under **Admin → Settings → General Configuration**.
+    17. Open the result PDF of a recent request, and check its signatures and
         logo appear.
-    17. If the lab uses the interfacing tool, restore its database too.
+    18. If the lab uses the interfacing tool, restore its database too.
 
         1. In a terminal, type `sudo cp` followed by a space. Do not press Enter
            yet.
