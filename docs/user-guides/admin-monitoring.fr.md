@@ -321,15 +321,21 @@ masque donc pas un échec.
 ## Trouver où se perdent les échantillons
 
 1. Aller à **ADMIN → Surveillance → Source des demandes**.
-2. Renseigner **Plage de dates** et **Type de test**. La page ne montre rien
-   tant que les deux ne sont pas renseignés.
-3. Réduire au besoin avec **Province**, **Nom de la clinique**, **Nom du
-   laboratoire d'analyse** ou **Source de la demande**.
+2. Choisir le **Type de test**. **Date de la demande** couvre les 180 derniers
+   jours, sauf modification.
+3. Réduire au besoin avec **Province**, **District**, **Nom de la clinique**,
+   **Nom du laboratoire d'analyse**, **Source de la demande** ou **Étape**.
 4. Sélectionner **Rechercher**.
-5. Comparer les chiffres de chaque ligne : **Nombre d'échantillons demandés**,
-   **ayant fait l'objet d'un accusé de réception**, **reçus au laboratoire
-   d'analyse**, **testés**, et **Nombre de résultats renvoyés**. Le chiffre qui
-   baisse montre où les échantillons s'arrêtent.
+5. Dans l'onglet **Par source**, comparer les chiffres de chaque ligne :
+   **Demandés**, **Reçu au laboratoire**, **Rejeté**, **Testé** et
+   **Résultats renvoyés**. Le chiffre qui baisse montre où les échantillons
+   s'arrêtent.
+6. Vérifier les colonnes de retard. **Non reçus après** compte les
+   échantillons qui n'ont jamais atteint le laboratoire. **Non renvoyés après**
+   compte les résultats qui ne sont jamais repartis. Sélectionner un chiffre
+   pour lister ces échantillons.
+7. Pour voir les mêmes chiffres par clinique, ouvrir **Par clinique**. Pour
+   les voir dans le temps, ouvrir **Tendance**.
 
 ## Lire la fiche derrière un résultat
 
