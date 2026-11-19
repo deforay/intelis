@@ -19,7 +19,9 @@ should move to 24.04 LTS with
 The current release requires **PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)**. PHP 8.2, 8.3,
 and older versions are not supported. Both Apache and command-line PHP must
 meet this requirement. The update switches PHP to 8.4 (8.5 on Ubuntu 26.04
-and later) automatically.
+and later) automatically. Ubuntu's own PHP
+8.5 package on 26.04 also passes, even with a lower number, because it carries
+the security fix. `intelis check` shows this on its `PHP version` line.
 
 **Choose the situation that fits, then follow its steps from top to bottom.**
 To tell which one fits, open a terminal, type `intelis` and press Enter:
