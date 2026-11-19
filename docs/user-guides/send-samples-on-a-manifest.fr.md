@@ -138,25 +138,43 @@ manifeste dans le groupe de ce test.
 === "Déplacer des manifestes vers un autre laboratoire"
 
     À utiliser lorsqu'un laboratoire d'analyse ne peut pas prendre en charge les
-    colis qui lui ont déjà été envoyés. **Déplacer le manifeste** dépend d'une
+    colis qui lui ont déjà été envoyés. Seul un administrateur sur le STS peut
+    déplacer des manifestes. **Déplacer le manifeste** dépend aussi d'une
     permission distincte. Si le bouton est absent, s'adresser à
     l'administrateur.
 
+    Un manifeste dont un échantillon a déjà été testé par le premier
+    laboratoire ne peut pas être déplacé. Sa ligne n'a pas de bouton
+    **Déplacer**.
+
     1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Manifeste VL**.
     2. Sélectionner **Déplacer le manifeste**.
-    3. Choisir le laboratoire auquel les manifestes ont été envoyés dans
-       **Manifeste du laboratoire d'analyse**.
-    4. Pour réduire la liste, renseigner une **Plage de dates**. Elle filtre sur
-       la date de création de chaque manifeste.
-    5. Sélectionner **Search Manifests**.
-    6. Passer dans la liste de droite chaque manifeste à réaffecter.
-    7. Choisir le nouveau laboratoire dans **Affectation au laboratoire
-       d'analyse**.
-    8. Saisir le **Motif du déplacement du ou des manifestes**. C'est la seule trace de
-       la raison pour laquelle les échantillons sont partis vers un autre
-       laboratoire.
-    9. Sélectionner **Save Changes**. La liste des manifestes s'ouvre.
-    10. Envoyer les colis physiques au nouveau laboratoire. Le déplacement ne
+    3. Sous **Rechercher des manifestes**, choisir un onglet :
+        - **Par code de manifeste** : saisir, coller ou scanner les codes dans
+          **Codes des manifestes**, un par ligne.
+        - **Par laboratoire** : choisir dans **Laboratoire d'analyse** le
+          laboratoire où se trouvent les manifestes. **Date du manifeste**
+          couvre les 6 derniers mois, sauf modification.
+    4. Sélectionner **Rechercher**. Les manifestes apparaissent sous
+       **Déplacer les manifestes sélectionnés**.
+    5. Cocher la case de chaque manifeste à déplacer.
+    6. Choisir le nouveau laboratoire dans **Déplacer vers le laboratoire**.
+    7. Saisir le **Motif du déplacement**. C'est la seule trace de la raison
+       pour laquelle les échantillons sont partis vers un autre laboratoire.
+    8. Si l'écran demande quoi faire des échantillons annulés et rejetés, faire
+       un choix :
+
+        | Choix | Ce qui se passe |
+        | --- | --- |
+        | **Send them to the new lab to be tested** | Ces échantillons partent avec les autres et attendent d'être testés au nouveau laboratoire. |
+        | **Keep them cancelled or rejected at their current lab** | Ces échantillons restent au premier laboratoire avec leur statut. |
+
+    9. Sélectionner **Déplacer**.
+    10. Si un manifeste a déjà été réceptionné au premier laboratoire, InteLIS
+        demande si ses échantillons ont été physiquement envoyés au nouveau
+        laboratoire. Sélectionner **OK** seulement si c'est le cas.
+    11. Sélectionner **OK** pour confirmer le déplacement.
+    12. Envoyer les colis physiques au nouveau laboratoire. Le déplacement ne
         modifie que les enregistrements.
 
     ??? info "Si le premier laboratoire a déjà activé le manifeste"
@@ -164,7 +182,8 @@ manifeste dans le groupe de ce test.
         Le déplacement efface les ID d'échantillon attribués par le premier
         laboratoire. Le nouveau laboratoire active le manifeste et attribue ses
         propres ID d'échantillon. L'identifiant utilisé par la structure
-        expéditrice reste le même.
+        expéditrice reste le même. Le premier laboratoire est invité à annuler
+        ses copies des échantillons.
 
 ## Vérifier que tout fonctionne
 
