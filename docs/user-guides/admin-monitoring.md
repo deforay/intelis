@@ -292,8 +292,8 @@ sample tested twice counts as two tests, so a retest does not hide a failure.
 ## Find where samples are lost
 
 1. Go to **ADMIN → Monitoring → Source of Requests**.
-2. Choose the **Test Type**. **Request Date** covers the last 180 days unless
-   you change it.
+2. Choose the **Test Type**. **Request Date** defaults to the last 180 days.
+   Widen it to look further back.
 3. Narrow it with **Province/State**, **District/County**, **Name of the
    Clinic**, **Name of the Testing Lab**, **Source of Request** or **Stage** if
    needed.

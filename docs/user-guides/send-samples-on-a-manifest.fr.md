@@ -154,7 +154,7 @@ manifeste dans le groupe de ce test.
           **Codes des manifestes**, un par ligne.
         - **Par laboratoire** : choisir dans **Laboratoire d'analyse** le
           laboratoire où se trouvent les manifestes. **Date du manifeste**
-          couvre les 6 derniers mois, sauf modification.
+          couvre les 6 derniers mois. L'élargir pour chercher plus loin.
     4. Sélectionner **Rechercher**. Les manifestes apparaissent sous
        **Déplacer les manifestes sélectionnés**.
     5. Cocher la case de chaque manifeste à déplacer.

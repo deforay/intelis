@@ -24,7 +24,8 @@ internet.
     !!! warning "Stop data entry first"
 
         Ask everyone to stop entering data on the old machine until the new one
-        is ready. Anything entered after the backup in step 1 is not moved.
+        is ready. The new machine does not get anything entered after the
+        backup in step 1.
 
     1. Open a terminal and take a fresh backup, so nothing entered since the last
        automatic backup is lost:
