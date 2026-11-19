@@ -179,9 +179,9 @@ Use this when the InteLIS machine has died and a new machine is being set up.
 
     ??? info "If the download is too large"
 
-        Download the whole `config` folder first. A settings backup is made
-        only when the settings change, so the one holding the key can be
-        months old:
+        Download the whole `config` folder first. InteLIS backs up the
+        settings only when they change, so the backup that holds the key can
+        be months old:
 
         ```bash
         sudo rclone copy gdrive:intelis/centrallab-01/backups/config ~/backups/config

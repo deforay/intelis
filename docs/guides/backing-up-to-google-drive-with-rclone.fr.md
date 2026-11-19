@@ -190,8 +190,8 @@ nouvelle machine est en cours d'installation.
 
     ??? info "Si le téléchargement est trop volumineux"
 
-        Télécharger d'abord tout le dossier `config`. Une sauvegarde des
-        paramètres n'est faite que lorsque les paramètres changent, donc celle
+        Télécharger d'abord tout le dossier `config`. InteLIS ne
+        sauvegarde les paramètres que lorsqu'ils changent, donc la sauvegarde
         qui contient la clé peut dater de plusieurs mois :
 
         ```bash

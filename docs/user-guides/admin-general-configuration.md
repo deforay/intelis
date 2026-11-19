@@ -101,7 +101,7 @@ reach the others.
 
 | Setting | Default | Controls |
 | --- | --- | --- |
-| Record a negative GeneXpert pool on every sample in it | **No** | Whether a negative GeneXpert pool result is recorded as **MTB not detected** on every sample in the pool. Set it to **Yes** only if the national programme accepts pooled testing for release. A pool that is not negative is never recorded. Set it on the STS, which sends it to every lab. See [How to test pooled TB samples on GeneXpert](test-pooled-tb-samples.md) |
+| Record a negative GeneXpert pool on every sample in it | **No** | Whether InteLIS records a negative GeneXpert pool result as **MTB not detected** on every sample in the pool. Set it to **Yes** only if the national programme accepts pooled testing for release. InteLIS never records a pool that is not negative this way. Set it on the STS, which sends it to every lab. See [How to test pooled TB samples on GeneXpert](test-pooled-tb-samples.md) |
 
 ??? warning "Auto Approve API Results"
 

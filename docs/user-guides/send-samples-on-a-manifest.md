@@ -140,8 +140,8 @@ test's group.
         - **By Manifest Code**: type, paste or scan the codes into **Manifest
           Codes**, one per line.
         - **By Testing Lab**: choose the lab the manifests are at in **Testing
-          Lab**. **Manifest Date** covers the last 6 months unless you change
-          it.
+          Lab**. **Manifest Date** defaults to the last 6 months. Widen it to
+          search further back.
     4. Select **Search**. The manifests appear under **Move Selected
        Manifests**.
     5. Tick the box of each manifest to move.

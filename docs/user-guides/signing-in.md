@@ -106,8 +106,8 @@ the table. The choice lasts until the page is reloaded.
 
 ## Find a sample that is not in a batch or on a manifest
 
-Use this when a sample does not show where it is expected, for example when
-making a batch or a manifest.
+Use this when a sample is missing from a list, for example when making a
+batch or a manifest.
 
 1. Go to **View Test Requests** under the test's **Request Management** menu.
    For viral load, that is **HIV VIRAL LOAD → Request Management → View Test
@@ -119,7 +119,7 @@ making a batch or a manifest.
 
 Under each **Sample ID**, the list shows the sample's **Batch Code** and
 **Manifest Code** when it has them. A sample with a batch code is already in a
-batch. It cannot be added to another one.
+batch. It cannot join another batch.
 
 ## Act on the Needs attention box
 

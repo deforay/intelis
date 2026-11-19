@@ -17,7 +17,7 @@ Chaque mot ci-dessous a un seul sens dans InteLIS et dans ces guides.
 | InteLIS | Le système d'information de laboratoire décrit par ces guides. Il s'appelait VLSM auparavant, et certains dossiers ainsi que la base de données gardent ce nom. |
 | STS | Sample Tracking System (système de suivi des échantillons). Le serveur InteLIS central auquel se connectent les laboratoires et les structures de santé. Les structures y enregistrent les demandes, et les laboratoires y envoient leurs résultats. |
 | LIS | Lab Information System (système d'information de laboratoire). InteLIS installé sur la machine d'un laboratoire. Il reçoit les demandes du STS et lui renvoie les résultats. |
-| Autonome | InteLIS qui ne se connecte à aucun STS. Tout est saisi et conservé au laboratoire. |
+| Autonome | InteLIS qui ne se connecte à aucun STS. Le laboratoire y saisit et y conserve toutes ses données. |
 | Synchronisation | L'échange régulier des demandes et des résultats entre un LIS et le STS. Elle a lieu toutes les 5 minutes tant que le réseau fonctionne. Voir [Résultats qui n'atteignent pas le STS](../guides/sts-sync-not-working.md). |
 | Machine InteLIS | L'ordinateur qui fait tourner InteLIS pour un laboratoire ou pour le STS. Les pages des rubriques **Installation**, **Mises à jour**, **Sauvegarde et restauration** et **Dépannage** portent sur cette machine. |
 
@@ -25,7 +25,7 @@ Chaque mot ci-dessous a un seul sens dans InteLIS et dans ces guides.
 
 | Mot | Sens |
 | --- | --- |
-| Structure | La structure de santé où l'échantillon est prélevé et où le test est demandé. Aussi appelée structure demandeuse ou clinique. Voir [Pour les structures demandeuses](for-requesting-facilities.md). |
+| Structure | La structure de santé qui prélève l'échantillon et demande le test. Aussi appelée structure demandeuse ou clinique. Voir [Pour les structures demandeuses](for-requesting-facilities.md). |
 | Laboratoire d'analyse | Le laboratoire qui teste l'échantillon. Voir [Gérer les structures et les laboratoires d'analyse](admin-facilities.md). |
 | Rôle | Un ensemble de permissions donné à un utilisateur. Un menu ou un bouton absent signifie le plus souvent que le rôle n'a pas cette permission. Voir [Gérer les utilisateurs et les rôles](admin-users-and-roles.md). |
 | Administrateur | Un utilisateur dont le rôle permet de gérer les utilisateurs, les structures et les paramètres sous **ADMIN**. Voir [Administrer InteLIS](administer-intelis.md). |
@@ -43,7 +43,7 @@ Chaque mot ci-dessous a un seul sens dans InteLIS et dans ces guides.
 | En attente | Un statut pour un échantillon suspendu jusqu'à ce que quelqu'un décide de la suite. Voir [Gérer les échecs et les échantillons en attente](failed-and-held-samples.md). |
 | Approuver | Confirmer qu'un résultat est correct avant sa diffusion. Voir [Vérifier et approuver les résultats](approve-results.md). |
 | Diffuser | Envoyer un résultat approuvé à la structure, par impression, e-mail ou export. Voir [Diffuser les résultats à la structure demandeuse](release-results.md). |
-| Verrouillé | Un échantillon accepté ou rejeté que seuls les utilisateurs autorisés à modifier les échantillons verrouillés peuvent changer, car il n'a pas changé depuis le nombre de jours réglé dans **Jours de verrouillage des échantillons**. Voir [Vérifier et approuver les résultats](approve-results.md). |
+| Verrouillé | Un échantillon accepté ou rejeté qui n'a pas changé depuis le nombre de jours de **Jours de verrouillage des échantillons**. Seuls les utilisateurs autorisés à modifier les échantillons verrouillés peuvent le changer. Voir [Vérifier et approuver les résultats](approve-results.md). |
 | Rejeter | Refuser un échantillon qui ne peut pas être testé, avec un motif que la structure peut lire. |
 
 ## Les automates

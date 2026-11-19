@@ -322,7 +322,7 @@ masque donc pas un échec.
 
 1. Aller à **ADMIN → Surveillance → Source des demandes**.
 2. Choisir le **Type de test**. **Date de la demande** couvre les 180 derniers
-   jours, sauf modification.
+   jours. L'élargir pour remonter plus loin.
 3. Réduire au besoin avec **Province**, **District**, **Nom de la clinique**,
    **Nom du laboratoire d'analyse**, **Source de la demande** ou **Étape**.
 4. Sélectionner **Rechercher**.

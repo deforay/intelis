@@ -17,7 +17,7 @@ Each word below has one meaning across InteLIS and these guides.
 | InteLIS | The laboratory information system these guides describe. It was called VLSM before, and some folders and the database keep that name. |
 | STS | Sample Tracking System. The central InteLIS server that labs and health facilities connect to. Facilities register requests on it, and labs send their results to it. |
 | LIS | Lab Information System. InteLIS running on a lab's own machine. It takes requests from the STS and sends results back. |
-| Standalone | InteLIS that connects to no STS. Everything is entered and kept at the lab. |
+| Standalone | InteLIS that connects to no STS. The lab enters and keeps all its data there. |
 | Sync | The regular exchange of requests and results between a LIS and the STS. It runs every 5 minutes while the network is up. See [Results Not Reaching the STS](../guides/sts-sync-not-working.md). |
 | InteLIS machine | The computer that runs InteLIS for a lab or for the STS. The pages under **Installation**, **Updates**, **Backup & Restore** and **Troubleshooting** are about this machine. |
 
@@ -25,7 +25,7 @@ Each word below has one meaning across InteLIS and these guides.
 
 | Word | Meaning |
 | --- | --- |
-| Facility | The health facility where a sample is collected and the test is requested. Also called the requesting facility or clinic. See [For requesting facilities](for-requesting-facilities.md). |
+| Facility | The health facility that collects the sample and requests the test. Also called the requesting facility or clinic. See [For requesting facilities](for-requesting-facilities.md). |
 | Testing lab | The laboratory that tests the sample. See [How to manage facilities and testing labs](admin-facilities.md). |
 | Role | A set of permissions given to a user. A missing menu or button usually means the role lacks that permission. See [How to manage users and roles](admin-users-and-roles.md). |
 | Administrator | A user whose role can manage users, facilities and settings under **ADMIN**. See [Administer InteLIS](administer-intelis.md). |
@@ -43,7 +43,7 @@ Each word below has one meaning across InteLIS and these guides.
 | Hold | A status for a sample paused until someone decides what it needs. See [How to handle failed and held samples](failed-and-held-samples.md). |
 | Approve | Confirm a result is correct before it is released. See [How to review and approve results](approve-results.md). |
 | Release | Send an approved result to the facility, by print, email or export. See [How to release results](release-results.md). |
-| Locked | An accepted or rejected sample that only users with permission to edit locked samples can change, because it has not changed for the number of days set in **Sample Lock Days**. See [How to review and approve results](approve-results.md). |
+| Locked | An accepted or rejected sample that has not changed for the number of days in **Sample Lock Days**. Only users with permission to edit locked samples can change it. See [How to review and approve results](approve-results.md). |
 | Reject | Refuse a sample that cannot be tested, with a reason the facility can read. |
 
 ## Instruments
