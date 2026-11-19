@@ -3,8 +3,8 @@ description: Liste chaque rapport charge virale, le tableau de bord et le rappor
 audience: [lab-staff, lab-supervisor, requesting-facility]
 module: [vl]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 
 # Rapports charge virale
@@ -13,7 +13,7 @@ Cette page décrit chaque rapport situé sous **CHARGE VIRALE DU VIH → Gestion
 le contenu charge virale du tableau de bord, et le rapport d'ancienneté des
 échantillons.
 
-S'applique à InteLIS 5.7.74.
+S'applique à InteLIS 5.8.8.
 
 Toutes les pages de rapport utilisent les mêmes commandes. Régler les filtres,
 sélectionner **Rechercher**, et utiliser la commande d'export lorsqu'elle est
@@ -75,6 +75,20 @@ téléversement.
 
 Produit un tableur des résultats correspondant aux filtres. Contient des lignes
 de données, pas des rapports patients.
+
+Deux réglages au-dessus de **Télécharger** définissent le tableur :
+
+| Réglage | Effet |
+|---|---|
+| **Exportation avec l'ID et le nom du patient** | **Oui** garde le numéro ART, le nom et le numéro de téléphone du patient. **Non** les retire, pour des données qui quittent le laboratoire pour analyse |
+| **Include lab and audit details** | Ajoute le lot, la plateforme, la série de l'automate, les personnes qui ont testé, révisé et approuvé le résultat, le statut de l'échantillon, les délais et les personnes qui ont créé et modifié en dernier l'enregistrement. Case vide, le tableur reste compact |
+
+Le fichier se télécharge quand il est prêt. Un gros export s'exécute en
+arrière-plan, et le travail peut continuer pendant ce temps. La progression
+s'affiche dans le menu **Exports** en haut de la page. Ce menu propose aussi
+**Télécharger à nouveau** pendant 5 minutes après la fin de l'export.
+
+Voir [Diffuser les résultats à la structure demandeuse](release-results.md).
 
 ## Imprimer le résultat
 
@@ -139,8 +153,22 @@ un tableur.
 **Emplacement :** **CHARGE VIRALE DU VIH → Gestion → Rapport de surveillance
 d'échantillons**
 
-Rend compte de la performance du laboratoire sur une période, souvent
-trimestrielle. S'exporte vers un tableur.
+La page s'intitule **Outil de suivi trimestriel de la VL**. Elle remplit le
+questionnaire de suivi trimestriel pour les échantillons prélevés sur une
+période, souvent un trimestre.
+
+Les filtres sont **Date de prélèvement de l'échantillon**,
+**Région/Province/État**, **District** et **Nom du laboratoire**.
+**Rechercher** liste les échantillons correspondants. **Exporter vers Excel**
+télécharge le questionnaire sous forme de tableur :
+
+| Question | Contenu |
+|---|---|
+| Q1 à Q1.5 | Tests de charge virale rendus, répartis entre supprimés (< 1000 copies/mL) et non supprimés, par sexe, âge, grossesse et allaitement |
+| Q2, Q2.1 | Retard : échantillons prélevés il y a plus d'un mois et pas encore testés, par type d'échantillon |
+| Q3 | Nombre moyen de jours entre le prélèvement et le test |
+| Q7 | Résultats invalides par mois |
+| Q4, Q5, Q6, Q8 | Achats, tests EID et pannes d'équipement. Laissés vides, à remplir par le laboratoire |
 
 ## CV-Rapport d'objectif de test
 

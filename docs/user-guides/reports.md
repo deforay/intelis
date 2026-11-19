@@ -3,8 +3,8 @@ description: Lists every viral load report, the dashboard and the Sample Ageing 
 audience: [lab-staff, lab-supervisor, requesting-facility]
 module: [vl]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 
 # Viral load reports
@@ -12,7 +12,7 @@ reviewed_against: 5.7.74
 This page describes every report under **HIV VIRAL LOAD → Management**, the
 viral load content of the dashboard, and the Sample Ageing Report.
 
-Applies to InteLIS 5.7.74.
+Applies to InteLIS 5.8.8.
 
 Every report page uses the same controls. Set the filters, select **Search**, and
 use the export control where one is offered. See
@@ -68,6 +68,20 @@ Control results are loaded from a file. The page accepts the upload.
 
 Produces a spreadsheet of results matching the filters. Contains data rows, not
 patient reports.
+
+Two settings above **Download** shape the sheet:
+
+| Setting | Effect |
+|---|---|
+| **Export with Patient ID and Name** | **Yes** keeps the patient's ART number, name and contact number. **No** leaves them out, for data that leaves the lab for analysis |
+| **Include lab and audit details** | Adds the batch, platform and analyzer run. Also adds who tested, reviewed and approved the result, the sample status, the turnaround, and who created and last changed the record. Left clear, the sheet stays compact |
+
+The file downloads when it is ready. A large export runs in the background, so
+work can go on meanwhile. Progress shows in the **Exports** menu at the top of
+the page. That menu also offers **Download again** for 5 minutes after the
+export finishes.
+
+See [How to release results to the requesting facility](release-results.md).
 
 ## Print Result
 
@@ -126,8 +140,21 @@ rejected with no reason recorded. Exports to a spreadsheet.
 
 **Location:** **HIV VIRAL LOAD → Management → Sample Monitoring Report**
 
-Reports lab performance over a period, commonly a quarter. Exports to a
-spreadsheet.
+The page title is **VL Quarterly Monitoring Tool**. It fills in the quarterly
+monitoring questionnaire for the samples collected in a period, commonly a
+quarter.
+
+Filters are **Sample Collection Date**, **Region/Province/State**,
+**District/County** and **Lab Name**. **Search** lists the matching samples.
+**Export to excel** downloads the questionnaire as a spreadsheet:
+
+| Question | Content |
+|---|---|
+| Q1 to Q1.5 | Viral load tests reported, split into suppressed (< 1000 copies/mL) and not, by sex, age, pregnancy and breastfeeding |
+| Q2, Q2.1 | Backlog: samples collected over a month ago and not yet tested, by sample type |
+| Q3 | Average days from sample collection to test |
+| Q7 | Invalid results per month |
+| Q4, Q5, Q6, Q8 | Procurement, EID testing and equipment breakdown. Left empty for the lab to fill in |
 
 ## VL Testing Target Report
 

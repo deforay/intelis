@@ -3,8 +3,8 @@ description: Release approved and rejected viral load results to the requesting 
 audience: [lab-staff, lab-supervisor]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 
 # How to release results to the requesting facility
@@ -119,5 +119,22 @@ A sample still awaiting approval is never listed for printing or email.
     3. Set the other filters, for example **Facility Name** or **Sample Test
        Date**.
     4. Select **Search** and check the rows listed.
-    5. Select **Download**. The spreadsheet opens in a new browser tab as a
-       download.
+    5. Set **Export with Patient ID and Name**. Select **Yes** when the
+       recipient may see who each result belongs to. Select **No** for data
+       that leaves the lab for analysis. **No** leaves out the patient's ART
+       number, name and contact number.
+    6. To add how each sample went through the lab, tick **Include lab and
+       audit details**. The sheet then adds the batch, platform and analyzer
+       run. It also adds who tested, reviewed and approved the result, the
+       sample status, the turnaround, and who created and last changed the
+       record. Leave it clear for the compact sheet a facility or programme
+       usually wants.
+    7. Select **Download**. The file downloads when it is ready. Progress shows
+       in the **Exports** menu at the top of the page.
+
+        ??? info "If the file does not download at once"
+
+            A large export runs in the background. Keep working, on this page or
+            another one. The file downloads when it is ready. To download it
+            again, open the **Exports** menu and select **Download again**. A
+            finished export stays in the menu for 5 minutes.

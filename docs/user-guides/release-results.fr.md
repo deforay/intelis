@@ -3,8 +3,8 @@ description: Diffuser les résultats de charge virale approuvés et rejetés à 
 audience: [lab-staff, lab-supervisor]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 
 # Diffuser les résultats à la structure demandeuse
@@ -131,5 +131,26 @@ l'impression ni au courriel.
     3. Régler les autres filtres, par exemple **Nom de la structure** ou **Date
        du test de l'échantillon**.
     4. Sélectionner **Rechercher** et vérifier les lignes listées.
-    5. Sélectionner **Télécharger**. Le tableur s'ouvre dans un nouvel onglet du
-       navigateur sous forme de téléchargement.
+    5. Régler **Exportation avec l'ID et le nom du patient**. Choisir **Oui**
+       lorsque le destinataire peut savoir à qui appartient chaque résultat.
+       Choisir **Non** pour des données qui quittent le laboratoire pour
+       analyse. **Non** retire le numéro ART, le nom et le numéro de téléphone
+       du patient.
+    6. Pour ajouter le parcours de chaque échantillon au laboratoire, cocher
+       **Include lab and audit details**. Le tableur ajoute alors le lot, la
+       plateforme, la série de l'automate, les personnes qui ont testé, révisé
+       et approuvé le résultat, le statut de l'échantillon, les délais et les
+       personnes qui ont créé et modifié en dernier l'enregistrement. Laisser
+       la case vide pour le tableur compact qu'une structure ou un programme
+       demande d'habitude.
+    7. Sélectionner **Télécharger**. Le fichier se télécharge quand il est
+       prêt. La progression s'affiche dans le menu **Exports** en haut de la
+       page.
+
+        ??? info "Si le fichier ne se télécharge pas tout de suite"
+
+            Un gros export s'exécute en arrière-plan. Continuer à travailler, sur
+            cette page ou une autre. Le fichier se télécharge quand il est prêt.
+            Pour le télécharger à nouveau, ouvrir le menu **Exports** et
+            sélectionner **Télécharger à nouveau**. Un export terminé reste dans
+            le menu pendant 5 minutes.
