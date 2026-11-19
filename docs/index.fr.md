@@ -35,8 +35,7 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
     ---
 
     Installation, mise à jour, sauvegarde, restauration et les scripts de
-    maintenance qui gardent une machine de laboratoire en bonne santé. Ces
-    guides sont disponibles en anglais uniquement.
+    maintenance qui gardent une machine de laboratoire en bonne santé.
 
     [:octicons-arrow-right-24: Mettre à jour
     InteLIS](guides/updating-intelis-on-ubuntu.md)
@@ -59,7 +58,6 @@ conservent l'ancien nom, et les guides le précisent là où cela compte.
 
     Commencer sur la machine par `intelis check`, ou `intelis doctor` quand le
     site ne s'ouvre pas. Ces pages traitent les problèmes qu'elles signalent.
-    Elles sont disponibles en anglais uniquement.
 
     [:octicons-arrow-right-24: MySQL ne démarre
     pas](guides/mysql-will-not-start.md)
