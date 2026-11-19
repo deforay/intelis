@@ -526,17 +526,29 @@ if (!empty($result)) {
      $bottomHtml .= '</td></tr>';
      $bottomHtml .= '</table>';
 
-     $bottomTextLocation = !empty($vlFacilityAttributes) && !empty($vlFacilityAttributes->bottom_text_location) ? $vlFacilityAttributes->bottom_text_location : 'belowPlatformName';
+     // The lab picks where the bottom text goes. The attributes are decoded as an array.
+     $bottomTextLocation = ($vlFacilityAttributes['bottom_text_location'] ?? '') === 'aboveFooter'
+          ? 'aboveFooter'
+          : 'belowPlatformName';
+
+     // Spacing goes between blocks, never after the last one. On a full page, a
+     // spacer row at the end breaks onto a page of its own. The result then
+     // prints with a blank second page.
+     $gapRow = '<tr><td colspan="3">&nbsp;</td></tr>';
+     $hasBlockAbove = false;
 
      if ($bottomTextLocation == 'belowPlatformName') {
-          // Use writeHTMLCell() to position the bottom HTML content
-          $html .= '<tr><td colspan="5">' . $bottomHtml . '</td></tr><tr><td colspan="5">&nbsp;</td></tr>';
+          $html .= '<tr><td colspan="3">' . $bottomHtml . '</td></tr>';
+          $hasBlockAbove = true;
      }
 
 
      if ($displaySignatureTable && (!empty($resultApprovedBy) && !empty($result['result_approved_datetime']) && $displaySignatureTable)) {
           $approvertext = $sameReviewerAndApprover ? _translate("REVIEWED AND APPROVED BY") : _translate("APPROVED BY");
           $approvedBySignatureExists = $approvedBySignaturePath !== null && $approvedBySignaturePath !== '' && $approvedBySignaturePath !== '0' && MiscUtility::isImageValid($approvedBySignaturePath);
+          if ($hasBlockAbove) {
+               $html .= $gapRow;
+          }
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . $approvertext . '</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
@@ -551,23 +563,20 @@ if (!empty($result)) {
           }
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
           $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:2px;"></td>';
-          $html .= '</tr>';
+          $hasBlockAbove = true;
      }
 
      if (!empty($result['lab_tech_comments'])) {
+          if ($hasBlockAbove) {
+               $html .= '<tr>';
+               $html .= '<td colspan="3" style="line-height:2px;"></td>';
+               $html .= '</tr>';
+          }
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:10px;font-size:10px;text-align:left;"><strong>' . _translate("Lab Comments") . ':</strong> ' . $result['lab_tech_comments'] . '</td>';
           $html .= '</tr>';
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:1px;"></td>';
-          $html .= '</tr>';
      }
 
-     $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:1px;"></td>';
-     $html .= '</tr>';
      $html .= '</table>';
 
      if ($result['result'] != '' || (empty($result['result']) && $result['result_status'] == REJECTED)) {
@@ -575,12 +584,32 @@ if (!empty($result)) {
           $pdf->writeHTML($html);
 
           if ($bottomTextLocation == 'aboveFooter') {
+               // Measure the bottom text by a trial write where the body ends, then
+               // undo it. Page breaks are off, so the trial never starts a page.
+               $bodyEndsAt = $pdf->GetY();
+               $pdf->startTransaction();
+               $pdf->SetAutoPageBreak(false);
+               $pdf->writeHTMLCell(0, 0, null, $bodyEndsAt, $bottomHtml, 0, 1, false, true, 'L', true);
+               $bottomTextHeight = $pdf->GetY() - $bodyEndsAt;
+               $pdf->rollbackTransaction(true);
 
-               // Calculate where to start the bottom HTML
-               $margin_bottom = 10; // Adjust based on the height of your footer
-               $bottom_content_height = 50; // Adjust based on your content's estimated height
-               $start_y = $page_height - $bottom_content_height - $margin_bottom;
-               $pdf->writeHTMLCell(0, 0, null, $start_y, $bottomHtml, 0, 1, 0, true, 'L', true);
+               // Rest it on the bottom margin. If the body reaches further down, it
+               // goes right below the body. If it fits nowhere on this page, it
+               // flows onto the next page and never over the body. TCPDF lays out
+               // the nested table taller than the trial measures it. So a placement
+               // that starts a page is undone and moved up 2mm, until it fits.
+               $start = max($bodyEndsAt, $page_height - $pdf->getBreakMargin() - $bottomTextHeight);
+               while (true) {
+                    $pagesBefore = $pdf->getNumPages();
+                    $pdf->startTransaction();
+                    $pdf->writeHTMLCell(0, 0, null, $start, $bottomHtml, 0, 1, false, true, 'L', true);
+                    if ($pdf->getNumPages() === $pagesBefore || $start <= $bodyEndsAt) {
+                         $pdf->commitTransaction();
+                         break;
+                    }
+                    $pdf->rollbackTransaction(true);
+                    $start = max($bodyEndsAt, $start - 2);
+               }
           }
 
           $pdf->lastPage();
