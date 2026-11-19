@@ -5,6 +5,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
@@ -16,9 +17,12 @@ try {
     // Start transaction
     $db->beginTransaction();
     $_POST['insertOperation'] = true;
-    $response = $covid19Service->insertSample($_POST);
+    $inserted = $covid19Service->insertSample($_POST, true);
+    $response = $inserted['id'];
     // Commit transaction
     $db->commitTransaction();
+    // Assign the code now, not at the next cron run (see assignCodeNow)
+    ContainerRegistry::get(TestRequestsService::class)->assignCodeNow($inserted);
 } catch (Throwable $exception) {
     // Rollback transaction in case of error
     $db->rollbackTransaction();

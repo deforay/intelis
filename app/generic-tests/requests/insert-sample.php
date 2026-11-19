@@ -5,6 +5,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Services\TestRequestsService;
 
 
 /** @var DatabaseService $db */
@@ -17,9 +18,12 @@ try {
     // Start transaction
     $db->beginTransaction();
     $_POST['insertOperation'] = true;
-    echo $genericTestsService->insertSample($_POST);
+    $inserted = $genericTestsService->insertSample($_POST, true);
     // Commit transaction
     $db->commitTransaction();
+    // Assign the code now, not at the next cron run (see assignCodeNow)
+    ContainerRegistry::get(TestRequestsService::class)->assignCodeNow($inserted);
+    echo $inserted['id'];
 } catch (Throwable $exception) {
     // Rollback transaction in case of error
     $db->rollbackTransaction();

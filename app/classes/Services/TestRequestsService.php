@@ -259,6 +259,36 @@ final class TestRequestsService
     }
 
     /**
+     * Give a sample registered from a request form its code before the form
+     * finishes saving, rather than at the next cron run.
+     *
+     * The form shows a predicted code: the counter plus one. A saved sample can
+     * wait up to a minute in the queue, and the counter does not move until it
+     * gets its code. In that minute the next form (Save and Next) predicts the
+     * same code again. That sample is then stored under a different code, and a
+     * user who copied the code from the form sees it "change".
+     *
+     * Never fails the save. A sample left in the queue gets its code from the
+     * cron.
+     *
+     * @param array{id?: int, uniqueId?: string} $inserted what insertSample($params, true) returned
+     */
+    public function assignCodeNow(array $inserted): void
+    {
+        if (empty($inserted['id']) || empty($inserted['uniqueId'])) {
+            return;
+        }
+        try {
+            $this->processSampleCodeQueue(uniqueIds: [$inserted['uniqueId']], parallelProcess: true);
+        } catch (Throwable $e) {
+            LoggerUtility::logError('Sample code not assigned on save; the cron will assign it: ' . $e->getMessage(), [
+                'unique_id' => $inserted['uniqueId'],
+                'exception' => $e,
+            ]);
+        }
+    }
+
+    /**
      * @return mixed[]
      */
     public function processSampleCodeQueue($uniqueIds = [], $parallelProcess = false, $maxTries = 5): array
