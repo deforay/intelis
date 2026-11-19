@@ -4,7 +4,7 @@ audience: [system-admin, lab-admin]
 module: [all]
 type: reference
 reviewed: 2026-11-19
-reviewed_against: 5.8.8
+reviewed_against: 5.8.9
 ---
 
 # General configuration settings
@@ -71,6 +71,13 @@ when the installation runs that module.
 
     **Training Mode** belongs on a practice installation only. Never turn it on
     for an installation holding real patient records.
+
+    **Training Mode** only shows the banner, and prints its text on some result
+    forms. It does not stop the installation from syncing with the STS,
+    emailing results or importing analyzer results. To stop a practice
+    installation from syncing with the live STS, set its **Instance Type** to
+    **Standalone** under **System Admin**. See
+    [How to use the System Admin area](admin-system-administration.md).
 
 ## Module panels
 

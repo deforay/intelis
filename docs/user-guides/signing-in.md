@@ -3,8 +3,8 @@ description: Steps to sign in, read the InteLIS screen, change the password, fil
 audience: [lab-staff, lab-supervisor, requesting-facility]
 module: [all]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.9
 ---
 # How to sign in and navigate InteLIS
 
@@ -76,8 +76,13 @@ banner across the top of the screen. Its wording is set by the administrator and
 reads **TRAINING SERVER** unless it has been changed, so treat any banner as the
 mark of a training copy rather than looking for those two words.
 
-Work done on a training copy never reaches real patients. Work done on the live
-system does. Check the banner before entering real results.
+The banner marks the copy. It does not stop the copy from sending results. A
+training copy connected to the live STS sends results the same way the live
+system does. Before practising on a training copy, ask the administrator
+whether it is kept apart from the live system.
+
+Check the banner before entering real results. Enter real results only on the
+live system.
 
 ## Change the password
 

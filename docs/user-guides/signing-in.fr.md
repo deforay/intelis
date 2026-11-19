@@ -3,8 +3,8 @@ description: Étapes pour se connecter, lire l'écran d'InteLIS, changer le mot 
 audience: [lab-staff, lab-supervisor, requesting-facility]
 module: [all]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.9
 ---
 # Se connecter et naviguer dans InteLIS
 
@@ -80,9 +80,13 @@ défini par l'administrateur et porte la mention **TRAINING SERVER** tant qu'il
 n'a pas été modifié : considérer toute bannière comme la marque d'une copie de
 formation plutôt que de chercher ces deux mots.
 
-Le travail effectué sur une copie de formation n'atteint jamais de vrais
-patients. Le travail effectué sur le système réel, si. Vérifier la bannière
-avant de saisir de vrais résultats.
+La bannière signale la copie. Elle n'empêche pas la copie d'envoyer des
+résultats. Une copie de formation reliée au STS réel envoie les résultats comme
+le système réel. Avant de s'entraîner sur une copie de formation, demander à
+l'administrateur si elle est séparée du système réel.
+
+Vérifier la bannière avant de saisir de vrais résultats. Saisir les vrais
+résultats uniquement sur le système réel.
 
 ## Changer le mot de passe
 
