@@ -179,10 +179,18 @@ Use this when the InteLIS machine has died and a new machine is being set up.
 
     ??? info "If the download is too large"
 
-        Download only the last 14 days:
+        Download the whole `config` folder first. A settings backup is made
+        only when the settings change, so the one holding the key can be
+        months old:
 
         ```bash
-        sudo rclone copy --max-age 14d gdrive:intelis/centrallab-01/backups ~/backups
+        sudo rclone copy gdrive:intelis/centrallab-01/backups/config ~/backups/config
+        ```
+
+        Then download only the last 14 days of everything else:
+
+        ```bash
+        sudo rclone copy --max-age 14d --exclude "/config/**" gdrive:intelis/centrallab-01/backups ~/backups
         ```
 
 3. Check the download holds both `db` and `config` folders:
