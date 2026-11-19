@@ -3,8 +3,8 @@ description: Test up to 4 sputum samples on one GeneXpert MTB/RIF Ultra cartridg
 audience: [lab-staff]
 module: [tb]
 type: how-to
-reviewed: 2026-10-20
-reviewed_against: 5.7.90
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 # How to test pooled TB samples on GeneXpert
 
@@ -109,8 +109,12 @@ InteLIS never pools these samples again.
 
 ??? failure "If no sample in a negative pool has a result"
 
-    Recording negative pools is turned off. Ask the administrator of the STS to
-    turn it on. Until then, enter **MTB not detected** on each sample by hand.
+    Recording negative pools is turned off. The setting is **Record a negative
+    GeneXpert pool on every sample in it**, in the **TB Settings** panel of
+    **ADMIN → Settings → General Configuration**. Its default is **No**. Set it
+    on the STS, which sends it to every lab. Ask the administrator of the STS to
+    set it to **Yes**, and only if the national programme accepts pooled testing
+    for release. Until then, enter **MTB not detected** on each sample by hand.
 
 ??? failure "If no sample in the pool has a result at all"
 
