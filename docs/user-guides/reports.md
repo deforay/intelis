@@ -157,8 +157,9 @@ See [How to record where a sample is stored](store-samples.md).
 
 ## Sample Ageing Report
 
-**Location:** Not on the menu. Open `/reports/sample-ageing.php` at the
-InteLIS web address. The role needs the **Sample Ageing Report** permission.
+**Location:** **HIV VIRAL LOAD → Management → Sample Ageing Report**. Every
+other test has the same entry under its own **Management** menu. The role needs
+the **Sample Ageing Report** permission.
 
 Shows how long samples have been waiting at each stage, so stalled samples can
 be found before they expire.
