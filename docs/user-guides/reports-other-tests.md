@@ -4,7 +4,7 @@ audience: [lab-staff, lab-supervisor, lab-admin]
 module: [eid, tb, hepatitis, cd4, custom-tests, covid19]
 type: reference
 reviewed: 2026-11-19
-reviewed_against: 5.8.8
+reviewed_against: 5.8.9
 ---
 
 # Reports for other tests
@@ -13,7 +13,7 @@ reviewed_against: 5.8.8
 lists the reports under the **Management** menu of every other test, and the
 test's tab on the dashboard.
 
-Applies to InteLIS 5.8.8.
+Applies to InteLIS 5.8.9.
 
 Every report page uses the same controls. Set the filters, select **Search**, and
 use the export control if the page has one. See
@@ -32,7 +32,8 @@ Shows the same counts and charts as the viral load tab. See
 [Dashboard](reports.md#dashboard).
 
 When **VL Monthly Target** is on, the tab also shows a line saying how many
-EID testing labs did not meet the monthly test target. Its **more** link opens
+EID testing labs missed the monthly test target in a completed month of the date
+range. Its **more** link opens
 the [EID Testing Target Report](#eid-testing-target-report).
 
 ### Sample Status Report
@@ -83,23 +84,26 @@ under **ADMIN → Facilities**. See
 
 | Filter | Content |
 |---|---|
-| **Sample Test Date** | The period, by the date the sample was tested |
-| **Lab Name** | One or more testing labs |
+| **Date Range** | The months to show. Each month counts whole, from its first day to its last. Opens on the last 12 months, this one included |
+| **Testing Lab** | One or more testing labs |
 | **Target Type** | **Monthly Targets not met**, **Monthly Targets met** or **Show all** |
 
-Each row is one testing lab, one requesting facility and one month of testing.
+Each row is one testing lab for one month. A lab with a target is listed for
+every month in the range, at zero when it did no work that month.
 
 | Column | Content |
 |---|---|
-| **Lab Name** | The testing lab |
-| **Facility Name** | The facility that sent the samples |
-| **Month** | The month the samples were tested |
-| **Number of Samples Received** | Samples in the row with no test date |
-| **Number of Samples Rejected** | Rejected samples in the row |
-| **Number of Samples Tested** | Samples in the row. **Target Type** compares this count with the target |
-| **Monthly Test Target** | The lab's monthly target for EID |
+| **Testing Lab** | The testing lab |
+| **Month** | The month the row counts |
+| **Number of Samples Received** | Samples received at the lab that month |
+| **Number of Samples Rejected** | Samples received at the lab that month and rejected |
+| **Number of Samples Tested** | Samples tested that month that were not rejected. **Target Type** compares this count with the target |
+| **Monthly Test Target** | The lab's monthly target. Blank when the lab has none |
+| **Target Met** | **Yes** when **Number of Samples Tested** reaches the target, **No** when it does not. Blank when the lab has no target |
 
-The report counts only samples with a result. **Export to excel** downloads the rows.
+Cancelled samples are left out. On the STS, a user limited to some facilities
+sees only the samples of those facilities. **Export to excel** downloads the
+rows.
 
 ### PMTCT Cascade Report
 
@@ -172,7 +176,8 @@ Shows the same counts and charts as the viral load tab. See
 [Cascade Funnel](#cascade-funnel).
 
 When **VL Monthly Target** is on, the tab also shows a line saying how many
-TB testing labs did not meet the monthly test target. Its **more** link opens the
+TB testing labs missed the monthly test target in a completed month of the date
+range. Its **more** link opens the
 [TB Testing Target Report](#tb-testing-target-report).
 
 ### Cascade Funnel
@@ -282,7 +287,7 @@ monthly target. Added in InteLIS 5.8.5.
 Has the same filters and columns as the
 [EID Testing Target Report](#eid-testing-target-report). The target is the
 **Monthly Target** set for TB on the testing lab's record under **ADMIN →
-Facilities**. Cancelled samples are left out.
+Facilities**.
 
 A role that could open the TB **Clinic Reports** received this report on the
 upgrade to 5.8.5.
@@ -303,8 +308,8 @@ Shows the same counts and charts as the viral load tab. See
 [Dashboard](reports.md#dashboard).
 
 When **VL Monthly Target** is on, the tab also shows a line saying how many
-hepatitis testing labs did not meet the monthly test target. Its **more** link
-opens the [Hepatitis Testing Target Report](#hepatitis-testing-target-report).
+hepatitis testing labs missed the monthly test target in a completed month of
+the date range. Its **more** link opens the [Hepatitis Testing Target Report](#hepatitis-testing-target-report).
 
 ### Sample Status Report
 
@@ -363,7 +368,8 @@ Shows the same counts and charts as the viral load tab. See
 [Dashboard](reports.md#dashboard).
 
 When **VL Monthly Target** is on, the tab also shows a line saying how many
-CD4 testing labs did not meet the monthly test target. Its **more** link opens
+CD4 testing labs missed the monthly test target in a completed month of the date
+range. Its **more** link opens
 the [CD4 Testing Target Report](#cd4-testing-target-report).
 
 ### Sample Status Report

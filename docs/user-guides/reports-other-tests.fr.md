@@ -4,7 +4,7 @@ audience: [lab-staff, lab-supervisor, lab-admin]
 module: [eid, tb, hepatitis, cd4, custom-tests, covid19]
 type: reference
 reviewed: 2026-11-19
-reviewed_against: 5.8.8
+reviewed_against: 5.8.9
 ---
 
 # Rapports des autres tests
@@ -13,7 +13,7 @@ Les rapports charge virale sont décrits dans
 [Rapports charge virale](reports.md). Cette page liste les rapports du menu
 **Gestion** de chaque autre test, et l'onglet du test sur le tableau de bord.
 
-S'applique à InteLIS 5.8.8.
+S'applique à InteLIS 5.8.9.
 
 Toutes les pages de rapport utilisent les mêmes commandes. Régler les filtres,
 sélectionner **Rechercher**, et utiliser la commande d'export lorsqu'elle est
@@ -34,8 +34,8 @@ Affiche les mêmes décomptes et graphiques que l'onglet charge virale. Voir
 [Tableau de bord](reports.md#tableau-de-bord).
 
 Lorsque **Objectif mensuel VL** est activé, l'onglet affiche aussi une ligne
-indiquant combien de laboratoires EID n'ont pas atteint l'objectif de test
-mensuel. Son lien **plus** ouvre le
+indiquant combien de laboratoires EID ont manqué l'objectif de test
+mensuel lors d'un mois terminé de la plage de dates. Son lien **plus** ouvre le
 [Rapport sur les objectifs de test EID](#rapport-sur-les-objectifs-de-test-eid).
 
 ### Rapport sur le statut des échantillons
@@ -94,25 +94,27 @@ laboratoire d'analyse sous **ADMIN → Structures sanitaires**. Voir
 
 | Filtre | Contenu |
 |---|---|
-| **Date du test de l'échantillon** | La période, selon la date du test de l'échantillon |
-| **Nom du laboratoire** | Un ou plusieurs laboratoires d'analyse |
+| **Plage de dates** | Les mois à afficher. Chaque mois compte en entier, du premier au dernier jour. S'ouvre sur les 12 derniers mois, celui-ci compris |
+| **Laboratoire d'analyse** | Un ou plusieurs laboratoires d'analyse |
 | **Type de cible** | **Objectifs mensuels non atteints**, **Objectifs mensuels atteints** ou **Tout afficher** |
 
-Chaque ligne correspond à un laboratoire d'analyse, une structure demandeuse et
-un mois de test.
+Chaque ligne correspond à un laboratoire d'analyse pour un mois. Un laboratoire
+qui a un objectif figure pour chaque mois de la plage, à zéro les mois sans
+activité.
 
 | Colonne | Contenu |
 |---|---|
-| **Nom du laboratoire** | Le laboratoire d'analyse |
-| **Nom de la structure** | La structure qui a envoyé les échantillons |
-| **Mois** | Le mois du test des échantillons |
-| **Nombre d'échantillons reçus** | Les échantillons de la ligne sans date de test |
-| **Nombre d'échantillons rejetés** | Les échantillons rejetés de la ligne |
-| **Nombre d'échantillons testés** | Les échantillons de la ligne. **Type de cible** compare ce nombre à l'objectif |
-| **Objectif de test mensuel** | L'objectif mensuel EID du laboratoire |
+| **Laboratoire d'analyse** | Le laboratoire d'analyse |
+| **Mois** | Le mois que compte la ligne |
+| **Nombre d'échantillons reçus** | Les échantillons reçus au laboratoire ce mois-là |
+| **Nombre d'échantillons rejetés** | Les échantillons reçus au laboratoire ce mois-là puis rejetés |
+| **Nombre d'échantillons testés** | Les échantillons testés ce mois-là qui n'ont pas été rejetés. **Type de cible** compare ce nombre à l'objectif |
+| **Objectif de test mensuel** | L'objectif mensuel du laboratoire. Vide lorsque le laboratoire n'en a pas |
+| **Objectif atteint** | **Oui** lorsque le **Nombre d'échantillons testés** atteint l'objectif, **Non** sinon. Vide lorsque le laboratoire n'a pas d'objectif |
 
-Seuls les échantillons avec un résultat sont comptés. **Exporter vers Excel**
-télécharge les lignes.
+Les échantillons annulés ne sont pas comptés. Sur le STS, un utilisateur limité
+à certaines structures ne voit que les échantillons de ces structures.
+**Exporter vers Excel** télécharge les lignes.
 
 ### Rapport en cascade de la PTME
 
@@ -190,8 +192,8 @@ Affiche les mêmes décomptes et graphiques que l'onglet charge virale. Voir
 l'[Entonnoir en cascade](#entonnoir-en-cascade).
 
 Lorsque **Objectif mensuel VL** est activé, l'onglet affiche aussi une ligne
-indiquant combien de laboratoires TB n'ont pas atteint l'objectif de test
-mensuel. Son lien **plus** ouvre le
+indiquant combien de laboratoires TB ont manqué l'objectif de test
+mensuel lors d'un mois terminé de la plage de dates. Son lien **plus** ouvre le
 [Rapport sur l'objectif de test TB](#rapport-sur-lobjectif-de-test-tb).
 
 ### Entonnoir en cascade
@@ -312,8 +314,7 @@ mois à l'objectif mensuel du laboratoire. Ajouté dans InteLIS 5.8.5.
 Présente les mêmes filtres et colonnes que le
 [Rapport sur les objectifs de test EID](#rapport-sur-les-objectifs-de-test-eid).
 L'objectif est l'**Objectif mensuel** défini pour la TB sur la fiche du
-laboratoire d'analyse sous **ADMIN → Structures sanitaires**. Les échantillons
-annulés sont exclus.
+laboratoire d'analyse sous **ADMIN → Structures sanitaires**.
 
 Un rôle qui pouvait ouvrir les **Rapports cliniques** TB a reçu ce rapport lors
 de la mise à jour vers 5.8.5.
@@ -336,8 +337,8 @@ Affiche les mêmes décomptes et graphiques que l'onglet charge virale. Voir
 [Tableau de bord](reports.md#tableau-de-bord).
 
 Lorsque **Objectif mensuel VL** est activé, l'onglet affiche aussi une ligne
-indiquant combien de laboratoires hépatite n'ont pas atteint l'objectif de test
-mensuel. Son lien **plus** ouvre le
+indiquant combien de laboratoires hépatite ont manqué l'objectif de test
+mensuel lors d'un mois terminé de la plage de dates. Son lien **plus** ouvre le
 [Hépatite-Rapport d'objectif de dépistage](#hepatite-rapport-dobjectif-de-depistage).
 
 ### Rapport sur le statut des échantillons
@@ -404,8 +405,8 @@ Affiche les mêmes décomptes et graphiques que l'onglet charge virale. Voir
 [Tableau de bord](reports.md#tableau-de-bord).
 
 Lorsque **Objectif mensuel VL** est activé, l'onglet affiche aussi une ligne
-indiquant combien de laboratoires CD4 n'ont pas atteint l'objectif de test
-mensuel. Son lien **plus** ouvre le
+indiquant combien de laboratoires CD4 ont manqué l'objectif de test
+mensuel lors d'un mois terminé de la plage de dates. Son lien **plus** ouvre le
 [Rapport sur l'objectif du test CD4](#rapport-sur-lobjectif-du-test-cd4).
 
 ### Rapport sur le statut des échantillons

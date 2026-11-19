@@ -4,7 +4,7 @@ audience: [lab-staff, lab-supervisor, requesting-facility]
 module: [vl]
 type: reference
 reviewed: 2026-11-19
-reviewed_against: 5.8.8
+reviewed_against: 5.8.9
 ---
 
 # Viral load reports
@@ -13,7 +13,7 @@ This page describes every report under **HIV VIRAL LOAD → Management**, the
 viral load content of the dashboard, and the Sample Ageing Report. For EID, TB
 and the other tests, see [Reports for other tests](reports-other-tests.md).
 
-Applies to InteLIS 5.8.8.
+Applies to InteLIS 5.8.9.
 
 Every report page uses the same controls. Set the filters, select **Search**, and
 use the export control where one is offered. See
@@ -161,7 +161,8 @@ Filters are **Sample Collection Date**, **Region/Province/State**,
 
 **Location:** **HIV VIRAL LOAD → Management → VL Testing Target Report**
 
-Compares samples tested against each testing lab's monthly target.
+Compares the samples each testing lab tested in a month against the lab's
+monthly target.
 
 The targets are set per testing lab, on the lab's record under **ADMIN →
 Facilities**.
@@ -172,7 +173,32 @@ Facilities**.
 | **Suppressed Monthly Target** | Suppressed results expected each month. Viral load only |
 
 **ADMIN → Settings → General Configuration** holds only the **VL
-Monthly Target** switch. It shows or hides the target charts on the dashboard.
+Monthly Target** switch. It shows or hides the target lines on the dashboard.
+The testing target line counts the labs that missed their target in a completed
+month of the dashboard's date range. The month in progress does not count.
+
+| Filter | Content |
+|---|---|
+| **Date Range** | The months to show. Each month counts whole, from its first day to its last. Opens on the last 12 months, this one included |
+| **Testing Lab** | One or more testing labs |
+| **Target Type** | **Monthly Targets not met**, **Monthly Targets met** or **Show all** |
+
+Each row is one testing lab for one month. A lab with a target is listed for
+every month in the range, at zero when it did no work that month.
+
+| Column | Content |
+|---|---|
+| **Testing Lab** | The testing lab |
+| **Month** | The month the row counts |
+| **Number of Samples Received** | Samples received at the lab that month |
+| **Number of Samples Rejected** | Samples received at the lab that month and rejected |
+| **Number of Samples Tested** | Samples tested that month that were not rejected. **Target Type** compares this count with the target |
+| **Monthly Test Target** | The lab's monthly target. Blank when the lab has none |
+| **Target Met** | **Yes** when **Number of Samples Tested** reaches the target, **No** when it does not. Blank when the lab has no target |
+
+Cancelled samples are left out. On the STS, a user limited to some facilities
+sees only the samples of those facilities. **Export to excel** downloads the
+rows.
 
 ## Freezer/Storage Reports
 
