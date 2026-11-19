@@ -10,6 +10,10 @@ reviewed_against: 5.7.74
 
 Get the results of a finished analyzer run into InteLIS.
 
+The steps use the **HIV VIRAL LOAD** menu. Every other test has the same
+entries under its own menu, for example **EARLY INFANT DIAGNOSIS (EID) →
+Test Result Management**.
+
 ## Before starting
 
 - A batch that has finished running on the analyzer

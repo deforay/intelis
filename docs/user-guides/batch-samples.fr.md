@@ -11,6 +11,10 @@ reviewed_against: 5.7.74
 Regrouper des échantillons enregistrés dans un lot pour une série sur un
 automate, et imprimer le PDF du lot qui porte leurs ID jusqu'à l'automate.
 
+Les étapes utilisent le menu **CHARGE VIRALE DU VIH**. Chaque autre test a les
+mêmes entrées dans son propre menu, par exemple **DIAGNOSTIC PRÉCOCE DU
+NOURRISSON (EID) → Gestion des demandes**.
+
 ## Avant de commencer
 
 - Des échantillons enregistrés dans InteLIS, soit
