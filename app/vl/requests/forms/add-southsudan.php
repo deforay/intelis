@@ -27,6 +27,12 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $a
           $maxLength = "maxlength=" . $maxLength;
      }
 }
+// The lab receipt dates are required from lab users only. A facility user on
+// the STS registers the sample before the lab has received it.
+$labReceiptRequired = !($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') === 'collection-site');
+$labReceiptClass = $labReceiptRequired ? ' isRequired' : '';
+$labReceiptMark = $labReceiptRequired ? ' <span class="mandatory">*</span>' : '';
+
 // check if STS
 $rKey = '';
 if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
@@ -366,15 +372,15 @@ $sFormat = '';
 
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
-                                                            <label for=""><?= _translate("Date Sample Received at Hub (PHL)"); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="<?= _htmlTranslate("Sample Received at HUB Date"); ?>" title="<?= _htmlTranslate("Please select sample received at Hub date"); ?>" />
+                                                            <label for="sampleReceivedAtHubOn"><?= _translate("Date Sample Received at Hub (PHL)"); ?><?= $labReceiptMark; ?></label>
+                                                            <input type="text" class="form-control dateTime<?= $labReceiptClass; ?>" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="<?= _htmlTranslate("Sample Received at HUB Date"); ?>" title="<?= _htmlTranslate("Please select sample received at Hub date"); ?>" />
                                                        </div>
                                                   </div>
 
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
-                                                            <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _htmlTranslate("Sample Received at LAB Date"); ?>" title="<?= _htmlTranslate("Please select sample received at Lab date"); ?>" />
+                                                            <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?><?= $labReceiptMark; ?></label>
+                                                            <input type="text" class="form-control dateTime<?= $labReceiptClass; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _htmlTranslate("Sample Received at LAB Date"); ?>" title="<?= _htmlTranslate("Please select sample received at Lab date"); ?>" />
                                                        </div>
                                                   </div>
                                              </div>

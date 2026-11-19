@@ -32,6 +32,12 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 		$maxLength = "maxlength=$maxLength";
 	}
 }
+// The lab receipt dates are required from lab users only. A facility user on
+// the STS registers the sample before the lab has received it.
+$labReceiptRequired = !($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') === 'collection-site');
+$labReceiptClass = $labReceiptRequired ? ' isRequired' : '';
+$labReceiptMark = $labReceiptRequired ? ' <span class="mandatory">*</span>' : '';
+
 // check if STS
 if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
 	$sampleCode = 'remote_sample_code';
@@ -424,15 +430,15 @@ if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty
 
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
-												<label for="sampleReceivedAtHubOn"><?= _translate("Date Sample Received at Hub (PHL)"); ?> <span class="mandatory">*</span></label>
-												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="<?= _htmlTranslate("Sample Received at HUB Date"); ?>" title="<?= _htmlTranslate("Please select sample received at HUB date"); ?>" value="<?php echo $vlQueryInfo['sample_received_at_hub_datetime']; ?>" />
+												<label for="sampleReceivedAtHubOn"><?= _translate("Date Sample Received at Hub (PHL)"); ?><?= $labReceiptMark; ?></label>
+												<input type="text" class="form-control dateTime<?= $labReceiptClass; ?>" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="<?= _htmlTranslate("Sample Received at HUB Date"); ?>" title="<?= _htmlTranslate("Please select sample received at HUB date"); ?>" value="<?php echo $vlQueryInfo['sample_received_at_hub_datetime']; ?>" />
 											</div>
 										</div>
 
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
-												<label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> <span class="mandatory">*</span> </label>
-												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _htmlTranslate("Sample Received Date"); ?>" title="<?= _htmlTranslate("Please select sample received date"); ?>" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
+												<label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?><?= $labReceiptMark; ?></label>
+												<input type="text" class="form-control dateTime<?= $labReceiptClass; ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _htmlTranslate("Sample Received Date"); ?>" title="<?= _htmlTranslate("Please select sample received date"); ?>" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
 											</div>
 										</div>
 									</div>
