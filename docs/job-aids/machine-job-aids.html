@@ -172,24 +172,26 @@
 
   @media print {
     /* Sized so every card fits one A4 page in both languages. The French cards
-       run longer, so check both with a print preview after changing any card. */
-    body { background: #fff; padding: 0; font-size: 9.5pt; line-height: 1.34; }
+       run longer. After changing any card, print both files to PDF and check the
+       page count equals the card count. */
+    body { background: #fff; padding: 0; font-size: 9pt; line-height: 1.25; }
     .card > header { margin-bottom: 10px; }
-    h3 { margin: 12px 0 5px; }
+    h3 { margin: 9px 0 4px; }
     li { margin-bottom: 3px; }
-    ol.steps > li { margin-bottom: 6px; }
+    ol.steps > li { margin-bottom: 4px; padding-left: 24px; min-height: 15px; }
+    ol.steps > li::before { top: 0; width: 15px; height: 15px; font-size: 7.5pt; line-height: 12px; }
     .cmd { margin: 5px 0 8px; padding: 5px 9px; font-size: 9pt; }
     .cmd.big { font-size: 11pt; }
     .screen { margin: 5px 0 8px; padding: 6px 10px; font-size: 8.5pt; line-height: 1.25; }
     .warn { margin: 8px 0; padding: 7px 11px; }
-    table { font-size: 9pt; margin-bottom: 8px; }
-    th, td { padding: 3px 7px; }
+    table { font-size: 8.5pt; margin-bottom: 8px; }
+    th, td { padding: 2px 6px; }
     footer.cardfoot { margin-top: 8px; }
     .toolbar { display: none; }
     .card {
       margin: 0; border: 0; box-shadow: none;
       min-height: 0; max-width: none;
-      padding: 6mm 10mm;
+      padding: 4mm 8mm;
       page-break-after: always;
       break-after: page;
     }
@@ -254,17 +256,15 @@ Type a number and press Enter:</div>
     <tr><td>When asked to</td><td>Update InteLIS (menu 5).</td></tr>
     <tr><td>When something looks wrong</td><td>Check the machine (menu 1) before calling anyone.</td></tr>
     <tr><td>When the site will not open</td><td>Find out why and fix it (menu 2). It asks before changing anything.</td></tr>
-    <tr><td>Never, normally</td><td>Back up by hand. The machine backs itself up every 8 hours.</td></tr>
+    <tr><td>Before an update</td><td>Back up by hand: <span class="path">intelis backup</span>. Otherwise, once card 4 is done, the machine backs itself up every 8 hours.</td></tr>
   </table>
 
-  <div class="warn">
-    <strong>Never type sudo in front of intelis</strong>
-    It asks for administrator rights itself, only for the steps that need them.
-    Adding <span class="path">sudo</span> runs work as the administrator that must run
-    as the account InteLIS uses, and that breaks some commands.
-  </div>
+  <h3>No need to type sudo</h3>
+  <p><span class="path">intelis</span> asks for administrator rights itself, only for the
+  steps that need them. Typing <span class="path">sudo intelis</span>, as some screens and
+  guides show, works too.</p>
 
-  <h3>If typing intelis says "command not found"</h3>
+  <h3>If typing intelis says "command not found" or lists Composer commands</h3>
   <p>The machine is an older installation. Run the update once using the long command on
   card 3, and the short one works from then on.</p>
 
@@ -355,7 +355,9 @@ Type a number and press Enter:</div>
   <h3>Before and after</h3>
   <table class="wrapfirst">
     <tr><td>Before</td><td>Tell the lab. There is a short spell where pages may not load.</td></tr>
-    <tr><td>Before</td><td>Check backups are current: <span class="path">intelis backup status</span></td></tr>
+    <tr><td>Before</td><td>Back up now: <span class="path">intelis backup</span>. Wait for <em>Database and settings saved on this machine</em>.</td></tr>
+    <tr><td>During</td><td>Ubuntu updates its own packages first, which can take a while. If asked <em>Run the optional maintenance scripts now?</em>, answer No.</td></tr>
+    <tr><td>Done</td><td>The last line reads <em>Total time</em>. The update has checked the machine itself just above it.</td></tr>
     <tr><td>After</td><td>Run <span class="path">intelis check</span>. No line should say FAIL.</td></tr>
     <tr><td>After</td><td>Log in and open one page, to confirm it works.</td></tr>
   </table>
@@ -368,8 +370,10 @@ Type a number and press Enter:</div>
   </div>
 
   <h3>If it fails</h3>
-  <p>The update keeps a snapshot and reports what went wrong. Do not try to fix the machine
-  by hand. Run <span class="path">intelis check</span>, and send the whole output to support.</p>
+  <p>The update keeps a snapshot and prints <em>Why the update failed</em> at the bottom of
+  the window. Do not try to fix the machine by hand. Send support that part of the window,
+  the output of <span class="path">intelis check</span>, and the newest
+  <span class="path">/tmp/intelis-upgrade-*.log</span> file.</p>
 
   <footer class="cardfoot"><span>InteLIS machine job aid</span><span>Card 3: update</span></footer>
 </section>
@@ -399,11 +403,12 @@ Type a number and press Enter:</div>
   <h3>The weekly ten seconds</h3>
   <div class="cmd">intelis backup status</div>
   <div class="screen">Lab            : kigali-central (kigali-central-a1b2c3d4)
-Backing up to  : backup@192.168.1.20:/home/backup/backups/...
+Backing up to  : lisbackup@192.168.1.20:/home/lisbackup/backups/...
 Last good backup: 2026-08-13T04:00:11Z (6 hours ago)
 Size on backup  : 4.2G
-History         : 2026-07-15 to 2026-08-13 (30 days)
+History         : 2026-07-16 to 2026-08-13 (11 days)
 Last attempt    : succeeded in 143s
+Server snapshots: 30 kept, newest 2026-08-13
 Schedule        : every 8 hours and after every restart</div>
 
   <table class="wrapfirst">
@@ -423,7 +428,7 @@ Schedule        : every 8 hours and after every restart</div>
 
   <div class="warn">
     <strong>A backup nobody has ever restored is not a backup</strong>
-    It is a hope. Once a year, restore one onto a spare machine and check the data is
+    It is a hope. Every three months, restore one onto a spare machine and check the data is
     there. Card 5 is how.
   </div>
 
@@ -492,17 +497,21 @@ Schedule        : every 8 hours and after every restart</div>
   <p>It examines the machine and prints one line per thing checked. It works even when
   InteLIS itself will not start, which is exactly when it is needed.</p>
 
-  <div class="screen">  PASS  PHP version                8.4.5
-  PASS  Database host              localhost
-  WARN  Apache post_max_size       8M — large imports will be truncated
-  FAIL  Schema version             database is at 5.6.3, migrations go to 5.6.5
-                                     run: intelis migrate</div>
+  <div class="screen">  PASS  PHP version                8.4.27
+  PASS  DB target                  localhost:3306/vlsm
+  WARN  Apache post_max_size       8M — large imports will be truncated; setup.sh sets 1G
+  FAIL  Schema version             database is at 5.8.9, migrations go to 5.8.10
+                                     run: intelis migrate
+
+  41 passed, 1 warning(s), 1 failed, 2 skipped</div>
 
   <h3>Reading it</h3>
   <table class="wrapfirst">
     <tr><td>PASS</td><td>Fine. Ignore.</td></tr>
     <tr><td>WARN</td><td>Works, but causes trouble later. Worth reporting.</td></tr>
     <tr><td>FAIL</td><td>Broken. This is the line that matters.</td></tr>
+    <tr><td>SKIP</td><td>Does not apply to this machine. Ignore.</td></tr>
+    <tr><td>The last line</td><td>The totals. If the failed count is not 0, read the FAIL lines.</td></tr>
     <tr><td>The indented line</td><td>The exact command that fixes it. Type it as printed.</td></tr>
   </table>
 
@@ -523,8 +532,8 @@ Schedule        : every 8 hours and after every restart</div>
 
   <div class="warn">
     <strong>When calling support, send the output</strong>
-    Run <span class="path">intelis check</span>, select all the text in the window, copy it,
-    and send it. It answers most of the questions support would otherwise have to ask,
+    Run <span class="path">intelis check</span> and <span class="path">intelis health</span>,
+    select all the text in the window, copy it, and send it. It answers most of the questions support would otherwise have to ask,
     and it turns a two-day exchange into one message.
   </div>
 
