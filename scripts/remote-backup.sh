@@ -2104,12 +2104,26 @@ configure_smb() {
       fi
       break
     done
+    ui_note "The Windows account that can write to that shared folder." \
+      "For a domain account, type DOMAIN\\name, for example HEALTH\\backup."
     ask SMB_USER  "Windows username" "${SMB_USER:-}"
     ask_secret smb_pass "Windows password for ${SMB_USER}"
     print info "Connecting to //${SMB_HOST}/${SMB_SHARE}..."
 
+    # mount.cifs does not split DOMAIN\name or DOMAIN/name in a credentials
+    # file: the whole string is sent as the user name and Windows refuses it.
+    # The domain goes on its own line. user@domain is sent as it is.
+    local smb_name="$SMB_USER" smb_domain=""
+    case "$SMB_USER" in
+      *\\*) smb_domain="${SMB_USER%%\\*}"; smb_name="${SMB_USER#*\\}" ;;
+      */*)  smb_domain="${SMB_USER%%/*}";  smb_name="${SMB_USER#*/}" ;;
+    esac
+
     umask 077
-    printf 'username=%s\npassword=%s\n' "$SMB_USER" "$smb_pass" > "$SMB_CRED_FILE"
+    printf 'username=%s\npassword=%s\n' "$smb_name" "$smb_pass" > "$SMB_CRED_FILE"
+    if [ -n "$smb_domain" ]; then
+      printf 'domain=%s\n' "$smb_domain" >> "$SMB_CRED_FILE"
+    fi
     chmod 600 "$SMB_CRED_FILE"
     umask 022
 
