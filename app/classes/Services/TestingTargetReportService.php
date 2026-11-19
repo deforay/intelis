@@ -32,8 +32,27 @@ final class TestingTargetReportService
     public const TARGET_MET = 2;
     public const TARGET_ALL = 3;
 
+    /** Tested samples against testing_labs.monthly_target. */
+    public const KIND_TESTS = 'tests';
+    /** Suppressed VL results against testing_labs.suppressed_monthly_target. */
+    public const KIND_SUPPRESSED = 'suppressed';
+
+    private string $kind = self::KIND_TESTS;
+
     public function __construct(private readonly DatabaseService $db)
     {
+    }
+
+    /**
+     * The same report for another target. The suppressed kind counts, among the
+     * samples tested that month, those whose result category is suppressed,
+     * and holds them against the lab's suppressed monthly target. Viral load only.
+     */
+    public function withKind(string $kind): self
+    {
+        $copy = clone $this;
+        $copy->kind = $kind === self::KIND_SUPPRESSED ? self::KIND_SUPPRESSED : self::KIND_TESTS;
+        return $copy;
     }
 
     /**
@@ -44,7 +63,7 @@ final class TestingTargetReportService
      * @param list<string>  $scopeWhere extra conditions on the sample alias `t`
      * @param bool          $fillTargetLabs add labs with a target and no samples, at zero
      * @return list<array{labId:int, labName:string, month:string, received:int,
-     *     rejected:int, tested:int, target:?int, met:?bool}>
+     *     rejected:int, tested:int, suppressed:?int, target:?int, met:?bool}>
      */
     public function rows(
         string $testType,
@@ -56,6 +75,7 @@ final class TestingTargetReportService
         bool $fillTargetLabs = true
     ): array {
         $table = TestsService::getTestTableName($testType);
+        $suppression = $this->kind === self::KIND_SUPPRESSED;
         $months = self::months($from, $to);
         if ($months === []) {
             return [];
@@ -76,8 +96,21 @@ final class TestingTargetReportService
         // drop the row from tested: IFNULL below reads it as not rejected.
         $rejected = SampleRejectionUtility::sqlPredicate('t');
 
+        $notRejected = "NOT IFNULL($rejected, 0)";
+        $params = [$start, $end, $start, $end, $start, $end];
+        $suppressedPart = '';
+        if ($suppression) {
+            $suppressedPart = "UNION ALL
+                    SELECT t.lab_id, DATE_FORMAT(t.sample_tested_datetime, '%Y-%m'), 'suppressed'
+                      FROM `$table` t
+                     WHERE t.sample_tested_datetime BETWEEN ? AND ? AND $notRejected
+                       AND t.vl_result_category = 'suppressed' AND $where";
+            $params = [...$params, $start, $end];
+        }
+
         $sql = "SELECT lab_id, month, SUM(kind = 'received') AS received,
-                       SUM(kind = 'rejected') AS rejected, SUM(kind = 'tested') AS tested
+                       SUM(kind = 'rejected') AS rejected, SUM(kind = 'tested') AS tested,
+                       SUM(kind = 'suppressed') AS suppressed
                   FROM (
                     SELECT t.lab_id, DATE_FORMAT(t.sample_received_at_lab_datetime, '%Y-%m') AS month,
                            'received' AS kind
@@ -90,15 +123,17 @@ final class TestingTargetReportService
                     UNION ALL
                     SELECT t.lab_id, DATE_FORMAT(t.sample_tested_datetime, '%Y-%m'), 'tested'
                       FROM `$table` t
-                     WHERE t.sample_tested_datetime BETWEEN ? AND ? AND NOT IFNULL($rejected, 0) AND $where
+                     WHERE t.sample_tested_datetime BETWEEN ? AND ? AND $notRejected AND $where
+                    $suppressedPart
                   ) counted
                  GROUP BY lab_id, month";
         $counts = [];
-        foreach ($this->db->rawQuery($sql, [$start, $end, $start, $end, $start, $end]) as $row) {
+        foreach ($this->db->rawQuery($sql, $params) as $row) {
             $counts[(int) $row['lab_id']][$row['month']] = [
                 'received' => (int) $row['received'],
                 'rejected' => (int) $row['rejected'],
                 'tested' => (int) $row['tested'],
+                'suppressed' => $suppression ? (int) $row['suppressed'] : null,
             ];
         }
 
@@ -120,9 +155,10 @@ final class TestingTargetReportService
                 if ($count === null && !isset($targets[$labId])) {
                     continue;
                 }
-                $count ??= ['received' => 0, 'rejected' => 0, 'tested' => 0];
+                $count ??= ['received' => 0, 'rejected' => 0, 'tested' => 0, 'suppressed' => $suppression ? 0 : null];
                 $target = $targets[$labId] ?? null;
-                $met = $target === null ? null : $count['tested'] >= $target;
+                $measured = $suppression ? $count['suppressed'] : $count['tested'];
+                $met = $target === null ? null : $measured >= $target;
                 if (
                     ($targetType === self::TARGET_NOT_MET && $met !== false)
                     || ($targetType === self::TARGET_MET && $met !== true)
@@ -203,7 +239,8 @@ final class TestingTargetReportService
      */
     private function targets(string $testType, array $labIds): array
     {
-        $sql = 'SELECT facility_id, monthly_target FROM testing_labs WHERE test_type = ?';
+        $column = $this->kind === self::KIND_SUPPRESSED ? 'suppressed_monthly_target' : 'monthly_target';
+        $sql = "SELECT facility_id, $column AS monthly_target FROM testing_labs WHERE test_type = ?";
         if ($labIds !== []) {
             $sql .= ' AND facility_id IN (' . implode(',', $labIds) . ')';
         }

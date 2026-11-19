@@ -38126,3 +38126,12 @@ msgstr "Testés compte les échantillons testés dans le mois qui n'ont pas ét�
 
 msgid "Cancelled samples are left out."
 msgstr "Les échantillons annulés ne sont pas comptés."
+
+msgid "Number of Suppressed Results"
+msgstr "Nombre de résultats supprimés"
+
+msgid "Suppressed counts those whose result is suppressed."
+msgstr "Supprimés compte ceux dont le résultat est supprimé."
+
+msgid "Viral Load Suppression - Monthly Target Report"
+msgstr "Suppression de la charge virale - Rapport sur l'objectif mensuel"

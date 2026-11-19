@@ -64,6 +64,55 @@ if (!function_exists('_testingTargetFilters')) {
     }
 
     /**
+     * The columns of the report, in order: each translated header and the row
+     * key it shows. Lab and month always come first.
+     *
+     * @return list<array{0:string, 1:string}>
+     */
+    function _testingTargetColumns(string $kind): array
+    {
+        if ($kind === TestingTargetReportService::KIND_SUPPRESSED) {
+            return [
+                [_translate('Testing Lab'), 'labName'],
+                [_translate('Month'), 'month'],
+                [_translate('Number of Samples Tested'), 'tested'],
+                [_translate('Number of Suppressed Results'), 'suppressed'],
+                [_translate('Suppressed Monthly Target'), 'target'],
+                [_translate('Target Met'), 'met'],
+            ];
+        }
+        return [
+            [_translate('Testing Lab'), 'labName'],
+            [_translate('Month'), 'month'],
+            [_translate('Number of Samples Received'), 'received'],
+            [_translate('Number of Samples Rejected'), 'rejected'],
+            [_translate('Number of Samples Tested'), 'tested'],
+            [_translate('Monthly Test Target'), 'target'],
+            [_translate('Target Met'), 'met'],
+        ];
+    }
+
+    /**
+     * One row's cells, in column order. Month stays Y-m so it sorts, and the
+     * lab name stays as stored.
+     *
+     * @param array<string, mixed> $row
+     * @return list<mixed>
+     */
+    function _testingTargetCells(array $row, string $kind, string $yes, string $no): array
+    {
+        $cells = [];
+        foreach (_testingTargetColumns($kind) as [, $key]) {
+            $value = $row[$key] ?? null;
+            if ($key === 'met') {
+                $value = $value === null ? '' : ($value ? $yes : $no);
+            }
+            $cells[] = $value ?? '';
+        }
+        return $cells;
+    }
+
+    /**
      * Month as the report shows it, for example Nov-2026.
      */
     function _testingTargetMonth(string $month): string
