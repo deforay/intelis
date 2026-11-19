@@ -257,7 +257,7 @@ final class TestingTargetEndpointTest extends TestCase
     }
 
     #[RunInSeparateProcess]
-    public function testTheTwoVlExportsWriteFilesOfTheirOwn(): void
+    public function testEveryExportWritesAFileOfItsOwn(): void
     {
         LegacyAppHarness::db()->rawQuery("UPDATE testing_labs SET test_type = 'vl', suppressed_monthly_target = '1'");
         LegacyAppHarness::withSession(['roleId' => 1, 'instance' => ['type' => 'remoteuser']]);
@@ -278,11 +278,26 @@ final class TestingTargetEndpointTest extends TestCase
             }
         }
 
+        // The same report again, at once. The handler requires each script once,
+        // so this runs the shared export directly, as the wrapper would.
+        (static function (): void {
+            $testType = 'vl';
+            $targetKind = 'suppressed';
+            $reportPage = '/vl/program-management/vlSuppressedTargetReport.php';
+            $reportTitle = 'VL Suppression';
+            ob_start();
+            try {
+                require APPLICATION_PATH . '/reports/_testing-target-export.php';
+            } finally {
+                ob_end_clean();
+            }
+        })();
+
         $written = array_values(array_diff(glob(TEMP_PATH . '/InteLIS-VL-*-Target-Report-*.xlsx') ?: [], $before));
         foreach ($written as $file) {
             unlink($file);
         }
-        $this->assertCount(2, $written);
-        $this->assertCount(1, preg_grep('/-Suppression-Target-Report-/', $written));
+        $this->assertCount(3, $written);
+        $this->assertCount(2, preg_grep('/-Suppression-Target-Report-/', $written));
     }
 }
