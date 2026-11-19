@@ -403,6 +403,11 @@ S'ouvre avec l'hépatite sélectionnée. Voir
 Affiche les mêmes décomptes et graphiques que l'onglet charge virale. Voir
 [Tableau de bord](reports.md#tableau-de-bord).
 
+Lorsque **Objectif mensuel VL** est activé, l'onglet affiche aussi une ligne
+indiquant combien de laboratoires CD4 n'ont pas atteint l'objectif de test
+mensuel. Son lien **plus** ouvre le
+[Rapport sur l'objectif du test CD4](#rapport-sur-lobjectif-du-test-cd4).
+
 ### Rapport sur le statut des échantillons
 
 **Emplacement :** **CD4 → Gestion → Rapport sur le statut des échantillons**
@@ -438,6 +443,14 @@ Fonctionne comme la version charge virale. Voir
 Fonctionne comme les **Rapports cliniques** charge virale. Voir
 [Rapports cliniques](reports.md#rapports-cliniques). Les onglets sont listés
 dans [Onglets des rapports cliniques par test](#onglets-des-rapports-cliniques-par-test).
+
+### Rapport sur l'objectif du test CD4
+
+**Emplacement :** **CD4 → Gestion → Rapport sur l'objectif du test CD4**
+
+Présente les mêmes filtres et colonnes que le
+[Rapport sur les objectifs de test EID](#rapport-sur-les-objectifs-de-test-eid),
+pour les échantillons CD4.
 
 ### Rapport d'ancienneté des échantillons
 
