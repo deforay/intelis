@@ -3,8 +3,8 @@ description: Reference for every setting on the General Configuration page, what
 audience: [system-admin, lab-admin]
 module: [all]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 
 # General configuration settings
@@ -96,6 +96,12 @@ reach the others.
 | VL Monthly Target | **Enable** or **Disable**. Enabled, the dashboard shows each lab's work against its targets. The targets themselves are set per testing lab, under [Set up a testing lab](admin-facilities.md#set-up-a-testing-lab) |
 | Interpret and Convert VL Results | Whether InteLIS converts and interprets imported viral load values |
 | Viral Load Export Format | **Default Format** or **CRESAR Format**. Only some country forms use it |
+
+**TB Settings** carries this as well:
+
+| Setting | Default | Controls |
+| --- | --- | --- |
+| Record a negative GeneXpert pool on every sample in it | **No** | Whether a negative GeneXpert pool result is recorded as **MTB not detected** on every sample in the pool. Set it to **Yes** only if the national programme accepts pooled testing for release. A pool that is not negative is never recorded. Set it on the STS, which sends it to every lab. See [How to test pooled TB samples on GeneXpert](test-pooled-tb-samples.md) |
 
 ??? warning "Auto Approve API Results"
 

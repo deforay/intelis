@@ -3,8 +3,8 @@ description: Référence de chaque paramètre de la page Configuration général
 audience: [system-admin, lab-admin]
 module: [all]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 
 # Paramètres de la configuration générale
@@ -98,6 +98,12 @@ Les **Réglages de la charge virale** portent en plus :
 | VL Objectif mensuel | **Activer** ou **Désactiver**. Activé, le tableau de bord montre le travail de chaque laboratoire face à ses objectifs. Les objectifs eux-mêmes se règlent par laboratoire d'analyse, sous [Configurer un laboratoire d'analyse](admin-facilities.md#configurer-un-laboratoire-danalyse) |
 | Interpréter et convertir les résultats de la LV | Si InteLIS convertit et interprète les valeurs de charge virale importées |
 | Format d'exportation de la charge virale | **Format par défaut** ou **Format CRESAR**. Seuls certains formulaires nationaux l'utilisent |
+
+Les **Réglages TB** portent en plus :
+
+| Paramètre | Par défaut | Contrôle |
+| --- | --- | --- |
+| Enregistrer un pool GeneXpert négatif sur chacun de ses échantillons | **Non** | Si un résultat de pool GeneXpert négatif est enregistré comme **MTB not detected** sur chaque échantillon du pool. Le régler sur **Oui** uniquement si le programme national accepte les tests en pool pour la validation des résultats. Un pool non négatif n'est jamais enregistré. Le régler sur le STS, qui l'envoie à chaque laboratoire. Voir [Tester des échantillons TB groupés sur GeneXpert](test-pooled-tb-samples.md) |
 
 ??? warning "Approbation automatique des résultats de l'API"
 
