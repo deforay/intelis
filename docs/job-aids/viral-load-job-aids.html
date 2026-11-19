@@ -146,12 +146,20 @@
   }
 
   @media print {
-    body { background: #fff; padding: 0; font-size: 10.5pt; }
+    /* Sized so every card fits one A4 page in both languages. The French cards
+       run longer. After changing any card, print both files to PDF and check the
+       page count equals the card count. */
+    body { background: #fff; padding: 0; font-size: 9pt; line-height: 1.25; }
+    h3 { margin: 9px 0 4px; }
+    ol.steps > li { margin-bottom: 4px; padding-left: 24px; min-height: 15px; }
+    ol.steps > li::before { top: 0; width: 15px; height: 15px; font-size: 7.5pt; line-height: 12px; }
+    table { font-size: 8.5pt; }
+    th, td { padding: 2px 6px; }
     .toolbar { display: none; }
     .card {
       margin: 0; border: 0; box-shadow: none;
       min-height: 0; max-width: none;
-      padding: 12mm 14mm;
+      padding: 4mm 8mm;;
       page-break-after: always;
       break-after: page;
     }
@@ -263,8 +271,9 @@
   <h3>Receiving a package instead</h3>
   <p>Do not register manifest samples one at a time. Go to
   <span class="path">Request Management &rsaquo; Add Samples from Manifest</span>,
-  count the tubes against the manifest, enter the manifest code, set the received date,
-  and select <span class="ui">Activate Samples</span>.</p>
+  count the tubes against the manifest, enter the manifest code and select
+  <span class="ui">Submit</span>. Then set the received date and select
+  <span class="ui">Activate Samples</span>.</p>
 
   <footer class="cardfoot"><span>InteLIS viral load job aid</span><span>Card 2: register a request</span></footer>
 </section>
@@ -286,7 +295,8 @@
     <li>Set <span class="ui">Positions</span> to match how the analyzer labels positions.</li>
     <li>Filter the sample list, then set <span class="ui">Sort By</span> to the order the run is loaded in.</li>
     <li>Tick the samples, or use <span class="ui">Automatically select samples for Batch</span>.</li>
-    <li>Select <span class="ui">Save and Next</span>.</li>
+    <li>Select <span class="ui">Save and Next</span>. The <span class="ui">Add Batch Controls Position</span> screen opens.</li>
+    <li>Check the positions, then select <span class="ui">Save</span>.</li>
     <li>Back on the batch list, select <span class="ui">Batch PDF</span> or <span class="ui">Compact Batch PDF</span>.</li>
     <li>Print it and take it to the analyzer.</li>
     <li>Scan or enter each Sample ID at the analyzer from the printed PDF.</li>
@@ -303,10 +313,10 @@
   <h3>If InteLIS blocks the save</h3>
   <table class="wrapfirst">
     <tr><th>Message</th><th>Fix</th></tr>
-    <tr><td>Choose a testing platform to proceed</td><td>Select the analyzer.</td></tr>
-    <tr><td>Select at least one sample</td><td>Tick samples in the list.</td></tr>
-    <tr><td>More than the allowed number for this platform</td><td>Untick samples down to the analyzer's limit.</td></tr>
-    <tr><td>Batch code already exists</td><td>Use a different code.</td></tr>
+    <tr><td>You have to choose a testing platform to proceed</td><td>Select the analyzer.</td></tr>
+    <tr><td>Please select at least one sample</td><td>Tick samples in the list.</td></tr>
+    <tr><td>You have selected more than the allowed number of samples for this platform</td><td>Untick samples down to the analyzer's limit.</td></tr>
+    <tr><td>This batch code already exists</td><td>Use a different code.</td></tr>
   </table>
 
   <h3>Batch row actions</h3>
@@ -314,7 +324,7 @@
     <tr><td>Edit</td><td>Change batch details and samples</td></tr>
     <tr><td>Edit Position</td><td>Change which position each sample sits in</td></tr>
     <tr><td>Batch PDF / Compact</td><td>Reprint the barcode sheet</td></tr>
-    <tr><td>Delete</td><td>Disappears once any sample in the batch has a result. Deleting releases samples back to the untested queue. It does not delete samples.</td></tr>
+    <tr><td>Delete</td><td>Disappears once any sample in the batch has a result or is rejected. Deleting releases samples back to the untested queue. It does not delete samples.</td></tr>
   </table>
 
   <footer class="cardfoot"><span>InteLIS viral load job aid</span><span>Card 3: batch and run</span></footer>
@@ -343,6 +353,7 @@
   <ol class="steps">
     <li>Export the result file from the analyzer. It must carry the InteLIS Sample IDs.</li>
     <li>Choose <span class="ui">Instrument/Platform Name</span> and <span class="ui">Specific Machine Name/Code</span>. The wrong choice garbles the import.</li>
+    <li>Choose the <span class="ui">Date Format</span> the file uses.</li>
     <li>Choose the <span class="ui">Testing Lab Name</span> and select the file. Accepts xls, xlsx, csv, txt.</li>
     <li>Select <span class="ui">Submit</span>.</li>
     <li>Check each row's colour against the <span class="ui">Sample source</span> and <span class="ui">Date gap</span> legend before accepting.</li>
@@ -395,7 +406,9 @@
     <li>Set <span class="ui">Approver</span>, and tester and reviewer if the lab records them.</li>
     <li>Select <span class="ui">Apply</span> and confirm.</li>
   </ol>
-  <p><span class="ui">Replace existing</span> overwrites names already on those samples. Leave it off to fill only blanks.</p>
+  <p><span class="ui">Replace existing</span> overwrites names already on those samples. Leave it off to fill only blanks.
+  If <span class="ui">Approver</span> is left blank, InteLIS records the signed-in user. Rows without a result are skipped.</p>
+  <p>Results from the Interface Tool may arrive already <span class="ui">Accepted</span>, if the lab approves them automatically.</p>
 
   <div class="warn">
     <strong>Sample ID and patient do not match</strong>
@@ -420,7 +433,7 @@
     <li>Results go to the addresses held against the facility.</li>
   </ul>
 
-  <p>Only approved results, and rejected samples, appear on the print and email pages.</p>
+  <p>Only approved results and rejected samples appear on the print page. Email sends approved results only. Print a rejected sample's report.</p>
 
   <footer class="cardfoot"><span>InteLIS viral load job aid</span><span>Card 5: approve and release</span></footer>
 </section>
@@ -497,10 +510,10 @@
     <tr><td>Rejected</td><td>Not fit to test. A rejection reason is recorded</td></tr>
     <tr><td>Failed/Invalid</td><td>The test ran and gave no usable result</td></tr>
     <tr><td>Hold</td><td>Paused pending a decision</td></tr>
-    <tr><td>Sample Reordered</td><td>Sent back for testing again</td></tr>
+    <tr><td>Sample Reordered</td><td>An older status. A retest now sets Sample Registered at Testing Lab</td></tr>
     <tr><td>Lost</td><td>Cannot be found, will not be tested</td></tr>
     <tr><td>Expired</td><td>Not tested within the Sample Expiry Days (365 by default)</td></tr>
-    <tr><td>No Result</td><td>No result recorded</td></tr>
+    <tr><td>No Result</td><td>The test ran and reported no result</td></tr>
     <tr><td>Cancelled</td><td>Testing will not be performed</td></tr>
   </table>
 
@@ -509,7 +522,7 @@
     <tr><td>Cancelled</td><td>Treated as never tested. Out of testing counts and turnaround time</td></tr>
     <tr><td>Failed/Invalid</td><td>Counted in the failure rate. A retest keeps the failed attempt on record</td></tr>
     <tr><td>Rejected</td><td>Appears in the sample rejection report with its reason</td></tr>
-    <tr><td>Accepted and Rejected</td><td>The only statuses that can be printed or emailed</td></tr>
+    <tr><td>Accepted and Rejected</td><td>The only statuses that can be printed. Email sends Accepted only</td></tr>
   </table>
 
   <h3>Common situations</h3>

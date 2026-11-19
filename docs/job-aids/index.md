@@ -3,8 +3,8 @@ description: Printable one-page cards for viral load lab work, InteLIS administr
 audience: [lab-staff, lab-supervisor, lab-admin, system-admin]
 module: [vl]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.10
 ---
 # Printable job aids
 
