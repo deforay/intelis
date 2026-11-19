@@ -21,6 +21,12 @@ récente** et être connectée à Internet.
 
     ### Sur l'ancienne machine
 
+    !!! warning "Arrêter d'abord la saisie"
+
+        Demander à chacun d'arrêter la saisie sur l'ancienne machine jusqu'à ce
+        que la nouvelle soit prête. Ce qui est saisi après la sauvegarde de
+        l'étape 1 n'est pas transféré.
+
     1. Ouvrir un terminal et faire une nouvelle sauvegarde, pour ne rien perdre
        de ce qui a été saisi depuis la dernière sauvegarde automatique :
 
@@ -71,23 +77,34 @@ récente** et être connectée à Internet.
        du terminal. Son chemin apparaît après la commande.
     5. Appuyer sur Entrée. Le dossier `backups` est copié sur la clé USB.
     6. Débrancher la clé USB.
+    7. Éteindre l'ancienne machine :
+
+        ```bash
+        sudo poweroff
+        ```
+
+        Une ancienne machine allumée continue d'envoyer au STS et de recevoir
+        les résultats des automates, pour le même laboratoire que la nouvelle.
+        La garder telle quelle jusqu'à ce que la nouvelle machine réussisse les
+        vérifications à la fin de ce guide. Si la nouvelle machine échoue,
+        rallumer l'ancienne et continuer avec elle.
 
     ### Sur la nouvelle machine
 
-    7. Brancher la clé USB.
-    8. Ouvrir un terminal et télécharger le programme d'installation :
+    8. Brancher la clé USB.
+    9. Ouvrir un terminal et télécharger le programme d'installation :
 
         ```bash
         cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)"
         ```
 
-    9. Taper ceci, suivi d'un espace. Ne pas encore appuyer sur Entrée :
+    10. Taper ceci, suivi d'un espace. Ne pas encore appuyer sur Entrée :
 
         ```bash
         sudo bash setup.sh --restore-from-backup-folder
         ```
 
-    10. Ouvrir la clé USB dans l'application **Files**. Faire glisser le dossier
+    11. Ouvrir la clé USB dans l'application **Files**. Faire glisser le dossier
         `backups` sur la fenêtre du terminal. Son chemin apparaît après la
         commande.
 
@@ -96,7 +113,7 @@ récente** et être connectée à Internet.
         **Ctrl+Shift+V**. Si le chemin contient des espaces et n'est pas entre
         guillemets, ajouter `'` aux deux extrémités.
 
-    11. Appuyer sur Entrée, puis répondre aux questions du programme
+    12. Appuyer sur Entrée, puis répondre aux questions du programme
         d'installation :
 
         | Question | Réponse |
@@ -108,7 +125,7 @@ récente** et être connectée à Internet.
         | New MySQL root password | Un nouveau mot de passe pour cette machine, saisi deux fois. Le noter. |
         | Is this correct? | Vérifier le récapitulatif, puis appuyer sur Entrée (Yes). |
 
-    12. Attendre 10 à 20 minutes. Le programme d'installation se termine par
+    13. Attendre 10 à 20 minutes. Le programme d'installation se termine par
         la ligne `Setup is complete.`
 
         Vers la fin, il affiche `Signatures, report templates and logos restored`.
@@ -146,7 +163,7 @@ récente** et être connectée à Internet.
             cd /var/www/intelis && sudo -u www-data php bin/backup-key-admin.php approve --lab <lab-id>
             ```
 
-            Répéter ensuite les étapes 9 à 11, en ajoutant l'adresse du STS et le
+            Répéter ensuite les étapes 10 à 12, en ajoutant l'adresse du STS et le
             jeton après le chemin du dossier :
 
             ```bash
@@ -160,15 +177,15 @@ récente** et être connectée à Internet.
 
     ### Vérifier le laboratoire
 
-    13. Ouvrir InteLIS dans le navigateur.
-    14. Se connecter avec un compte administrateur de l'ancienne machine. Ne pas
+    14. Ouvrir InteLIS dans le navigateur.
+    15. Se connecter avec un compte administrateur de l'ancienne machine. Ne pas
         en créer un nouveau. La base de données restaurée contient déjà les
         utilisateurs, les paramètres du laboratoire et toutes les données.
-    15. Vérifier les paramètres du laboratoire sous **ADMIN → Paramètres →
+    16. Vérifier les paramètres du laboratoire sous **ADMIN → Paramètres →
         Configuration générale**.
-    16. Ouvrir le PDF de résultats d'une demande récente, et vérifier que ses
+    17. Ouvrir le PDF de résultats d'une demande récente, et vérifier que ses
         signatures et son logo apparaissent.
-    17. Si le laboratoire utilise l'outil d'interface, restaurer aussi sa base
+    18. Si le laboratoire utilise l'outil d'interface, restaurer aussi sa base
         de données.
 
         1. Dans un terminal, taper `sudo cp` suivi d'un espace. Ne pas encore
