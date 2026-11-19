@@ -4,7 +4,7 @@ audience: [system-admin, lab-admin]
 module: [all]
 type: reference
 reviewed: 2026-11-19
-reviewed_against: 5.8.8
+reviewed_against: 5.8.9
 ---
 
 # Paramètres de la configuration générale
@@ -73,6 +73,14 @@ n'apparaît que si l'installation exécute ce module.
     Le **Mode de formation** est réservé à une installation d'entraînement. Ne
     jamais l'activer sur une installation qui contient de vraies fiches de
     patients.
+
+    Le **Mode de formation** affiche seulement la bannière, et imprime son texte
+    sur certains formulaires de résultats. Il n'empêche pas l'installation de se
+    synchroniser avec le STS, d'envoyer les résultats par e-mail ni d'importer
+    les résultats des automates. Pour empêcher une installation
+    d'entraînement de se synchroniser avec le STS réel, régler son **Type
+    d'instance** sur **Mode autonome** dans **System Admin**. Voir
+    [Utiliser l'espace System Admin](admin-system-administration.md).
 
 ## Panneaux des modules
 
