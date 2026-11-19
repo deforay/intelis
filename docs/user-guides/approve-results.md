@@ -18,6 +18,10 @@ file can also be accepted on the **Imported Results** screen during the import.
 Results sent in through the Interface Tool may be approved automatically, if the
 lab is configured that way.
 
+The steps use the **HIV VIRAL LOAD** menu. Every other test has the same
+entries under its own menu, for example **EARLY INFANT DIAGNOSIS (EID) →
+Test Result Management**.
+
 ## Before starting
 
 - Results captured in InteLIS. See [How to capture viral load results](capture-results.md)

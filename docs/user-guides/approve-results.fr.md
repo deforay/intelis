@@ -18,6 +18,10 @@ importés depuis un fichier peuvent aussi être acceptés sur l'écran **Résult
 importés** pendant l'import. Les résultats transmis par l'outil d'interface peuvent être
 approuvés automatiquement, si le laboratoire est configuré ainsi.
 
+Les étapes utilisent le menu **CHARGE VIRALE DU VIH**. Chaque autre test a les
+mêmes entrées dans son propre menu, par exemple **DIAGNOSTIC PRÉCOCE DU
+NOURRISSON (EID) → Gestion des résultats des tests**.
+
 ## Avant de commencer
 
 - Des résultats saisis dans InteLIS. Voir

@@ -10,6 +10,10 @@ reviewed_against: 5.7.74
 
 Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
 
+Les étapes utilisent le menu **CHARGE VIRALE DU VIH**. Chaque autre test a les
+mêmes entrées dans son propre menu, par exemple **DIAGNOSTIC PRÉCOCE DU
+NOURRISSON (EID) → Gestion des résultats des tests**.
+
 ## Avant de commencer
 
 - Un lot dont la série est terminée sur l'automate

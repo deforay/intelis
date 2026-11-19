@@ -11,6 +11,10 @@ reviewed_against: 5.7.74
 Group registered samples into a batch for one analyzer run, and print the batch
 PDF that carries their Sample IDs to the analyzer.
 
+The steps use the **HIV VIRAL LOAD** menu. Every other test has the same
+entries under its own menu, for example **EARLY INFANT DIAGNOSIS (EID) →
+Request Management**.
+
 ## Before starting
 
 - Samples registered in InteLIS, either
