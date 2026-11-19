@@ -48,3 +48,15 @@ SELECT 'cd4', NULL, 'no', 'CD4 Testing Target Report',
             LIMIT 1)
    AND NOT EXISTS (SELECT 1 FROM `s_app_menu` x
                     WHERE x.`link` = '/cd4/management/cd4-testing-target-report.php');
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
