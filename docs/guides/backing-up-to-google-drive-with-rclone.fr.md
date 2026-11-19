@@ -190,10 +190,18 @@ nouvelle machine est en cours d'installation.
 
     ??? info "Si le téléchargement est trop volumineux"
 
-        Télécharger seulement les 14 derniers jours :
+        Télécharger d'abord tout le dossier `config`. Une sauvegarde des
+        paramètres n'est faite que lorsque les paramètres changent, donc celle
+        qui contient la clé peut dater de plusieurs mois :
 
         ```bash
-        sudo rclone copy --max-age 14d gdrive:intelis/centrallab-01/backups ~/backups
+        sudo rclone copy gdrive:intelis/centrallab-01/backups/config ~/backups/config
+        ```
+
+        Télécharger ensuite seulement les 14 derniers jours du reste :
+
+        ```bash
+        sudo rclone copy --max-age 14d --exclude "/config/**" gdrive:intelis/centrallab-01/backups ~/backups
         ```
 
 3. Vérifier que le téléchargement contient les deux dossiers `db` et `config` :
