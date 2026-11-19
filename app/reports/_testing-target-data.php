@@ -33,7 +33,9 @@ if (($_POST['labsBelowTarget'] ?? '') === 'yes') {
         $filters['from'],
         $filters['to'],
         $filters['labIds'],
-        $filters['scope']
+        $filters['scope'],
+        null,
+        $filters['fill']
     )]);
     return;
 }
@@ -61,6 +63,22 @@ foreach ($rows as $row) {
         $row['target'] ?? '',
         $row['met'] === null ? '' : ($row['met'] ? $yes : $no),
     ];
+}
+
+// The grid's search box: a row stays when any cell shown contains the text.
+$search = mb_strtolower(trim((string) ($_POST['sSearch'] ?? '')));
+if ($search !== '') {
+    $aaData = array_values(array_filter($aaData, static function (array $cells) use ($search): bool {
+        $shown = $cells;
+        $shown[0] = html_entity_decode((string) $shown[0], ENT_QUOTES, 'UTF-8');
+        $shown[1] = _testingTargetMonth((string) $shown[1]);
+        foreach ($shown as $cell) {
+            if (str_contains(mb_strtolower((string) $cell), $search)) {
+                return true;
+            }
+        }
+        return false;
+    }));
 }
 
 // Sorted by the column the reader chose. Month sorts on its Y-m value and is
