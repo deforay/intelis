@@ -32,7 +32,7 @@ d'abord [Connecter un laboratoire au STS](connect-lab-to-sts.md).
         ```
 
     2. Lire les lignes `STS URL`, `STS hosts entry`, `Instance registered` et
-       `STS token`. Corriger toute ligne qui n'est pas `OK`, à l'aide de
+       `STS token`. Corriger toute ligne qui n'est pas `PASS`, à l'aide de
        [Messages et corrections](#messages-et-corrections) plus bas.
     3. Lancer une synchronisation complète immédiatement :
 

@@ -31,7 +31,7 @@ The lab must already be connected to the STS. If it never was, follow
         ```
 
     2. Read the rows `STS URL`, `STS hosts entry`, `Instance registered` and
-       `STS token`. Fix any row that is not `OK`, using
+       `STS token`. Fix any row that is not `PASS`, using
        [Messages and fixes](#messages-and-fixes) below.
     3. Run a full sync now:
 

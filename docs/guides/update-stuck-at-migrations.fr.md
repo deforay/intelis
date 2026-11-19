@@ -101,7 +101,7 @@ attente.
         sudo intelis check
         ```
 
-        Les lignes `Schema version` et `Audit triggers` doivent afficher `OK`.
+        Les lignes `Schema version` et `Audit triggers` doivent afficher `PASS`.
 
     Si la mise à jour échoue de nouveau au même endroit, utiliser la situation
     **Bloqué sur une ancienne version**.
@@ -144,7 +144,7 @@ attente.
         ```
 
     5. Exécuter de nouveau `sudo intelis check`. `Schema version` et
-       `Audit triggers` doivent afficher `OK`.
+       `Audit triggers` doivent afficher `PASS`.
 
     !!! warning "Ne pas modifier à la main le numéro de version dans la base de données"
 

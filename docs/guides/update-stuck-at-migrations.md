@@ -97,7 +97,7 @@ data is safe. Nothing is being changed while it waits.
         sudo intelis check
         ```
 
-        Expect `OK` on the rows `Schema version` and `Audit triggers`.
+        Expect `PASS` on the rows `Schema version` and `Audit triggers`.
 
     If the update fails again at the same point, use the **Stuck on an old
     version** situation.
@@ -136,7 +136,7 @@ data is safe. Nothing is being changed while it waits.
         sudo intelis audit-triggers-install
         ```
 
-    5. Run `sudo intelis check` again. Expect `OK` on `Schema version` and
+    5. Run `sudo intelis check` again. Expect `PASS` on `Schema version` and
        `Audit triggers`.
 
     !!! warning "Do not change the version number in the database by hand"
