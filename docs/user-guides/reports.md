@@ -10,7 +10,8 @@ reviewed_against: 5.8.8
 # Viral load reports
 
 This page describes every report under **HIV VIRAL LOAD → Management**, the
-viral load content of the dashboard, and the Sample Ageing Report.
+viral load content of the dashboard, and the Sample Ageing Report. For EID, TB
+and the other tests, see [Reports for other tests](reports-other-tests.md).
 
 Applies to InteLIS 5.8.8.
 

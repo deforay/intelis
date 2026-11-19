@@ -82,6 +82,7 @@ nav:
       - Statuses & Reports:
           - Sample Statuses: user-guides/sample-statuses.md
           - Viral Load Reports: user-guides/reports.md
+          - Reports for Other Tests: user-guides/reports-other-tests.md
   - Printable Job Aids:
       - Job Aids: job-aids/index.md
   - Installation:
@@ -181,6 +182,7 @@ plugins:
             For Requesting Facilities: Pour les structures demandeuses
             Sample Statuses: Statuts des échantillons
             Viral Load Reports: Rapports charge virale
+            Reports for Other Tests: Rapports des autres tests
             Printable Job Aids: Aide-mémoires imprimables
             Job Aids: Aide-mémoires
             Installation: Installation

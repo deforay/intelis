@@ -11,7 +11,8 @@ reviewed_against: 5.8.8
 
 Cette page décrit chaque rapport situé sous **CHARGE VIRALE DU VIH → Gestion**,
 le contenu charge virale du tableau de bord, et le rapport d'ancienneté des
-échantillons.
+échantillons. Pour l'EID, la TB et les autres tests, voir
+[Rapports des autres tests](reports-other-tests.md).
 
 S'applique à InteLIS 5.8.8.
 
