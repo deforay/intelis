@@ -101,13 +101,49 @@ l'administrateur de changer le mot de passe.
 
 Toutes les pages de liste d'InteLIS fonctionnent de la même manière.
 
-1. Régler un ou plusieurs filtres en haut de la page.
-2. Sélectionner **Rechercher**.
-3. Pour effacer tous les filtres, sélectionner **Réinitialiser**.
+1. Si les filtres sont repliés, sélectionner **Filtres** en haut de la page
+   pour les ouvrir.
+2. Régler un ou plusieurs filtres.
+3. Sélectionner **Rechercher**.
+4. Pour effacer un filtre, sélectionner le **×** sur son étiquette au-dessus
+   de la liste. Pour effacer tous les filtres, sélectionner **Réinitialiser**.
 
 Certaines pages de liste proposent aussi **Gérer les colonnes**, qui masque ou
 affiche les colonnes du tableau. Le choix est perdu au rechargement de la
 page.
+
+## Trouver un échantillon qui n'est ni dans un lot ni sur un manifeste
+
+À utiliser lorsqu'un échantillon n'apparaît pas là où il est attendu, par
+exemple pendant la création d'un lot ou d'un manifeste.
+
+1. Aller à **Afficher les demandes de test** dans le menu **Gestion des
+   demandes** du test. Pour la charge virale : **CHARGE VIRALE DU VIH →
+   Gestion des demandes → Afficher les demandes de test**.
+2. Ouvrir **Filtres**.
+3. Dans **Batch / Manifest**, choisir **Not in a batch** ou **Not on a
+   manifest**.
+4. Sélectionner **Rechercher**.
+
+Sous chaque **ID de l'échantillon**, la liste affiche le **Code du lot** et le
+**Code du manifeste** de l'échantillon lorsqu'il en a. Un échantillon qui a un
+code de lot est déjà dans un lot. Il ne peut pas être ajouté à un autre.
+
+## Agir sur l'encadré À vérifier
+
+Sur les pages **Afficher les demandes de test** de la charge virale et de
+l'EID, un encadré **À vérifier** peut apparaître au-dessus de la liste. Il
+s'affiche pour les utilisateurs qui peuvent modifier les demandes, et seulement
+lorsque quelque chose ne va pas. Il porte sur les échantillons des 90 derniers
+jours.
+
+1. Lire chaque ligne. Elle donne le nombre d'échantillons, le problème et la
+   façon de le corriger.
+2. Sélectionner **Les afficher** sur une ligne. La liste ne montre plus que ces
+   échantillons.
+3. Ouvrir chaque échantillon et le corriger comme la ligne l'indique.
+4. Pour masquer l'encadré, sélectionner le **×** dans son coin. L'encadré
+   revient lorsque les nombres changent.
 
 ## Se déconnecter
 
