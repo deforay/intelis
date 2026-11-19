@@ -17,7 +17,9 @@ La machine doit exécuter **Ubuntu 24.04 LTS ou une version LTS ultérieure** et
 
 InteLIS exige **PHP 8.4 (8.4.27 ou plus récent) ou PHP 8.5 (8.5.12 ou plus récent)**. PHP 8.2, 8.3 et les versions plus
 anciennes ne sont pas pris en charge. Le programme d'installation choisit
-PHP 8.4, ou 8.5 sur Ubuntu 26.04 et ultérieur.
+PHP 8.4, ou 8.5 sur Ubuntu 26.04 et ultérieur. Le paquet PHP 8.5
+d'Ubuntu 26.04 est aussi accepté, même avec un numéro plus bas, car il contient
+le correctif de sécurité. `intelis check` l'indique sur sa ligne `PHP version`.
 
 Pour déplacer un laboratoire existant vers une nouvelle machine avec ses
 données, suivre plutôt

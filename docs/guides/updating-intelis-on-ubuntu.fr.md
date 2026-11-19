@@ -19,7 +19,9 @@ encore sous 22.04 doit passer à 24.04 LTS avec
 La version actuelle exige **PHP 8.4 (8.4.27 ou plus récent) ou PHP 8.5 (8.5.12 ou plus récent)**. PHP 8.2, 8.3 et les
 versions plus anciennes ne sont pas pris en charge. Le PHP d'Apache et le PHP
 en ligne de commande doivent tous deux respecter cette exigence. La mise à jour
-fait passer PHP à 8.4 (8.5 sur Ubuntu 26.04 et plus récent) automatiquement.
+fait passer PHP à 8.4 (8.5 sur Ubuntu 26.04 et plus récent) automatiquement. Le paquet PHP 8.5
+d'Ubuntu 26.04 est aussi accepté, même avec un numéro plus bas, car il contient
+le correctif de sécurité. `intelis check` l'indique sur sa ligne `PHP version`.
 
 **Choisir la situation qui correspond, puis suivre ses étapes de haut en bas.**
 Pour savoir laquelle correspond, ouvrir un terminal, saisir `intelis` et

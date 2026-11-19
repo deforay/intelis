@@ -16,7 +16,9 @@ connected to the internet. The account used needs `sudo` rights.
 
 InteLIS requires **PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)**. PHP 8.2, 8.3, and older
 versions are not supported. The installer selects PHP 8.4, or 8.5 on Ubuntu
-26.04 and newer.
+26.04 and newer. Ubuntu's own PHP
+8.5 package on 26.04 also passes, even with a lower number, because it carries
+the security fix. `intelis check` shows this on its `PHP version` line.
 
 To move an existing lab onto a new machine with its data, follow
 [Migrating from one Ubuntu machine to another](migrating-ubuntu-machines.md)
