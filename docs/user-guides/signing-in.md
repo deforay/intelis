@@ -94,12 +94,45 @@ off profile editing. Ask the administrator to change the password.
 
 Every list page in InteLIS works the same way.
 
-1. Set one or more filters at the top of the page.
-2. Select **Search**.
-3. To clear every filter, select **Reset**.
+1. If the filters are folded away, select **Filters** at the top of the page
+   to open them.
+2. Set one or more filters.
+3. Select **Search**.
+4. To clear one filter, select the **×** on its label above the list. To clear
+   every filter, select **Reset**.
 
 Some list pages also offer **Manage Columns**, which hides or shows columns in
 the table. The choice lasts until the page is reloaded.
+
+## Find a sample that is not in a batch or on a manifest
+
+Use this when a sample does not show where it is expected, for example when
+making a batch or a manifest.
+
+1. Go to **View Test Requests** under the test's **Request Management** menu.
+   For viral load, that is **HIV VIRAL LOAD → Request Management → View Test
+   Requests**.
+2. Open **Filters**.
+3. In **Batch / Manifest**, choose **Not in a batch** or **Not on a
+   manifest**.
+4. Select **Search**.
+
+Under each **Sample ID**, the list shows the sample's **Batch Code** and
+**Manifest Code** when it has them. A sample with a batch code is already in a
+batch. It cannot be added to another one.
+
+## Act on the Needs attention box
+
+On the viral load and EID **View Test Requests** pages, a **Needs attention**
+box can appear above the list. It shows to users who can edit requests, and
+only when something is wrong. It covers samples from the last 90 days.
+
+1. Read each row. It gives the number of samples, what is wrong, and how to fix
+   it.
+2. Select **Show them** on a row. The list shows only those samples.
+3. Open each sample and correct it as the row says.
+4. To hide the box, select the **×** in its corner. The box comes back when the
+   numbers change.
 
 ## Sign out
 
