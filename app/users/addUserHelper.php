@@ -175,7 +175,7 @@ try {
         }
 
 
-        if ($id === true && trim((string) $_POST['selectedFacility']) !== '') {
+        if ($id === true && trim((string) ($_POST['selectedFacility'] ?? '')) !== '') {
             $selectedFacility = MiscUtility::desqid($_POST['selectedFacility'], returnArray: true);
             $uniqueFacilityId = array_unique($selectedFacility);
             if ($uniqueFacilityId !== []) {

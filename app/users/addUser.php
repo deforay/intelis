@@ -1,14 +1,10 @@
 <?php
 
 use App\Services\FacilitiesService;
-use App\Services\GeoLocationsService;
 use App\Registries\ContainerRegistry;
 
 
 require_once APPLICATION_PATH . '/header.php';
-
-/** @var GeoLocationsService $geolocationService */
-$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -37,25 +33,6 @@ if ($general->isSTSInstance()) {
 }
 
 
-$activeFacilities = [];
-$display = 'display:none';
-if ($general->isSTSInstance()) {
-     $fResult = [];
-     $fQuery = "SELECT facility_name,facility_id
-                    FROM facility_details
-                    WHERE status='active'
-                    ORDER BY facility_name ASC";
-     $fResult = $db->rawQuery($fQuery);
-
-     foreach ($fResult as $ft) {
-          $activeFacilities[$ft['facility_id']] = $ft['facility_name'];
-     }
-
-     $display = 'display:block';
-}
-//province Stratt
-$rKey = '';
-$geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
 ?>
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
@@ -310,58 +287,10 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                         </div>
                                    </div>
                               </div>
-                              <div class="row" style="margin: 15px;<?php echo $display; ?>">
-                                   <div class="col-md-12">
-                                        <button type="button" class="btn btn-primary btn-sm pull-left"
-                                             style="margin-right:5px;line-height: 2;"
-                                             onclick="hideAdvanceSearch();"><span><?= _translate("Show Advanced Search Options"); ?></span></button>
-                                   </div>
-                              </div>
-                              <div class="row" style="margin: 15px;<?php echo $display; ?>">
-                                   <div class="col-md-12">
-                                        <table aria-describedby="table" id="advanceFilter" class="table"
-                                             aria-hidden="true" style="display: none;">
-                                             <tr>
-                                                  <td><strong>
-                                                            <?php echo _translate("Province/State"); ?>&nbsp;:
-                                                       </strong></td>
-                                                  <td>
-                                                       <?php if (count($geoLocationParentArray) > 0) { ?>
-                                                            <select name="stateId" id="stateId" class="form-control"
-                                                                 title="<?php echo _translate('Please choose province/state'); ?>">
-                                                                 <?= $general->generateSelectOptions($geoLocationParentArray, null, _translate("-- Select --")); ?>
-                                                            </select>
-                                                       <?php } ?>
-                                                  </td>
-                                                  <td><strong>
-                                                            <?php echo _translate("District/County"); ?>&nbsp;:
-                                                       </strong></td>
-                                                  <td>
-                                                       <select name="districtId" id="districtId" class="form-control"
-                                                            title="<?php echo _translate('Please choose District/County'); ?>">
-                                                            <option value="">
-                                                                 <?php echo _translate("-- Select --"); ?>
-                                                            </option>
-                                                       </select>
-                                                  </td>
-                                                  <td>
-                                                       <input type="button" name="filter" id="filter"
-                                                            onclick="getFacilitiesToMap();" value="Search"
-                                                            class="btn btn-primary btn-sm" />
-                                                       <button class="btn btn-danger btn-sm" type="button"
-                                                            onclick="document.location.href = document.location"><span>
-                                                                 <?= _translate('Reset'); ?>
-                                                            </span></button>
-                                                  </td>
-                                             </tr>
-                                        </table>
-                                   </div>
-                              </div>
                          </div>
 
                          <!-- /.box-body -->
                          <div class="box-footer">
-                              <input type="hidden" name="selectedFacility" id="selectedFacility" />
                               <a class="btn btn-primary" href="javascript:void(0);"
                                    onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
                               <a href="users.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
@@ -433,18 +362,6 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                }
           });
 
-          $("#stateId").select2({
-               placeholder: '<?php echo _translate("Select Province", true); ?>',
-               allowClear: true,
-               width: '100%'
-          });
-
-          $("#districtId").select2({
-               placeholder: '<?php echo _translate("Select District", true); ?>',
-               allowClear: true,
-               width: '100%'
-          });
-
           $("#role").select2({
                placeholder: '<?php echo _translate("Select Role", true); ?>',
                allowClear: true,
@@ -457,70 +374,9 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                width: '100%'
           });
 
-          $("#stateId").change(function () {
-               if ($(this).val() == 'other') {
-                    $('#provinceNew').show();
-               } else {
-                    $('#provinceNew').hide();
-                    $('#state').val($("#stateId option:selected").text());
-               }
-               $.blockUI();
-               var pName = $(this).val();
-               if ($.trim(pName) != '') {
-                    $.post("/includes/siteInformationDropdownOptions.php", {
-                         pName: pName,
-                    },
-                         function (data) {
-                              if (data != "") {
-                                   details = data.split("###");
-                                   $("#districtId").html(details[1]);
-                                   $("#districtId").append('<option value="other"><?php echo _translate("Other"); ?></option>');
-                              }
-                         });
-               }
-               $.unblockUI();
-          });
      });
 
-     function hideAdvanceSearch() {
-          $('#advanceFilter').toggle();
-     }
-
-     function getFacilitiesToMap() {
-          $.blockUI({
-               message: '<h3><?= _translate("Trying to get mapped facilities", true); ?> <br><?php echo _translate("Please wait", true); ?>...</h3>'
-          });
-          $.post("getFacilitiesHelper.php", {
-               provinceId: $('#stateId').val(),
-               districtId: $('#districtId').val()
-          },
-               function (toAppend) {
-                    if (toAppend != "" && toAppend != null && toAppend != undefined) {
-                         $('#search').html(toAppend)
-                         setTimeout(function () {
-                              $("#search_rightSelected").trigger('click');
-                         }, 10);
-                         var count = $('#search option').length;
-                         $("#unselectedCount").html(count);
-
-                    } else {
-                         $('#search').html("");
-                         //alert("<?= _translate("No facilities found for the selected facility type. Please add a new facility or edit an existing facility.", true); ?>");
-                    }
-                    $.unblockUI();
-               });
-     }
-
      function validateNow() {
-          $("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES
-          var selVal = [];
-          $('#search_to option').each(function (i, selected) {
-               selVal[i] = $(selected).val();
-          });
-          const sqids = new Sqids()
-          $("#selectedFacility").val(sqids.encode(selVal));
-
-
           flag = deforayValidator.init({
                formId: 'userForm'
           });
@@ -560,68 +416,6 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                $('.ppwd').focus();
           }
           return regex.test(pwd);
-     }
-
-     function getProvinceDistricts() {
-          $.blockUI();
-          var pName = $("#province").val();
-          if (pName != '') {
-               $.post("/includes/siteInformationDropdownOptions.php", {
-                    pName: pName,
-                    fType: $("#facilityType").val(),
-                    comingFromUser: 'yes'
-               },
-                    function (data) {
-                         if (data != "") {
-                              details = data.split("###");
-                              $("#district").html(details[1]);
-                              $("#search").html(details[0]);
-                         }
-                    });
-          }
-          $.unblockUI();
-     }
-
-     function getFacilities() {
-          $.blockUI();
-          var dName = $("#district").val();
-          if (dName != '') {
-               $.post("/includes/siteInformationDropdownOptions.php", {
-                    dName: dName,
-                    fType: $("#facilityType").val(),
-                    comingFromUser: 'yes'
-               },
-                    function (data) {
-                         if (data != "") {
-                              details = data.split("###");
-                              $("#search").html(details[0]);
-                         }
-                    });
-          }
-          $.unblockUI();
-     }
-
-     function getFacility() {
-          $.blockUI();
-          var pName = $("#province").val();
-          var dName = $("#district").val();
-          var fType = $("#facilityType").val();
-          if (dName != '') {
-               getFacilities();
-          }
-          if (pName != '') {
-               getProvinceDistricts();
-          }
-          if (fType != '') {
-               $.post("/includes/siteInformationDropdownOptions.php", {
-                    fType: fType,
-                    comingFromUser: 'yes'
-               },
-                    function (data) {
-                         $("#search").html(data);
-                    });
-          }
-          $.unblockUI();
      }
 
      function generateToken(id) {
