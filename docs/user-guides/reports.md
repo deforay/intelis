@@ -200,6 +200,30 @@ Cancelled samples are left out. On the STS, a user limited to some facilities
 sees only the samples of those facilities. **Export to excel** downloads the
 rows.
 
+## VL Suppression Target Report
+
+**Location:** Not on the menu. On the dashboard's viral load tab, select
+**more** on the line about suppression targets. The role needs the
+**Suppressed Target report** permission.
+
+Compares the suppressed results of each testing lab in a month against the
+lab's **Suppressed Monthly Target**. It has the same filters as the
+[VL Testing Target Report](#vl-testing-target-report), and one row per lab per
+month.
+
+| Column | Content |
+|---|---|
+| **Testing Lab** | The testing lab |
+| **Month** | The month the row counts |
+| **Number of Samples Tested** | Samples tested that month that were not rejected |
+| **Number of Suppressed Results** | Those whose result is suppressed. **Target Type** compares this count with the target |
+| **Suppressed Monthly Target** | The lab's suppressed monthly target. Blank when the lab has none |
+| **Target Met** | **Yes** when **Number of Suppressed Results** reaches the target, **No** when it does not |
+
+Cancelled samples are left out. The dashboard line counts the labs that missed
+their suppressed target in a completed month of its date range. **Export to
+excel** downloads the rows.
+
 ## Freezer/Storage Reports
 
 **Location:** **HIV VIRAL LOAD → Management → Freezer/Storage Reports**

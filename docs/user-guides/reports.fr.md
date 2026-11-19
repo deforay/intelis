@@ -217,6 +217,30 @@ Les échantillons annulés ne sont pas comptés. Sur le STS, un utilisateur limi
 à certaines structures ne voit que les échantillons de ces structures.
 **Exporter vers Excel** télécharge les lignes.
 
+## Rapport sur l'objectif de suppression VL
+
+**Emplacement :** absent du menu. Dans l'onglet charge virale du tableau de
+bord, sélectionner **plus** sur la ligne des objectifs de suppression. Le rôle
+doit disposer de la permission **Suppressed Target report**.
+
+Compare les résultats supprimés de chaque laboratoire d'analyse au cours d'un
+mois à la **Cible mensuelle de suppression virale** du laboratoire. Il a les
+mêmes filtres que le [CV-Rapport d'objectif de test](#cv-rapport-dobjectif-de-test),
+et une ligne par laboratoire et par mois.
+
+| Colonne | Contenu |
+|---|---|
+| **Laboratoire d'analyse** | Le laboratoire d'analyse |
+| **Mois** | Le mois que compte la ligne |
+| **Nombre d'échantillons testés** | Les échantillons testés ce mois-là qui n'ont pas été rejetés |
+| **Nombre de résultats supprimés** | Ceux dont le résultat est supprimé. **Type de cible** compare ce nombre à l'objectif |
+| **Cible mensuelle de suppression virale** | La cible mensuelle de suppression du laboratoire. Vide lorsque le laboratoire n'en a pas |
+| **Objectif atteint** | **Oui** lorsque le **Nombre de résultats supprimés** atteint la cible, **Non** sinon |
+
+Les échantillons annulés ne sont pas comptés. La ligne du tableau de bord
+compte les laboratoires qui ont manqué leur cible de suppression lors d'un mois
+terminé de sa plage de dates. **Exporter vers Excel** télécharge les lignes.
+
 ## Rapports sur les congélateurs et le stockage
 
 **Emplacement :** **CHARGE VIRALE DU VIH → Gestion → Rapports sur les
