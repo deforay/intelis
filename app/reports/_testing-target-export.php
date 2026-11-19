@@ -39,7 +39,11 @@ $rows = $targets->rows(
     $filters['fill']
 );
 
-$filename = 'InteLIS-' . strtoupper($testType) . '-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
+// The kind and a random part keep two exports in the same second, by one user
+// or two, from writing over each other in TEMP_PATH.
+$reportName = $targetKind === TestingTargetReportService::KIND_SUPPRESSED ? 'Suppression' : 'Testing';
+$filename = 'InteLIS-' . strtoupper($testType) . '-' . $reportName . '-Target-Report-'
+    . date('d-M-Y-H-i-s') . '-' . bin2hex(random_bytes(4)) . '.xlsx';
 
 $writer = new Writer();
 $writer->openToFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
