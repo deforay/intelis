@@ -121,8 +121,8 @@ exemple pendant la création d'un lot ou d'un manifeste.
    demandes** du test. Pour la charge virale : **CHARGE VIRALE DU VIH →
    Gestion des demandes → Afficher les demandes de test**.
 2. Ouvrir **Filtres**.
-3. Dans **Batch / Manifest**, choisir **Not in a batch** ou **Not on a
-   manifest**.
+3. Dans **Lot / Manifeste**, choisir **Pas dans un lot** ou **Pas sur un
+   manifeste**.
 4. Sélectionner **Rechercher**.
 
 Sous chaque **ID de l'échantillon**, la liste affiche le **Code du lot** et le

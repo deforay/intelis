@@ -82,7 +82,7 @@ Deux réglages au-dessus de **Télécharger** définissent le tableur :
 | Réglage | Effet |
 |---|---|
 | **Exportation avec l'ID et le nom du patient** | **Oui** garde le numéro ART, le nom et le numéro de téléphone du patient. **Non** les retire, pour des données qui quittent le laboratoire pour analyse |
-| **Include lab and audit details** | Ajoute le lot, la plateforme, la série de l'automate, les personnes qui ont testé, révisé et approuvé le résultat, le statut de l'échantillon, les délais et les personnes qui ont créé et modifié en dernier l'enregistrement. Case vide, le tableur reste compact |
+| **Inclure les détails du laboratoire et de l'audit** | Ajoute le lot, la plateforme, la série de l'automate, les personnes qui ont testé, révisé et approuvé le résultat, le statut de l'échantillon, les délais et les personnes qui ont créé et modifié en dernier l'enregistrement. Case vide, le tableur reste compact |
 
 Le fichier se télécharge quand il est prêt. Un gros export s'exécute en
 arrière-plan, et le travail peut continuer pendant ce temps. La progression
