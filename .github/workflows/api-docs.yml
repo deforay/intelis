@@ -10,15 +10,29 @@ on:
       - 'mkdocs.yml'
       - 'mkdocs-requirements.txt'
       - '.github/workflows/api-docs.yml'
+      - 'bin/build/check-docs-translations.sh'
+  # A pull request that touches the docs gets the same build and checks, so a
+  # broken link or a page left untranslated stops it before it merges. Only a
+  # push to master deploys. Kept out of Verify on purpose: Publish advances
+  # stable from Verify, and a docs page should never hold back a release.
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'mkdocs-requirements.txt'
+      - '.github/workflows/api-docs.yml'
+      - 'bin/build/check-docs-translations.sh'
   workflow_dispatch:
 
 # No token scopes by default; each job grants itself only what it needs.
 # Keeps Pages write off the build job.
 permissions: {}
 
+# Deploys queue one behind another. A pull request's run has its own group, and
+# a new push to it cancels the older run.
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('docs-pr-{0}', github.ref) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -41,10 +55,14 @@ jobs:
       - name: Install dependencies
         run: "pip install --only-binary :all: -r mkdocs-requirements.txt"
 
+      - name: Every page has a French twin with the same shape
+        run: bash bin/build/check-docs-translations.sh
+
       - name: Build site
         run: mkdocs build --strict
 
       - name: Upload artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:
           path: site
@@ -52,6 +70,7 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       pages: write
