@@ -94,14 +94,14 @@ internet.
 
         | Question | Answer |
         | --- | --- |
-        | Installation directory | Press Enter. |
+        | Installation folder | Press Enter. |
         | Which backup should be restored? | Press Enter. The newest backup is on top and already selected. |
         | What is this machine? | **Lab machine (LIS)**. |
-        | Remote STS URL | The STS address the old machine used. Leave it empty if the lab has no STS. |
+        | STS address | The STS address the old machine used. Leave it empty if the lab has no STS. |
         | New MySQL root password | A new password for this machine, typed twice. Write it down. |
         | Is this correct? | Check the summary, then press Enter (Yes). |
 
-    12. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
+    12. Wait 10 to 20 minutes. The installer ends with the line `Setup is complete.`
 
         Near the end it prints `Signatures, report templates and logos restored`.
         The lab settings, such as the STS address and the enabled modules, and
@@ -141,7 +141,7 @@ internet.
             sudo bash setup.sh --restore-from-backup-folder '<folder>' --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
             ```
 
-            The second run asks `Reuse your previous setup answers and skip the prompts?`.
+            The second run asks `Use the same answers as last time and skip the questions?`.
             Press Enter (Yes) to reuse the answers. If it says
             `An existing database was found`, choose **Keep a copy, then start fresh**.
 
@@ -227,14 +227,14 @@ internet.
 
         | Question | Answer |
         | --- | --- |
-        | Installation directory | Press Enter. |
+        | Installation folder | Press Enter. |
         | Which backup should be restored? | Press Enter. The newest backup is on top and already selected. |
         | What is this machine? | **Lab machine (LIS)**. |
-        | Remote STS URL | The STS address the old machine used. Leave it empty if the lab has no STS. |
+        | STS address | The STS address the old machine used. Leave it empty if the lab has no STS. |
         | New MySQL root password | A new password for this machine, typed twice. Write it down. |
         | Is this correct? | Check the summary, then press Enter (Yes). |
 
-    8. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
+    8. Wait 10 to 20 minutes. The installer ends with the line `Setup is complete.`
 
         Near the end it prints `Signatures, report templates and logos restored`.
         The lab settings, such as the STS address and the enabled modules, and
@@ -274,7 +274,7 @@ internet.
             sudo bash setup.sh --restore-from-backup-folder '<folder>' --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
             ```
 
-            The second run asks `Reuse your previous setup answers and skip the prompts?`.
+            The second run asks `Use the same answers as last time and skip the questions?`.
             Press Enter (Yes) to reuse the answers. If it says
             `An existing database was found`, choose **Keep a copy, then start fresh**.
 
@@ -353,14 +353,14 @@ internet.
 
         | Question | Answer |
         | --- | --- |
-        | Installation directory | Press Enter. |
+        | Installation folder | Press Enter. |
         | Which backup should be restored? | Press Enter. The newest backup is on top and already selected. |
         | What is this machine? | **Lab machine (LIS)**. |
-        | Remote STS URL | The STS address the old machine used. Leave it empty if the lab has no STS. |
+        | STS address | The STS address the old machine used. Leave it empty if the lab has no STS. |
         | New MySQL root password | A new password for this machine, typed twice. Write it down. |
         | Is this correct? | Check the summary, then press Enter (Yes). |
 
-    9. Wait 10 to 20 minutes. The installer ends with `Setup complete`.
+    9. Wait 10 to 20 minutes. The installer ends with the line `Setup is complete.`
 
         Near the end it prints `Signatures, report templates and logos restored`.
         The lab settings, such as the STS address and the enabled modules, and
@@ -399,7 +399,7 @@ internet.
             --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
             ```
 
-            The second run asks `Reuse your previous setup answers and skip the prompts?`.
+            The second run asks `Use the same answers as last time and skip the questions?`.
             Press Enter (Yes) to reuse the answers. If it says
             `An existing database was found`, choose **Keep a copy, then start fresh**.
 

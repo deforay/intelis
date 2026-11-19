@@ -50,20 +50,20 @@ instead.
 
         | Question | Answer |
         | --- | --- |
-        | Installation directory | Press Enter. |
+        | Installation folder | Press Enter. |
         | What is this machine? | **Lab machine (LIS)**. |
-        | Remote STS URL | The STS address, for example `https://sts.example.org`. Ask the national programme for it. Leave it empty if the lab has no STS. |
+        | STS address | The STS address, for example `https://sts.example.org`. Ask the national programme for it. Leave it empty if the lab has no STS. |
         | New MySQL root password | A new password for this machine, typed twice. Write it down. |
         | Is this correct? | Check the summary, then press Enter (Yes). |
 
-        ??? failure "If it says `Failed to validate the provided STS URL`"
+        ??? failure "If it says `Could not reach` followed by the STS address"
 
             The installer could not reach `<STS address>/api/version.php`.
             Check the address for typing errors and type it again. After three
             failed tries the installer carries on without an STS. Enter the
             address later, in step 8.
 
-        ??? info "If it asks `Reuse your previous setup answers and skip the prompts?`"
+        ??? info "If it asks `Use the same answers as last time and skip the questions?`"
 
             An earlier run on this machine stopped part way. Press Enter (Yes)
             to use the same answers again.
@@ -79,18 +79,18 @@ instead.
             Choose **Keep a copy, then start fresh** to set the old data aside
             without losing it.
 
-        ??? info "If it asks `Do you want to set up backups for this installation?`"
 
-            Backups are optional. Choose **I have a backup server ready and
-            configured for backups** only when the backup destination is
-            already prepared. The installer then runs the backup setup.
-            Otherwise choose **Not now**, and set up backups later with
-            `intelis backup setup`.
+    4. Wait for the installer to finish. It checks the new installation, and
+       its last line is `Setup is complete.`
 
-    4. Wait for the installer to finish. It checks the new installation, then
-       ends with `Setup complete`.
-    5. Read the `Install Check` list printed above `Setup complete`. Each
-       line starts with one of these words:
+        ??? info "If it asks `Set up backups now?`"
+
+            Choose **Set up backups now** only when the backup server, shared
+            folder or USB drive is already prepared. Otherwise choose **Not
+            now**, and set up backups later in this guide.
+
+    5. Read the list printed under the `Install Check` heading. Each line
+       starts with one of these words:
 
         | Word | Meaning |
         | --- | --- |
@@ -187,7 +187,7 @@ instead.
 
         | Question | Answer |
         | --- | --- |
-        | Installation directory | Press Enter. |
+        | Installation folder | Press Enter. |
         | What is this machine? | **Central server (STS)**. |
         | Web address of this server | The address from step 1, without `http://`. Press Enter if the labs use the IP address. |
         | New MySQL root password | A new password for this machine, typed twice. Write it down. |
@@ -199,7 +199,7 @@ instead.
             `Use … anyway?`. Then type the correct address, or press Enter to
             use the IP address.
 
-        ??? info "If it asks `Reuse your previous setup answers and skip the prompts?`"
+        ??? info "If it asks `Use the same answers as last time and skip the questions?`"
 
             An earlier run on this machine stopped part way. Press Enter (Yes)
             to use the same answers again.
@@ -215,18 +215,18 @@ instead.
             Choose **Keep a copy, then start fresh** to set the old data aside
             without losing it.
 
-        ??? info "If it asks `Do you want to set up backups for this installation?`"
 
-            Backups are optional. Choose **I have a backup server ready and
-            configured for backups** only when the backup destination is
-            already prepared. The installer then runs the backup setup.
-            Otherwise choose **Not now**, and set up backups later with
-            `intelis backup setup`.
+    5. Wait for the installer to finish. It checks the new installation, and
+       its last line is `Setup is complete.`
 
-    5. Wait for the installer to finish. It checks the new installation, then
-       ends with `Setup complete`.
-    6. Read the `Install Check` list printed above `Setup complete`. Each
-       line starts with one of these words:
+        ??? info "If it asks `Set up backups now?`"
+
+            Choose **Set up backups now** only when the backup server, shared
+            folder or USB drive is already prepared. Otherwise choose **Not
+            now**, and set up backups later in this guide.
+
+    6. Read the list printed under the `Install Check` heading. Each line
+       starts with one of these words:
 
         | Word | Meaning |
         | --- | --- |
