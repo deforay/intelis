@@ -255,4 +255,34 @@ final class TestingTargetEndpointTest extends TestCase
             $answer['aaData']
         );
     }
+
+    #[RunInSeparateProcess]
+    public function testTheTwoVlExportsWriteFilesOfTheirOwn(): void
+    {
+        LegacyAppHarness::db()->rawQuery("UPDATE testing_labs SET test_type = 'vl', suppressed_monthly_target = '1'");
+        LegacyAppHarness::withSession(['roleId' => 1, 'instance' => ['type' => 'remoteuser']]);
+        $before = glob(TEMP_PATH . '/InteLIS-VL-*-Target-Report-*.xlsx') ?: [];
+
+        $exports = [
+            '/vl/program-management/vlTestingTargetInExcel.php',
+            '/vl/program-management/vlSuppressedTargetInExcel.php',
+        ];
+        foreach ($exports as $export) {
+            $request = LegacyAppHarness::withPost(['dateRange' => '01-Sep-2026 to 30-Sep-2026'], $export);
+            $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+            ob_start();
+            try {
+                $handler->handle($request);
+            } finally {
+                ob_end_clean();
+            }
+        }
+
+        $written = array_values(array_diff(glob(TEMP_PATH . '/InteLIS-VL-*-Target-Report-*.xlsx') ?: [], $before));
+        foreach ($written as $file) {
+            unlink($file);
+        }
+        $this->assertCount(2, $written);
+        $this->assertCount(1, preg_grep('/-Suppression-Target-Report-/', $written));
+    }
 }
