@@ -146,12 +146,20 @@
   }
 
   @media print {
-    body { background: #fff; padding: 0; font-size: 10.5pt; }
+    /* Sized so every card fits one A4 page in both languages. The French cards
+       run longer. After changing any card, print both files to PDF and check the
+       page count equals the card count. */
+    body { background: #fff; padding: 0; font-size: 9pt; line-height: 1.25; }
+    h3 { margin: 9px 0 4px; }
+    ol.steps > li { margin-bottom: 4px; padding-left: 24px; min-height: 15px; }
+    ol.steps > li::before { top: 0; width: 15px; height: 15px; font-size: 7.5pt; line-height: 12px; }
+    table { font-size: 8.5pt; }
+    th, td { padding: 2px 6px; }
     .toolbar { display: none; }
     .card {
       margin: 0; border: 0; box-shadow: none;
       min-height: 0; max-width: none;
-      padding: 12mm 14mm;
+      padding: 4mm 8mm;;
       page-break-after: always;
       break-after: page;
     }
@@ -183,7 +191,7 @@
     <tr><th>Section</th><th>Holds</th></tr>
     <tr><td>Users &amp; Roles</td><td>Users and Roles</td></tr>
     <tr><td>Facilities</td><td>Health facilities and testing labs, and the Interface Tool connections</td></tr>
-    <tr><td>Settings</td><td>General Configuration, Instruments, Lab Storage</td></tr>
+    <tr><td>Settings</td><td>General Configuration, Instruments, and Lab Storage on a lab installation</td></tr>
     <tr><td>Reference Lists</td><td>Geographical Divisions, Implementation Partners, Funding Sources</td></tr>
     <tr><td>Test Settings</td><td>The dropdown lists on each module's request form. One tab per test the installation runs</td></tr>
     <tr><td>Monitoring</td><td>Activity log, audit trail, page usage, API history, sync status, log files</td></tr>
@@ -201,7 +209,7 @@
     <strong>Get approval before changing these</strong>
     Sample ID format or prefix. Locking and expiry days. Same user can Review and Approve.
     VL, EID, COVID-19 and TB Auto Approve API Results, and Auto Approve Interface Results
-    (set by support). Role privileges. Renaming or removing a province or district. Each one applies across the whole installation at once,
+    (set by support). Role privileges. Renaming or removing a province or district. Country of Installation. Training Mode. Each one applies across the whole installation at once,
     and setting it back does not undo its effect on the records already created.
   </div>
 
@@ -253,7 +261,7 @@
     <tr><td>Role Code</td><td>A short unique code</td></tr>
     <tr><td>Landing Page</td><td>The page this role opens on. Data entry staff open straight onto the request form</td></tr>
     <tr><td>Access Type</td><td>Testing Lab for lab staff. Collection Site for facility staff</td></tr>
-    <tr><td>Privileges</td><td>Tick each page the role can reach. Use the search box, do not scroll the list</td></tr>
+    <tr><td>Privileges</td><td>Set Yes for each page the role can reach. Use the search box, do not scroll the list</td></tr>
   </table>
 
   <p>To find which roles hold a given permission, use the <span class="ui">Permission</span>
@@ -301,11 +309,12 @@
 
   <h3>Add an analyzer</h3>
   <p><span class="path">ADMIN &rsaquo; Settings &rsaquo; Instruments &rsaquo; Add Instrument</span></p>
-  <p>Enter the name, the test types it runs, and the configuration file that tells InteLIS how
-  to read its result files. Without that file, results exported from the analyzer cannot be imported.</p>
+  <p>Enter the name, the test types it runs, the Testing Lab it sits in (central server only),
+  and the Instrument File that tells InteLIS how to read its result files. Without that file, results exported from the analyzer cannot be imported.</p>
 
   <h3>Connect the Interface Tool</h3>
   <p>On a central server or standalone installation. <span class="path">ADMIN &rsaquo; Facilities &rsaquo; open the testing lab &rsaquo; Interface Tool Connections</span></p>
+  <p>The panel appears on a testing lab only, once support has switched on the Interface Tool connection for the installation.</p>
   <ol class="steps">
     <li>Select <span class="ui">Generate Connection Code</span>.</li>
     <li>Enter the three groups of the code, and the InteLIS URL shown above them, into the Interface Tool on the lab computer.</li>
@@ -357,7 +366,7 @@
     <tr><td>Test Failure Reasons</td><td>The reasons offered when a test fails</td></tr>
     <tr><td>Symptoms, Comorbidities, Risk Factors</td><td>The clinical checklists on the request form</td></tr>
     <tr><td>ART Regimen</td><td>The regimen choices on the viral load request form</td></tr>
-    <tr><td>Recommended Corrective Actions</td><td>The actions suggested on high viral load results</td></tr>
+    <tr><td>Recommended Corrective Actions</td><td>The actions offered when a sample is rejected</td></tr>
   </table>
 
   <div class="warn">
@@ -369,7 +378,9 @@
 
   <p>Geographical Divisions, Implementation Partners and Funding Sources are not module lists.
   They sit under <span class="path">ADMIN &rsaquo; Reference Lists</span> and serve every module.
-  Lab Storage sits under <span class="path">ADMIN &rsaquo; Settings</span>.</p>
+  Lab Storage sits under <span class="path">ADMIN &rsaquo; Settings</span> on a lab installation.</p>
+  <p>On a lab installation, facilities and these lists are read-only. Add or change them on
+  the central server, and the lab receives them at its next sync.</p>
 
   <footer class="cardfoot"><span>InteLIS administration job aid</span><span>Card 4: the request form lists</span></footer>
 </section>
@@ -398,7 +409,7 @@
   <h3>Where to look</h3>
   <table class="wrapfirst">
     <tr><th>Page</th><th>Answers</th></tr>
-    <tr><td>User Activity Log</td><td>Which pages a user opened, and when</td></tr>
+    <tr><td>User Activity Log</td><td>What a user did, and when they signed in</td></tr>
     <tr><td>Audit Trail</td><td>Which field changed, from what to what, by whom</td></tr>
     <tr><td>API History</td><td>Whether this installation reached the national server, and how many records went</td></tr>
     <tr><td>Instrument Activity</td><td>Whether each connected analyzer is still sending, and tests run on each instrument and assay</td></tr>
