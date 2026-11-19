@@ -264,6 +264,9 @@ $sharedTbPrivileges = [
     '/tb/reference/add-tb-test-reasons.php' => '/tb/reference/tb-sample-type.php',
     '/tb/reference/tb-results.php' => '/tb/reference/tb-sample-type.php',
     '/tb/reference/add-tb-results.php' => '/tb/reference/tb-sample-type.php',
+    // 5.8.5 wrote these into shared_privileges, which this script resets.
+    '/tb/management/get-tb-monthly-threshold-report.php' => '/tb/management/tb-testing-target-report.php',
+    '/tb/management/tb-testing-target-in-excel.php' => '/tb/management/tb-testing-target-report.php',
 ];
 $sharedPrivileges = [...$sharedPrivileges, ...$sharedTbPrivileges];
 
@@ -292,7 +295,9 @@ $sharedCD4Privileges = [
     '/cd4/reference/cd4-results.php' => '/cd4/reference/cd4-sample-type.php',
     '/cd4/reference/add-cd4-results.php' => '/cd4/reference/cd4-sample-type.php',
     '/cd4/management/cd4TestingTargetReport.php' => '/cd4/management/cd4MonthlyThresholdReport.php',
-    '/cd4/management/cd4SuppressedTargetReport.php' => '/cd4/management/cd4MonthlyThresholdReport.php'
+    '/cd4/management/cd4SuppressedTargetReport.php' => '/cd4/management/cd4MonthlyThresholdReport.php',
+    '/cd4/management/get-cd4-monthly-threshold-report.php' => '/cd4/management/cd4-testing-target-report.php',
+    '/cd4/management/cd4-testing-target-in-excel.php' => '/cd4/management/cd4-testing-target-report.php'
 ];
 $sharedPrivileges = [...$sharedPrivileges, ...$sharedCD4Privileges];
 
