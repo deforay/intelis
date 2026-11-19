@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# Backing up to Google Drive with Rclone on Ubuntu
+# Back up to Google Drive with Rclone on Ubuntu
 
 Upload the InteLIS backups to Google Drive every 6 hours, so a copy survives a
 fire or a theft at the lab.
@@ -118,7 +118,7 @@ hand, as shown in [Get the backups back](#get-the-backups-back).
 
         Press Enter to answer No. The upload to Google Drive carries on. To also
         send backups to another machine or a drive on the network, see
-        [Setting Up Off-Machine Backups](setting-up-off-machine-backups.md).
+        [Set up off-machine backups](setting-up-off-machine-backups.md).
 
     ??? failure "If it stops with an error after `Step 2 of 2`"
 
@@ -200,6 +200,6 @@ Use this when the InteLIS machine has died and a new machine is being set up.
     ```
 
 4. Follow the **Old machine is dead** tab of
-   [Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md).
+   [Migrate from one Ubuntu machine to another](migrating-ubuntu-machines.md).
    Use the `backups` folder in the home folder in place of the one on the USB
    drive. In the **Files** app, it is under **Home**.

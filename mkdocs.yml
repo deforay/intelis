@@ -50,78 +50,78 @@ nav:
   # Grouped in the order a sample actually travels, so the sidebar reads as the
   # workflow rather than as fifteen equal-weight pages.
   - Using InteLIS:
-      - Start Here:
-          - How a Sample Moves Through InteLIS: user-guides/index.md
-          - Signing In and Navigating InteLIS: user-guides/signing-in.md
-          - Words Used in These Guides: user-guides/glossary.md
-      - Register & Receive:
-          - Register a Test Request: user-guides/register-a-request.md
-          - Receive Samples Sent on a Manifest: user-guides/receive-referred-samples.md
-          - Send Samples on a Manifest: user-guides/send-samples-on-a-manifest.md
-      - Test & Record Results:
-          - Batch Samples for Testing: user-guides/batch-samples.md
-          - Test Pooled TB Samples on GeneXpert: user-guides/test-pooled-tb-samples.md
-          - Capture Results: user-guides/capture-results.md
-          - Review and Approve Results: user-guides/approve-results.md
-          - Handle Failed and Held Samples: user-guides/failed-and-held-samples.md
-      - Release & Store:
-          - Release Results: user-guides/release-results.md
-          - Record Where a Sample Is Stored: user-guides/store-samples.md
+      - Start here:
+          - How a viral load sample moves through InteLIS: user-guides/index.md
+          - Sign in and navigate InteLIS: user-guides/signing-in.md
+          - Words used in these guides: user-guides/glossary.md
+      - Register and receive:
+          - Register a viral load test request: user-guides/register-a-request.md
+          - Receive samples sent on a manifest: user-guides/receive-referred-samples.md
+          - Send samples to a testing lab on a manifest: user-guides/send-samples-on-a-manifest.md
+      - Test and record results:
+          - Batch samples for testing: user-guides/batch-samples.md
+          - Test pooled TB samples on GeneXpert: user-guides/test-pooled-tb-samples.md
+          - Capture viral load results: user-guides/capture-results.md
+          - Review and approve results: user-guides/approve-results.md
+          - Handle failed and held samples: user-guides/failed-and-held-samples.md
+      - Release and store:
+          - Release results to the requesting facility: user-guides/release-results.md
+          - Record where a sample is stored: user-guides/store-samples.md
       - Administration:
           - Administer InteLIS: user-guides/administer-intelis.md
-          - Users and Roles: user-guides/admin-users-and-roles.md
-          - Facilities and Testing Labs: user-guides/admin-facilities.md
-          - Add or Update Many Facilities: user-guides/admin-facilities-bulk-upload.md
-          - Instruments: user-guides/admin-instruments.md
-          - Interface Tool Connections: user-guides/admin-interface-tool-connections.md
-          - Module Configuration: user-guides/admin-module-configuration.md
-          - General Configuration: user-guides/admin-general-configuration.md
-          - Monitoring and Audit: user-guides/admin-monitoring.md
-          - System Admin Area: user-guides/admin-system-administration.md
-          - For Requesting Facilities: user-guides/for-requesting-facilities.md
-      - Statuses & Reports:
-          - Sample Statuses: user-guides/sample-statuses.md
-          - Viral Load Reports: user-guides/reports.md
-          - Reports for Other Tests: user-guides/reports-other-tests.md
-  - Printable Job Aids:
-      - Job Aids: job-aids/index.md
+          - Manage users and roles: user-guides/admin-users-and-roles.md
+          - Manage facilities and testing labs: user-guides/admin-facilities.md
+          - Add or update many facilities at once: user-guides/admin-facilities-bulk-upload.md
+          - Set up an instrument: user-guides/admin-instruments.md
+          - Connect the Interface Tool with a connection code: user-guides/admin-interface-tool-connections.md
+          - Maintain the request form lists: user-guides/admin-module-configuration.md
+          - General configuration settings: user-guides/admin-general-configuration.md
+          - Monitor and audit InteLIS: user-guides/admin-monitoring.md
+          - Use the System Admin area: user-guides/admin-system-administration.md
+          - For requesting facilities: user-guides/for-requesting-facilities.md
+      - Statuses and reports:
+          - Sample statuses: user-guides/sample-statuses.md
+          - Viral load reports: user-guides/reports.md
+          - Reports for other tests: user-guides/reports-other-tests.md
+  - Printable job aids:
+      - Job aids: job-aids/index.md
   - Installation:
-      - InteLIS on Ubuntu (Recommended): guides/installing-intelis-on-ubuntu.md
-      - Using Docker: guides/installing-intelis-with-docker.md
-      - InteLIS on Windows: guides/installing-intelis-on-windows.md
+      - Install on Ubuntu (recommended): guides/installing-intelis-on-ubuntu.md
+      - Install with Docker: guides/installing-intelis-with-docker.md
+      - Install on Windows: guides/installing-intelis-on-windows.md
       # Connecting an analyzer is a setup task, not a repair. It sat under
       # Troubleshooting, where nobody setting up an instrument would look.
-      - Connect an Instrument: guides/setting-up-interfacing-tool.md
-      - Connect a Lab to the STS: guides/connect-lab-to-sts.md
+      - Connect an instrument: guides/setting-up-interfacing-tool.md
+      - Connect a lab to the STS: guides/connect-lab-to-sts.md
   - Updates:
-      - Updating InteLIS on Ubuntu: guides/updating-intelis-on-ubuntu.md
-      - Updating InteLIS on Windows: guides/updating-intelis-on-windows.md
+      - Update on Ubuntu: guides/updating-intelis-on-ubuntu.md
+      - Update on Windows: guides/updating-intelis-on-windows.md
   # Moving or rebuilding a machine is a restore, so it sits with the backups
   # it restores from rather than with updates.
-  - Backup & Restore:
-      - Setting Up Off-Machine Backups: guides/setting-up-off-machine-backups.md
-      - Google Drive with Rclone: guides/backing-up-to-google-drive-with-rclone.md
-      - Restoring from a Backup: guides/restoring-from-backup.md
-      - Migrating Ubuntu Machines: guides/migrating-ubuntu-machines.md
+  - Backup and restore:
+      - Set up off-machine backups: guides/setting-up-off-machine-backups.md
+      - Back up to Google Drive with Rclone: guides/backing-up-to-google-drive-with-rclone.md
+      - Restore from a backup: guides/restoring-from-backup.md
+      - Migrate to another Ubuntu machine: guides/migrating-ubuntu-machines.md
   - Maintenance:
-      - Scripts & Tools: guides/maintenance.md
-      - Run Commands on Labs Remotely: guides/remote-command-plane.md
+      - Maintenance scripts and tools: guides/maintenance.md
+      - Run commands on a lab from the STS: guides/remote-command-plane.md
   - Troubleshooting:
-      - Where to Start: guides/troubleshooting.md
-      - Site Will Not Open: guides/site-will-not-open.md
-      - MySQL Will Not Start: guides/mysql-will-not-start.md
-      - Browser Shows PHP Code: guides/browser-shows-php-code.md
-      - Forgotten Password: guides/forgotten-password.md
-      - Fix Collation Mismatch: guides/fix-collation-issue.md
-      - Permission Denied Errors: guides/permission-denied-issue.md
-      - Update Stuck at Database Migrations: guides/update-stuck-at-migrations.md
-      - Results Not Reaching the STS: guides/sts-sync-not-working.md
-      - Analyzer Results Not Arriving: guides/interfacing-results-not-arriving.md
+      - Where to start: guides/troubleshooting.md
+      - Site will not open: guides/site-will-not-open.md
+      - MySQL will not start: guides/mysql-will-not-start.md
+      - Browser shows PHP code: guides/browser-shows-php-code.md
+      - Forgotten password: guides/forgotten-password.md
+      - Fix collation errors: guides/fix-collation-issue.md
+      - Permission denied errors: guides/permission-denied-issue.md
+      - Update stuck at database migrations: guides/update-stuck-at-migrations.md
+      - Results not reaching the STS: guides/sts-sync-not-working.md
+      - Analyzer results not arriving: guides/interfacing-results-not-arriving.md
   - Reference:
       - Architecture: ARCHITECTURE.md
-      - Engineering Standards: engineering-standards.md
-      - Remote Command Plane (design): remote-command-plane.md
-      - Release Tracks: release-tracks.md
+      - Engineering standards: engineering-standards.md
+      - Remote command plane (design): remote-command-plane.md
+      - Release tracks: release-tracks.md
 
 # i18n goes first: it rewrites the file list, and search has to index what it
 # produces. English is the default, so any page without a .fr.md alongside it
@@ -150,74 +150,74 @@ plugins:
           nav_translations:
             Home: Accueil
             Using InteLIS: Utiliser InteLIS
-            Start Here: Commencer ici
-            Register & Receive: Enregistrer et réceptionner
-            Test & Record Results: Tester et saisir les résultats
-            Release & Store: Diffuser et stocker
+            Start here: Commencer ici
+            Register and receive: Enregistrer et réceptionner
+            Test and record results: Tester et saisir les résultats
+            Release and store: Diffuser et stocker
             Administration: Administration
-            Statuses & Reports: Statuts et rapports
-            How a Sample Moves Through InteLIS: Le parcours d'un échantillon
-            Signing In and Navigating InteLIS: Se connecter et naviguer
-            Words Used in These Guides: Les mots de ces guides
-            Register a Test Request: Enregistrer une demande de test
-            Receive Samples Sent on a Manifest: Réceptionner un colis avec manifeste
-            Send Samples on a Manifest: Envoyer des échantillons avec un manifeste
-            Batch Samples for Testing: Créer un lot pour le test
-            Test Pooled TB Samples on GeneXpert: Tester des échantillons TB groupés sur GeneXpert
-            Capture Results: Saisir les résultats
-            Review and Approve Results: Vérifier et approuver les résultats
-            Handle Failed and Held Samples: Gérer les échecs et les échantillons en attente
-            Release Results: Diffuser les résultats
-            Record Where a Sample Is Stored: Enregistrer le stockage d'un échantillon
+            Statuses and reports: Statuts et rapports
+            How a viral load sample moves through InteLIS: Le parcours d'un échantillon dans InteLIS
+            Sign in and navigate InteLIS: Se connecter et naviguer dans InteLIS
+            Words used in these guides: Les mots de ces guides
+            Register a viral load test request: Enregistrer une demande de test de charge virale
+            Receive samples sent on a manifest: Réceptionner des échantillons envoyés avec un manifeste
+            Send samples to a testing lab on a manifest: Envoyer des échantillons à un laboratoire avec un manifeste
+            Batch samples for testing: Créer un lot pour le test
+            Test pooled TB samples on GeneXpert: Tester des échantillons TB groupés sur GeneXpert
+            Capture viral load results: Saisir les résultats de charge virale
+            Review and approve results: Vérifier et approuver les résultats
+            Handle failed and held samples: Gérer les échecs et les échantillons en attente
+            Release results to the requesting facility: Diffuser les résultats à la structure demandeuse
+            Record where a sample is stored: Enregistrer le stockage d'un échantillon
             Administer InteLIS: Administrer InteLIS
-            Users and Roles: Utilisateurs et rôles
-            Facilities and Testing Labs: Structures et laboratoires
-            Add or Update Many Facilities: Ajouter ou mettre à jour plusieurs structures
-            Instruments: Instruments
-            Interface Tool Connections: Connexions de l'outil d'interface
-            Module Configuration: Configuration des modules
-            General Configuration: Configuration générale
-            Monitoring and Audit: Surveillance et audit
-            System Admin Area: Espace System Admin
-            For Requesting Facilities: Pour les structures demandeuses
-            Sample Statuses: Statuts des échantillons
-            Viral Load Reports: Rapports charge virale
-            Reports for Other Tests: Rapports des autres tests
-            Printable Job Aids: Aide-mémoires imprimables
-            Job Aids: Aide-mémoires
+            Manage users and roles: Gérer les utilisateurs et les rôles
+            Manage facilities and testing labs: Gérer les structures et les laboratoires d'analyse
+            Add or update many facilities at once: Ajouter ou mettre à jour plusieurs structures à la fois
+            Set up an instrument: Configurer un instrument
+            Connect the Interface Tool with a connection code: Connecter l'outil d'interface avec un code de connexion
+            Maintain the request form lists: Entretenir les listes du formulaire de demande
+            General configuration settings: Paramètres de la configuration générale
+            Monitor and audit InteLIS: Surveiller et auditer InteLIS
+            Use the System Admin area: Utiliser l'espace System Admin
+            For requesting facilities: Pour les structures demandeuses
+            Sample statuses: Statuts des échantillons
+            Viral load reports: Rapports charge virale
+            Reports for other tests: Rapports des autres tests
+            Printable job aids: Aide-mémoires imprimables
+            Job aids: Aide-mémoires
             Installation: Installation
-            InteLIS on Ubuntu (Recommended): InteLIS sur Ubuntu (recommandé)
-            Using Docker: Avec Docker
-            InteLIS on Windows: InteLIS sur Windows
+            Install on Ubuntu (recommended): InteLIS sur Ubuntu (recommandé)
+            Install with Docker: Avec Docker
+            Install on Windows: InteLIS sur Windows
             Updates: Mises à jour
-            Updating InteLIS on Ubuntu: Mettre à jour InteLIS sur Ubuntu
-            Updating InteLIS on Windows: Mettre à jour InteLIS sur Windows
-            Migrating Ubuntu Machines: Migrer entre machines Ubuntu
-            Backup & Restore: Sauvegarde et restauration
-            Setting Up Off-Machine Backups: Configurer les sauvegardes hors de la machine
-            Google Drive with Rclone: Google Drive avec Rclone
-            Restoring from a Backup: Restaurer depuis une sauvegarde
+            Update on Ubuntu: Mettre à jour InteLIS sur Ubuntu
+            Update on Windows: Mettre à jour InteLIS sur Windows
+            Migrate to another Ubuntu machine: Migrer entre machines Ubuntu
+            Backup and restore: Sauvegarde et restauration
+            Set up off-machine backups: Configurer des sauvegardes hors de la machine
+            Back up to Google Drive with Rclone: Google Drive avec Rclone
+            Restore from a backup: Restaurer depuis une sauvegarde
             Maintenance: Maintenance
-            Scripts & Tools: Scripts et outils
-            Run Commands on Labs Remotely: Lancer des commandes à distance sur les labos
+            Maintenance scripts and tools: Scripts et outils de maintenance
+            Run commands on a lab from the STS: Lancer des commandes sur un laboratoire depuis le STS
             Troubleshooting: Dépannage
-            Site Will Not Open: Le site ne s'ouvre pas
-            MySQL Will Not Start: MySQL ne démarre pas
-            Browser Shows PHP Code: Le navigateur affiche du code PHP
-            Forgotten Password: Mot de passe oublié
-            Fix Collation Mismatch: Corriger une incohérence de collation
-            Permission Denied Errors: Corriger une erreur de permission
-            Analyzer Results Not Arriving: Les résultats de l'automate n'arrivent pas
-            Where to Start: Par où commencer
-            Update Stuck at Database Migrations: Mise à jour bloquée sur les migrations
-            Connect a Lab to the STS: Connecter un laboratoire au STS
-            Results Not Reaching the STS: Les résultats n'arrivent pas au STS
-            Connect an Instrument: Connecter un automate
+            Site will not open: Le site ne s'ouvre pas
+            MySQL will not start: MySQL ne démarre pas
+            Browser shows PHP code: Le navigateur affiche du code PHP
+            Forgotten password: Mot de passe oublié
+            Fix collation errors: Corriger une incohérence de collation
+            Permission denied errors: Erreurs Permission denied
+            Analyzer results not arriving: Les résultats des automates n'arrivent pas
+            Where to start: Par où commencer
+            Update stuck at database migrations: Mise à jour bloquée aux migrations de la base de données
+            Connect a lab to the STS: Connecter un laboratoire au STS
+            Results not reaching the STS: Résultats qui n'atteignent pas le STS
+            Connect an instrument: Connecter un automate
             Reference: Référence
             Architecture: Architecture
-            Engineering Standards: Standards d'ingénierie
-            Remote Command Plane (design): Plan de commande à distance (conception)
-            Release Tracks: Canaux de publication
+            Engineering standards: Standards d'ingénierie
+            Remote command plane (design): Plan de commande à distance (conception)
+            Release tracks: Canaux de publication
   - search
   # Shows each page's last change date, read from git. CI must check out
   # the full history (fetch-depth: 0) or every page shows the build date.

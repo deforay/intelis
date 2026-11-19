@@ -7,7 +7,7 @@ reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
 
-# How to handle failed and held samples
+# Handle failed and held samples
 
 Samples that failed on the analyzer, were put on hold, or went missing collect on
 one page. Use it to send them back for testing, or to recover results marked
@@ -83,7 +83,7 @@ For every status, see [Sample statuses](sample-statuses.md).
        search for the sample. The **Status** column shows
        `Sample Registered at Testing Lab`, and the result is empty.
     9. Add the sample to a new batch. See
-       [How to batch samples for testing](batch-samples.md).
+       [Batch samples for testing](batch-samples.md).
 
     ??? info "If the tube's barcode label is damaged"
 

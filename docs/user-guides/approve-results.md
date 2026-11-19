@@ -7,7 +7,7 @@ reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
 
-# How to review and approve results
+# Review and approve results
 
 A result reaches the requesting facility only after it is approved. Approval
 confirms that the result in InteLIS is the one the analyzer produced, for the
@@ -24,7 +24,7 @@ Test Result Management**.
 
 ## Before starting
 
-- Results captured in InteLIS. See [How to capture viral load results](capture-results.md)
+- Results captured in InteLIS. See [Capture viral load results](capture-results.md)
 - Permission to manage result status
 - The analyzer printout or worklist for the run
 
@@ -95,13 +95,13 @@ Test Result Management**.
 
             `Not accepted because no result is recorded` names samples that have
             no result. They keep their status. Enter the result first. See
-            [How to capture viral load results](capture-results.md).
+            [Capture viral load results](capture-results.md).
 
         ??? info "If an accepted sample shows Failed/Invalid"
 
             A result that reads as a failure or an invalid run cannot be
             accepted. InteLIS sets the status to **Failed/Invalid** instead. See
-            [How to handle failed and held samples](failed-and-held-samples.md).
+            [Handle failed and held samples](failed-and-held-samples.md).
 
     11. Set **Show Samples that are** to **Already Approved/Rejected**, then
         select **Search**. The accepted samples are listed.
@@ -171,7 +171,7 @@ Test Result Management**.
         A cancelled sample counts as never tested. It drops out of testing
         counts and turnaround time. A failed sample stays in the failure rate.
         For a failed sample, see
-        [How to handle failed and held samples](failed-and-held-samples.md).
+        [Handle failed and held samples](failed-and-held-samples.md).
 
     1. Go to **HIV VIRAL LOAD → Test Result Management → Manage Results Status**.
     2. Set **Show Samples that are** to **Available for Cancellation**.
@@ -210,4 +210,4 @@ never changes the result value. To correct a wrong value:
 If the wrong result had already been printed or emailed, release the corrected
 result again. The corrected result reappears on the **Results not yet Printed**
 tab. To email it again, set **Mail Sent Status** to **Already Mailed Samples**.
-See [How to release results](release-results.md).
+See [Release results](release-results.md).

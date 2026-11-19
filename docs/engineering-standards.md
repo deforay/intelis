@@ -6,7 +6,7 @@ type: reference
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# Engineering Standards
+# Engineering standards
 
 The bar this codebase is held to, and the review that enforces it.
 

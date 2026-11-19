@@ -7,7 +7,7 @@ platform: docker
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# Installing InteLIS with Docker
+# Install InteLIS with Docker
 
 Run InteLIS in Docker containers, on a lab server or on a developer machine.
 

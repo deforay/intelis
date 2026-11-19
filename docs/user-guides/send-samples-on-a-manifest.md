@@ -6,7 +6,7 @@ type: how-to
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# How to send samples to a testing lab on a manifest
+# Send samples to a testing lab on a manifest
 
 List the samples in a package on a manifest, so the testing lab registers the
 whole package by entering one code.
@@ -18,7 +18,7 @@ sending samples or at a lab referring samples on.
 Before starting:
 
 - Register a test request for every sample in the package. See
-  [How to register a viral load test request](register-a-request.md). The
+  [Register a viral load test request](register-a-request.md). The
   manifest is built from requests that already exist.
 - Set the testing lab on each request to the lab the package goes to.
 
@@ -85,7 +85,7 @@ test's group.
         site.
 
     The receiving lab enters the manifest code from this sheet. See
-    [How to receive samples sent on a manifest](receive-referred-samples.md).
+    [Receive samples sent on a manifest](receive-referred-samples.md).
 
 === "Change a manifest"
 

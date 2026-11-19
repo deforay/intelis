@@ -6,7 +6,7 @@ type: how-to
 reviewed: 2026-11-19
 reviewed_against: 5.8.8
 ---
-# How to manage facilities and testing labs
+# Manage facilities and testing labs
 
 Add and maintain the health facilities and testing labs under **ADMIN →
 Facilities**. Every sample is attached to one of each.

@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-10-29
 reviewed_against: 5.8.5
 ---
-# Migrating From One Ubuntu Machine to Another
+# Migrate from one Ubuntu machine to another
 
 Move a lab to a new Ubuntu machine, or rebuild a machine that has died, from the
 old machine's backups.
@@ -47,7 +47,7 @@ internet.
 
             - Enter the MySQL username and password.
             - Choose the `vlsm` database, and `interfacing` if the lab uses the
-              interfacing tool.
+              Interface Tool.
             - When asked for the location, enter `/var/www/intelis/backups/db`.
               On older installs, enter `/var/www/vlsm/backups/db`.
             - Wait for `Script completed.` If it prints
@@ -132,7 +132,7 @@ internet.
             [System administration](../user-guides/admin-system-administration.md).
             To copy the uploaded files back from an off-machine backup, follow
             the **Database and uploaded files** tab of
-            [Restoring from a backup](restoring-from-backup.md).
+            [Restore from a backup](restoring-from-backup.md).
 
         ??? warning "If it says `This machine keeps its own settings`"
 
@@ -170,7 +170,7 @@ internet.
     16. Check the lab settings under **Admin → Settings → General Configuration**.
     17. Open the result PDF of a recent request, and check its signatures and
         logo appear.
-    18. If the lab uses the interfacing tool, restore its database too.
+    18. If the lab uses the Interface Tool, restore its database too.
 
         1. In a terminal, type `sudo cp` followed by a space. Do not press Enter
            yet.
@@ -189,8 +189,8 @@ internet.
             ```
 
         If step 3 reports that the profile `interfacing` does not exist, set up
-        the interfacing tool first with
-        [Setting up the interfacing tool](setting-up-interfacing-tool.md), then
+        the Interface Tool first with
+        [Setting up the Interface Tool](setting-up-interfacing-tool.md), then
         repeat step 3. If it reports that it cannot open an encrypted file,
         contact support with the file name.
 
@@ -265,7 +265,7 @@ internet.
             [System administration](../user-guides/admin-system-administration.md).
             To copy the uploaded files back from an off-machine backup, follow
             the **Database and uploaded files** tab of
-            [Restoring from a backup](restoring-from-backup.md).
+            [Restore from a backup](restoring-from-backup.md).
 
         ??? warning "If it says `This machine keeps its own settings`"
 
@@ -316,7 +316,7 @@ internet.
     11. Check the lab settings under **Admin → Settings → General Configuration**.
     12. Open the result PDF of a recent request, and check its signatures and
         logo appear.
-    13. If the lab uses the interfacing tool, restore its database too.
+    13. If the lab uses the Interface Tool, restore its database too.
 
         1. In a terminal, type `sudo cp` followed by a space. Do not press Enter
            yet.
@@ -335,8 +335,8 @@ internet.
             ```
 
         If step 3 reports that the profile `interfacing` does not exist, set up
-        the interfacing tool first with
-        [Setting up the interfacing tool](setting-up-interfacing-tool.md), then
+        the Interface Tool first with
+        [Setting up the Interface Tool](setting-up-interfacing-tool.md), then
         repeat step 3. If it reports that it cannot open an encrypted file,
         contact support with the file name.
 
@@ -391,7 +391,7 @@ internet.
             [System administration](../user-guides/admin-system-administration.md).
             To copy the uploaded files back from an off-machine backup, follow
             the **Database and uploaded files** tab of
-            [Restoring from a backup](restoring-from-backup.md).
+            [Restore from a backup](restoring-from-backup.md).
 
         ??? warning "If it says `This machine keeps its own settings`"
 
@@ -428,7 +428,7 @@ internet.
     12. Check the lab settings under **Admin → Settings → General Configuration**.
     13. Open the result PDF of a recent request, and check its signatures and
         logo appear.
-    14. If the lab uses the interfacing tool, restore its database too.
+    14. If the lab uses the Interface Tool, restore its database too.
 
         1. Copy the newest interfacing backup out of the fetched folder:
 
@@ -449,7 +449,7 @@ internet.
             ```
 
         If step 2 reports that the profile `interfacing` does not exist, set up
-        the interfacing tool first with
-        [Setting up the interfacing tool](setting-up-interfacing-tool.md), then
+        the Interface Tool first with
+        [Setting up the Interface Tool](setting-up-interfacing-tool.md), then
         repeat step 2. If it reports that it cannot open an encrypted file,
         contact support with the file name.

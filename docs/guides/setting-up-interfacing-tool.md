@@ -1,5 +1,5 @@
 ---
-description: Install the Interfacing Tool, connect an analyzer, and have InteLIS import its results automatically.
+description: Install the Interface Tool, connect an analyzer, and have InteLIS import its results automatically.
 audience: [system-admin, lab-admin]
 module: [vl, eid, covid19, hepatitis, tb, cd4, custom-tests]
 type: how-to
@@ -7,9 +7,9 @@ platform: ubuntu
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# Connect an Instrument to InteLIS
+# Connect an instrument to InteLIS
 
-Send an analyzer's results into InteLIS through the Interfacing Tool, so nobody
+Send an analyzer's results into InteLIS through the Interface Tool, so nobody
 types them in.
 
 InteLIS must already be installed on the lab's Ubuntu machine. The analyzer must
@@ -19,9 +19,9 @@ be connected to the lab network.
 
 === "Tool on this machine"
 
-    Use this when the Interfacing Tool runs on the InteLIS machine itself.
+    Use this when the Interface Tool runs on the InteLIS machine itself.
 
-    ### Install the Interfacing Tool
+    ### Install the Interface Tool
 
     1. Open a terminal on the InteLIS machine and download the installer:
 
@@ -45,7 +45,7 @@ be connected to the lab network.
 
     ### Add the analyzer in the tool
 
-    3. Open the Interfacing Tool from the applications menu.
+    3. Open the Interface Tool from the applications menu.
     4. Sign in with Login ID `admin` and password `admin`. The first sign-in
        opens **Settings**.
     5. Under **System**, set **Auto-connect on startup** to **Yes**. With **No**,
@@ -63,7 +63,7 @@ be connected to the lab network.
 
         ??? info "If the lab has more than one analyzer"
 
-            Add each one here with its own port. One Interfacing Tool serves
+            Add each one here with its own port. One Interface Tool serves
             them all.
 
     7. Select **Save Settings**.
@@ -157,10 +157,10 @@ be connected to the lab network.
 
         | Question | Answer |
         | --- | --- |
-        | How does the Interfacing Tool store the results InteLIS should read? | Press Enter. **MySQL on this machine** is already selected. |
+        | How does the Interface Tool store the results InteLIS should read? | Press Enter. **MySQL on this machine** is already selected. |
         | MySQL port | Press Enter (`3306`). |
         | Database name | Press Enter (`interfacing`). |
-        | Where is the Interfacing Tool installed? | Press Enter. **On this machine** is already selected. |
+        | Where is the Interface Tool installed? | Press Enter. **On this machine** is already selected. |
         | Enter a MySQL administrator account to use? | Asked only when setup finds no account of its own. Press Enter (Yes), then type the MySQL `root` username and password. |
         | Name for the account the tool and InteLIS will use | Press Enter (`interfacing`). |
         | Reuse it, and set its password to the one chosen next? | Asked only when the account exists already. Answer **Yes** if an earlier interfacing setup made it. Otherwise press Enter (No) and choose another name. |
@@ -196,7 +196,7 @@ be connected to the lab network.
             below.
 
     11. Wait for `interfacing is now switched on`. Setup then prints a table
-        under **Enter these in the Interfacing Tool**. Keep the terminal open.
+        under **Enter these in the Interface Tool**. Keep the terminal open.
 
         ??? failure "If it prints **Still to do**"
 
@@ -230,7 +230,7 @@ be connected to the lab network.
     ### Register the analyzer in InteLIS
 
     15. Add the analyzer in InteLIS by following
-        [How to set up instruments and interfacing](../user-guides/admin-instruments.md).
+        [Set up instruments and interfacing](../user-guides/admin-instruments.md).
         Enter the tool's **Instrument Name/Code** as the **Machine Name**.
 
     ### Check a result arrives
@@ -303,10 +303,10 @@ be connected to the lab network.
 
 === "Tool on another computer"
 
-    Use this when the Interfacing Tool runs on a different computer from
+    Use this when the Interface Tool runs on a different computer from
     InteLIS, such as a Windows computer beside the analyzer.
 
-    ### Install the Interfacing Tool
+    ### Install the Interface Tool
 
     1. On the tool's computer, open a terminal and download the installer:
 
@@ -336,7 +336,7 @@ be connected to the lab network.
 
     ### Add the analyzer in the tool
 
-    3. Open the Interfacing Tool from the applications menu.
+    3. Open the Interface Tool from the applications menu.
     4. Sign in with Login ID `admin` and password `admin`. The first sign-in
        opens **Settings**.
     5. Under **System**, set **Auto-connect on startup** to **Yes**. With **No**,
@@ -354,7 +354,7 @@ be connected to the lab network.
 
         ??? info "If the lab has more than one analyzer"
 
-            Add each one here with its own port. One Interfacing Tool serves
+            Add each one here with its own port. One Interface Tool serves
             them all.
 
     7. Select **Save Settings**.
@@ -468,10 +468,10 @@ be connected to the lab network.
 
         | Question | Answer |
         | --- | --- |
-        | How does the Interfacing Tool store the results InteLIS should read? | Press Enter. **MySQL on this machine** is already selected. |
+        | How does the Interface Tool store the results InteLIS should read? | Press Enter. **MySQL on this machine** is already selected. |
         | MySQL port | Press Enter (`3306`). |
         | Database name | Press Enter (`interfacing`). |
-        | Where is the Interfacing Tool installed? | **On another computer on the lab network**. |
+        | Where is the Interface Tool installed? | **On another computer on the lab network**. |
         | Address of the computer running the tool | The address from step 9. Do not enter `%`, which admits every computer. |
         | Enter a MySQL administrator account to use? | Asked only when setup finds no account of its own. Press Enter (Yes), then type the MySQL `root` username and password. |
         | Name for the account the tool and InteLIS will use | Press Enter (`interfacing`). |
@@ -495,7 +495,7 @@ be connected to the lab network.
             details, not the values below.
 
     12. Wait for `interfacing is now switched on`. Setup then prints a table
-        under **Enter these in the Interfacing Tool**. Write the five values
+        under **Enter these in the Interface Tool**. Write the five values
         down. The host is this machine's address on the lab network.
 
     ### Let the tool's computer reach MySQL
@@ -579,7 +579,7 @@ be connected to the lab network.
     ### Register the analyzer in InteLIS
 
     22. Add the analyzer in InteLIS by following
-        [How to set up instruments and interfacing](../user-guides/admin-instruments.md).
+        [Set up instruments and interfacing](../user-guides/admin-instruments.md).
         Enter the tool's **Instrument Name/Code** as the **Machine Name**.
 
     ### Check a result arrives

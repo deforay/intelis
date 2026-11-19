@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-09-22
 reviewed_against: 5.7.78
 ---
-# Connect a Lab to the STS
+# Connect a lab to the STS
 
 A lab's InteLIS sends results to the STS and receives requests from it. Both
 need three things in place: the STS address, the lab this machine serves, and
@@ -125,7 +125,7 @@ Run it on the lab's InteLIS machine, never on the STS itself.
         remote commands with the STS.
 
     2. Read the output for errors. If a step fails, see
-       [Results Not Reaching the STS](sts-sync-not-working.md).
+       [Results not reaching the STS](sts-sync-not-working.md).
 
 ## When setup stops early
 
@@ -133,7 +133,7 @@ Run it on the lab's InteLIS machine, never on the STS itself.
 
     The machine is not set up as a lab. Its instance type is **Standalone** or
     **STS**. To change it, see the **Instance Type** warning in
-    [System Admin Area](../user-guides/admin-system-administration.md). A
+    [System Admin area](../user-guides/admin-system-administration.md). A
     Standalone lab has no STS, so it needs no connection.
 
 ??? failure "`No STS URL configured; skipping metadata refresh`"

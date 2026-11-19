@@ -6,7 +6,7 @@ type: how-to
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# How to record where a sample is stored
+# Record where a sample is stored
 
 Sample storage is recorded by the testing lab, on installs whose request form
 includes sample storage. Other request forms do not show the **Samples

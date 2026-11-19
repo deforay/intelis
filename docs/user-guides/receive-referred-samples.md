@@ -6,7 +6,7 @@ type: how-to
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# How to receive samples sent on a manifest
+# Receive samples sent on a manifest
 
 Register every sample in a package that arrives with a manifest, by entering
 the manifest code once.
@@ -64,7 +64,7 @@ under that test's **Request Management** menu.
             every sample on it. Test dates and statuses are kept.
 
     8. Add the samples to a batch. See
-       [How to batch samples for testing](batch-samples.md).
+       [Batch samples for testing](batch-samples.md).
 
 === "Tubes missing or damaged"
 
@@ -105,11 +105,11 @@ under that test's **Request Management** menu.
             every sample on it. Test dates and statuses are kept.
 
     7. Mark each missing tube **Lost** and reject each damaged sample with a
-       reason. See [How to review and approve results](approve-results.md).
+       reason. See [Review and approve results](approve-results.md).
     8. Tell the sender which samples were rejected or lost, so they can collect
        again.
     9. Add the remaining samples to a batch. See
-       [How to batch samples for testing](batch-samples.md).
+       [Batch samples for testing](batch-samples.md).
 
 ## Confirm it worked
 

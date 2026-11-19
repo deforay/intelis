@@ -17,11 +17,11 @@ Applies to InteLIS 5.8.8.
 
 Every report page uses the same controls. Set the filters, select **Search**, and
 use the export control where one is offered. See
-[How to sign in and navigate InteLIS](signing-in.md) for those controls.
+[Sign in and navigate InteLIS](signing-in.md) for those controls.
 
 **Lab Performance Indicators**, **Instrument Activity** and **Sample Referral
 Network** sit under **ADMIN → Reports**. They are described in
-[How to monitor and audit InteLIS](admin-monitoring.md).
+[Monitor and audit InteLIS](admin-monitoring.md).
 
 ## Dashboard
 
@@ -82,7 +82,7 @@ work can go on meanwhile. Progress shows in the **Exports** menu at the top of
 the page. That menu also offers **Download again** for 5 minutes after the
 export finishes.
 
-See [How to release results to the requesting facility](release-results.md).
+See [Release results to the requesting facility](release-results.md).
 
 ## Print Result
 
@@ -91,7 +91,7 @@ See [How to release results to the requesting facility](release-results.md).
 Produces patient report PDFs. Split across two tabs, **Results not yet Printed**
 and **Results already Printed**. The limit is 1000 results per print.
 
-See [How to release results to the requesting facility](release-results.md).
+See [Release results to the requesting facility](release-results.md).
 
 ## Clinic Reports
 
@@ -181,7 +181,7 @@ Monthly Target** switch. It shows or hides the target charts on the dashboard.
 Gives the current freezer position of each sample and its storage history.
 Exports to a spreadsheet.
 
-See [How to record where a sample is stored](store-samples.md).
+See [Record where a sample is stored](store-samples.md).
 
 ## Sample Ageing Report
 

@@ -7,14 +7,14 @@ platform: ubuntu
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# Updating InteLIS on Ubuntu
+# Update InteLIS on Ubuntu
 
 Update an InteLIS lab machine to the current release.
 
 The machine must run **Ubuntu 22.04 LTS or later**, have an internet
 connection, and have an account with `sudo` rights. A machine still on 22.04
 should move to 24.04 LTS with
-[Migrating From One Ubuntu Machine to Another](migrating-ubuntu-machines.md).
+[Migrate from one Ubuntu machine to another](migrating-ubuntu-machines.md).
 
 The current release requires **PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)**. PHP 8.2, 8.3,
 and older versions are not supported. Both Apache and command-line PHP must
@@ -175,7 +175,7 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
 
             - Enter the MySQL username and password.
             - Choose the `vlsm` database, and `interfacing` if the lab uses the
-              interfacing tool.
+              Interface Tool.
             - When asked for the location, enter `/var/www/intelis/backups/db`.
               On older installs, enter `/var/www/vlsm/backups/db`.
             - Wait for `Script completed.` If it prints

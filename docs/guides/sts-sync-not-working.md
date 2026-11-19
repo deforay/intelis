@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-09-22
 reviewed_against: 5.7.78
 ---
-# Results Not Reaching the STS
+# Results not reaching the STS
 
 A lab's InteLIS syncs with the STS every 5 minutes. Each sync sends results
 and lab details up, and brings requests and lists down. When the STS is
@@ -15,7 +15,7 @@ missing a lab's results, or the lab is missing requests, the fault is almost
 always on the lab machine.
 
 The lab must already be connected to the STS. If it never was, follow
-[Connect a Lab to the STS](connect-lab-to-sts.md) first.
+[Connect a lab to the STS](connect-lab-to-sts.md) first.
 
 **Choose the situation that fits, then follow its steps from top to bottom.**
 
@@ -206,13 +206,13 @@ The lab must already be connected to the STS. If it never was, follow
 ??? failure "`STS URL`: `not set`, or `STS URL is not set`, or `Testing Lab ID is not set in System Config`"
 
     The lab is not connected. Follow
-    [Connect a Lab to the STS](connect-lab-to-sts.md).
+    [Connect a lab to the STS](connect-lab-to-sts.md).
 
 ??? failure "`This instance is not configured as LIS. Exiting.`"
 
     The machine is set up as Standalone or as an STS. Only a lab machine
     syncs. See the **Instance Type** warning in
-    [System Admin Area](../user-guides/admin-system-administration.md).
+    [System Admin area](../user-guides/admin-system-administration.md).
 
 ??? failure "`STS hosts entry`: `/etc/hosts maps ... to ...`"
 
@@ -238,7 +238,7 @@ The lab must already be connected to the STS. If it never was, follow
       check the internet connection or the VPN.
     - If the address loads, run `sudo intelis check` and read the `STS URL`
       row. The address saved on the lab may be wrong. Correct it with
-      [Connect a Lab to the STS](connect-lab-to-sts.md).
+      [Connect a lab to the STS](connect-lab-to-sts.md).
 
 ??? failure "`HTTP 401`, or `Unauthorized Access on ... sync`, or `STS token`: `no STS token is stored`"
 

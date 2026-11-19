@@ -6,13 +6,13 @@ type: how-to
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# How to connect the Interface Tool with a connection code
+# Connect the Interface Tool with a connection code
 
 Link one installation of the Interface Tool to a testing lab, so its analyzer
 results reach InteLIS. Each lab computer running the tool connects once.
 
 To install the tool and add the analyzer in it, see
-[Connect an Instrument to InteLIS](../guides/setting-up-interfacing-tool.md).
+[Connect an instrument to InteLIS](../guides/setting-up-interfacing-tool.md).
 
 ## Before starting
 

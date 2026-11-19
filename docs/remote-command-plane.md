@@ -7,11 +7,11 @@ platform: any
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# About the Remote Command Plane
+# About the remote command plane
 
 Why the STS can run commands on a lab without ever connecting into the lab's
 network, and how the pieces keep that safe. For the operator steps, see
-[Running commands on a lab from the STS](guides/remote-command-plane.md).
+[Run commands on a lab from the STS](guides/remote-command-plane.md).
 
 ## Why the lab pulls
 

@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# Installing InteLIS on Ubuntu 24.04 or above (only Ubuntu LTS)
+# Install InteLIS on Ubuntu 24.04 or later (LTS only)
 
 Install InteLIS on a new Ubuntu machine, as a lab machine or as a central server.
 
@@ -21,7 +21,7 @@ versions are not supported. The installer selects PHP 8.4, or 8.5 on Ubuntu
 the security fix. `intelis check` shows this on its `PHP version` line.
 
 To move an existing lab onto a new machine with its data, follow
-[Migrating from one Ubuntu machine to another](migrating-ubuntu-machines.md)
+[Migrate from one Ubuntu machine to another](migrating-ubuntu-machines.md)
 instead.
 
 **Choose the situation that fits, then follow its steps from top to bottom.**
@@ -158,7 +158,7 @@ instead.
         ```
 
     To update this machine later, follow
-    [Updating InteLIS on Ubuntu](updating-intelis-on-ubuntu.md).
+    [Update InteLIS on Ubuntu](updating-intelis-on-ubuntu.md).
 
 === "Central server (STS)"
 
@@ -294,4 +294,4 @@ instead.
         ```
 
     To update this machine later, follow
-    [Updating InteLIS on Ubuntu](updating-intelis-on-ubuntu.md).
+    [Update InteLIS on Ubuntu](updating-intelis-on-ubuntu.md).

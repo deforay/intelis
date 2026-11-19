@@ -7,7 +7,7 @@ platform: windows
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# Installing InteLIS on a Windows Machine
+# Install InteLIS on a Windows machine
 
 Install InteLIS on a Windows machine with WampServer.
 
@@ -341,7 +341,7 @@ shows a modified time from the last minute or two.
 ## Connect instruments
 
 58. If the lab connects instruments, follow
-    [Connect an Instrument](setting-up-interfacing-tool.md).
+    [Connect an instrument](setting-up-interfacing-tool.md).
 
     ??? info "Differences on Windows"
 

@@ -1,5 +1,5 @@
 ---
-description: Connect InteLIS to the Interfacing Tool from the command line, and import analyzer results now instead of waiting for the scheduled import.
+description: Connect InteLIS to the Interface Tool from the command line, and import analyzer results now instead of waiting for the scheduled import.
 audience: [system-admin, lab-admin]
 module: [vl, eid, covid19, hepatitis, tb, cd4, custom-tests]
 type: how-to
@@ -7,9 +7,9 @@ platform: ubuntu
 reviewed: 2026-09-22
 reviewed_against: 5.7.78
 ---
-# Analyzer Results Not Arriving
+# Analyzer results not arriving
 
-InteLIS imports the results held by the Interfacing Tool every minute. One
+InteLIS imports the results held by the Interface Tool every minute. One
 command connects the two, and the same command runs the import on demand:
 
 ```bash
@@ -30,9 +30,9 @@ sudo intelis interface
         ```
 
     2. At `Set interfacing up now?`, press Enter to answer **Yes**.
-    3. Answer the setup questions. They ask where the Interfacing Tool runs and
+    3. Answer the setup questions. They ask where the Interface Tool runs and
        which database it writes to.
-       [Connect an Instrument to InteLIS](setting-up-interfacing-tool.md)
+       [Connect an instrument to InteLIS](setting-up-interfacing-tool.md)
        explains each answer.
     4. Wait for setup to finish. The command then runs the first import by
        itself. Expect the results counted:
@@ -53,7 +53,7 @@ sudo intelis interface
             [Update InteLIS](updating-intelis-on-ubuntu.md), then repeat
             step 1.
 
-        ??? info "If the Interfacing Tool runs on another computer"
+        ??? info "If the Interface Tool runs on another computer"
 
             Setup prints the database settings to enter in the tool. Follow
             [Enter the database in the tool](setting-up-interfacing-tool.md)

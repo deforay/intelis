@@ -6,7 +6,7 @@ type: reference
 reviewed: 2026-11-19
 reviewed_against: 5.8.8
 ---
-# InteLIS Documentation
+# InteLIS documentation
 
 InteLIS is an open-source laboratory information system for HIV viral load, EID,
 TB, hepatitis, COVID-19, CD4, and custom tests.

@@ -7,7 +7,7 @@ platform: windows
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# Updating InteLIS on a Windows Machine
+# Update InteLIS on a Windows machine
 
 Update an InteLIS installation on a Windows machine that runs WampServer.
 
@@ -53,7 +53,7 @@ paths. If you use PHP 8.5, substitute its installed folder name.
         2. Select the `vlsm` database in the left panel.
         3. Select **Export**, then **Export** or **Go** at the bottom of the page.
         4. Save the `.sql` file.
-        5. If the lab uses the interfacing tool, repeat steps 2 to 4 for the
+        5. If the lab uses the Interface Tool, repeat steps 2 to 4 for the
            `interfacing` database.
         6. Copy the `C:\wamp64\www\vlsm\configs` folder next to the exported
            files.

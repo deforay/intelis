@@ -6,13 +6,13 @@ type: how-to
 reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
-# How to register a viral load test request
+# Register a viral load test request
 
 Register a sample that has a paper request form and no Sample ID, so it gets a
 Sample ID and joins the testing queue.
 
 For samples that arrive in a package with a manifest, do not register them one
-by one. See [How to receive samples sent on a manifest](receive-referred-samples.md).
+by one. See [Receive samples sent on a manifest](receive-referred-samples.md).
 
 ## Before starting
 
@@ -54,7 +54,7 @@ mandatory.
 
             The facility is not created yet, or it is not linked to viral load
             testing. Ask the administrator to add it. See
-            [How to administer InteLIS](administer-intelis.md).
+            [Administer InteLIS](administer-intelis.md).
 
     6. Choose the **Implementing Partner** and the **Funding Source**, if the
        paper form gives them.
@@ -99,7 +99,7 @@ mandatory.
         **Repeat VL test after suspected treatment failure adherence
         counselling** or **Suspect Treatment Failure**.
     18. Leave **Laboratory Information** empty. It is filled when the result is
-        captured. See [How to capture viral load results](capture-results.md).
+        captured. See [Capture viral load results](capture-results.md).
 
     ### Save
 
@@ -122,7 +122,7 @@ mandatory.
         To correct a mistake, select **Edit** on the row.
 
     Next, add the sample to a batch. See
-    [How to batch samples for testing](batch-samples.md).
+    [Batch samples for testing](batch-samples.md).
 
 === "At a health facility (STS)"
 
@@ -141,7 +141,7 @@ mandatory.
 
             The facility is not created yet, or it is not linked to viral load
             testing. Ask the administrator to add it. See
-            [How to administer InteLIS](administer-intelis.md).
+            [Administer InteLIS](administer-intelis.md).
 
     6. Choose the **Implementing Partner** and the **Funding Source**, if the
        paper form gives them.
@@ -209,4 +209,4 @@ mandatory.
         To correct a mistake, select **Edit** on the row.
 
     Next, send the samples to the testing lab. See
-    [How to send samples to a testing lab on a manifest](send-samples-on-a-manifest.md).
+    [Send samples to a testing lab on a manifest](send-samples-on-a-manifest.md).

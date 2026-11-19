@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-11-19
 reviewed_against: 5.8.8
 ---
-# How to set up off-machine backups
+# Set up off-machine backups
 
 Send a copy of InteLIS to another machine or drive, automatically, every 8 hours
 and after every restart. The copy survives if the InteLIS machine fails.
@@ -271,7 +271,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     the database backups have stopped. See the warning under
     **Where the backup lands**. Once
     every three months, restore the newest backup onto a spare or test machine
-    by following [Restoring from a Backup](restoring-from-backup.md). A backup
+    by following [Restore from a backup](restoring-from-backup.md). A backup
     that has never been restored is not yet proven to work.
 
     ### Where the backup lands
@@ -339,7 +339,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     | Start them again | `intelis backup enable` |
     | Change where backups go | Run `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered. Press Enter to keep one. |
 
-    To get the data back, see [Restoring from a Backup](restoring-from-backup.md).
+    To get the data back, see [Restore from a backup](restoring-from-backup.md).
 
 === "Windows shared folder"
 
@@ -506,7 +506,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     the database backups have stopped. See the warning under
     **Where the backup lands**. Once
     every three months, restore the newest backup onto a spare or test machine
-    by following [Restoring from a Backup](restoring-from-backup.md). A backup
+    by following [Restore from a backup](restoring-from-backup.md). A backup
     that has never been restored is not yet proven to work.
 
     ### Where the backup lands
@@ -574,7 +574,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     | Start them again | `intelis backup enable` |
     | Change where backups go | Run `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered. Press Enter to keep one. |
 
-    To get the data back, see [Restoring from a Backup](restoring-from-backup.md).
+    To get the data back, see [Restore from a backup](restoring-from-backup.md).
 
 === "USB or external drive"
 
@@ -707,7 +707,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     the database backups have stopped. See the warning under
     **Where the backup lands**. Once
     every three months, restore the newest backup onto a spare or test machine
-    by following [Restoring from a Backup](restoring-from-backup.md). A backup
+    by following [Restore from a backup](restoring-from-backup.md). A backup
     that has never been restored is not yet proven to work.
 
     ### Where the backup lands
@@ -775,7 +775,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
     | Start them again | `intelis backup enable` |
     | Change where backups go | Run `intelis backup setup`, then choose **Change where backups go**. The saved answers are offered. Press Enter to keep one. |
 
-    To get the data back, see [Restoring from a Backup](restoring-from-backup.md).
+    To get the data back, see [Restore from a backup](restoring-from-backup.md).
 
 A backup in the same room as the InteLIS machine does not survive a fire or a
 theft. To keep a second copy elsewhere, see

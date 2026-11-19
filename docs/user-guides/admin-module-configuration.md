@@ -7,7 +7,7 @@ reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
 
-# How to maintain the request form lists
+# Maintain the request form lists
 
 Add, correct and retire the options offered in the dropdown lists of the
 request forms. Each module keeps its own lists. A few lists are shared by every

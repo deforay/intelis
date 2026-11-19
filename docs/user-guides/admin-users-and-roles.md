@@ -7,7 +7,7 @@ reviewed: 2026-09-22
 reviewed_against: 5.7.74
 ---
 
-# How to manage users and roles
+# Manage users and roles
 
 Create a login for each person, and decide what each login can reach. Both live
 under **ADMIN → Users & Roles**.

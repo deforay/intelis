@@ -7,7 +7,7 @@ platform: ubuntu
 reviewed: 2026-10-26
 reviewed_against: 5.8.3
 ---
-# Where to Start
+# Where to start
 
 Find the problem in one of the two tables below. Each row points to the page
 that fixes it.
@@ -21,22 +21,22 @@ that fixes it.
 
 | Problem | Read |
 | --- | --- |
-| Sign-in fails, or asks for the text in an image | **If sign-in fails** in [How to sign in and navigate InteLIS](../user-guides/signing-in.md) |
-| A password is forgotten | Ask the administrator to set a new one. If no administrator can sign in, see [Forgotten Password](forgotten-password.md) |
-| The sidebar is empty, or a menu or button is missing | The role lacks the permission. Ask the administrator. See [How to manage users and roles](../user-guides/admin-users-and-roles.md) |
-| A facility is missing from the request form | **If the facility is missing from the list** in [How to register a viral load test request](../user-guides/register-a-request.md) |
+| Sign-in fails, or asks for the text in an image | **If sign-in fails** in [Sign in and navigate InteLIS](../user-guides/signing-in.md) |
+| A password is forgotten | Ask the administrator to set a new one. If no administrator can sign in, see [Forgotten password](forgotten-password.md) |
+| The sidebar is empty, or a menu or button is missing | The role lacks the permission. Ask the administrator. See [Manage users and roles](../user-guides/admin-users-and-roles.md) |
+| A facility is missing from the request form | **If the facility is missing from the list** in [Register a viral load test request](../user-guides/register-a-request.md) |
 | A sample cannot be found | [Find a sample that is not in a batch or on a manifest](../user-guides/signing-in.md#find-a-sample-that-is-not-in-a-batch-or-on-a-manifest) |
 | A **Needs attention** box shows above the request list | [Act on the Needs attention box](../user-guides/signing-in.md#act-on-the-needs-attention-box) |
-| A sample is missing from the list when making a batch | **If a sample is missing from the list** in [How to batch samples for testing](../user-guides/batch-samples.md) |
-| A sample is missing from the list when making a manifest | **If a sample is missing from the list** in [How to send samples on a manifest](../user-guides/send-samples-on-a-manifest.md) |
-| **Edit** is greyed out on a manifest | **If Edit is greyed out** in [How to send samples on a manifest](../user-guides/send-samples-on-a-manifest.md) |
-| A message shows instead of the samples when receiving a manifest | **If a message appears instead of the samples** in [How to receive samples sent on a manifest](../user-guides/receive-referred-samples.md) |
-| Analyzer results do not appear in InteLIS | **If results do not arrive** in [How to capture viral load results](../user-guides/capture-results.md), then [Analyzer Results Not Arriving](interfacing-results-not-arriving.md) |
-| Imported results show **Awaiting Approval** | **If the results show Awaiting Approval** in [How to capture viral load results](../user-guides/capture-results.md) |
-| A sample failed on the analyzer, or is on hold | [How to handle failed and held samples](../user-guides/failed-and-held-samples.md) |
-| A result shows **Locked** and cannot be corrected | **If the row shows Locked** in [How to review and approve results](../user-guides/approve-results.md) |
-| A rejected sample is missing from the email list | **If a rejected sample is missing from the list** in [How to release results](../user-guides/release-results.md) |
-| The facility cannot see an approved result | [Results Not Reaching the STS](sts-sync-not-working.md) |
+| A sample is missing from the list when making a batch | **If a sample is missing from the list** in [Batch samples for testing](../user-guides/batch-samples.md) |
+| A sample is missing from the list when making a manifest | **If a sample is missing from the list** in [Send samples on a manifest](../user-guides/send-samples-on-a-manifest.md) |
+| **Edit** is greyed out on a manifest | **If Edit is greyed out** in [Send samples on a manifest](../user-guides/send-samples-on-a-manifest.md) |
+| A message shows instead of the samples when receiving a manifest | **If a message appears instead of the samples** in [Receive samples sent on a manifest](../user-guides/receive-referred-samples.md) |
+| Analyzer results do not appear in InteLIS | **If results do not arrive** in [Capture viral load results](../user-guides/capture-results.md), then [Analyzer results not arriving](interfacing-results-not-arriving.md) |
+| Imported results show **Awaiting Approval** | **If the results show Awaiting Approval** in [Capture viral load results](../user-guides/capture-results.md) |
+| A sample failed on the analyzer, or is on hold | [Handle failed and held samples](../user-guides/failed-and-held-samples.md) |
+| A result shows **Locked** and cannot be corrected | **If the row shows Locked** in [Review and approve results](../user-guides/approve-results.md) |
+| A rejected sample is missing from the email list | **If a rejected sample is missing from the list** in [Release results](../user-guides/release-results.md) |
+| The facility cannot see an approved result | [Results not reaching the STS](sts-sync-not-working.md) |
 | A status name is unclear | [Sample statuses](../user-guides/sample-statuses.md) |
 | A word in these guides is unclear | [Words used in these guides](../user-guides/glossary.md) |
 
@@ -47,24 +47,24 @@ Each command reports what it found and prints the next command to run.
 
 | Symptom | Run first | Then read |
 | --- | --- | --- |
-| The site will not open in the browser | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
-| The browser shows `The InteLIS database is not responding`, or `System Temporarily Unavailable` on older versions | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
-| The browser shows `This server's PHP cannot reach the database` | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
-| The browser shows `InteLIS is being updated` for more than 30 minutes | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
-| phpMyAdmin shows `The mysqli extension is missing` | `sudo intelis doctor` | [Site Will Not Open](site-will-not-open.md) |
-| The browser shows PHP code instead of InteLIS | `sudo intelis doctor` | [Browser Shows PHP Code](browser-shows-php-code.md) |
-| A user, or the only admin, cannot sign in because the password is forgotten | `sudo intelis reset-password` | [Forgotten Password](forgotten-password.md) |
-| MySQL is stopped, or the site reports a database error | `sudo intelis fix-database` | [MySQL Will Not Start](mysql-will-not-start.md) |
-| An update stops at `Running database migrations...` | Nothing yet. Read the page first. | [Update Stuck at Database Migrations](update-stuck-at-migrations.md) |
+| The site will not open in the browser | `sudo intelis doctor` | [Site will not open](site-will-not-open.md) |
+| The browser shows `The InteLIS database is not responding`, or `System Temporarily Unavailable` on older versions | `sudo intelis doctor` | [Site will not open](site-will-not-open.md) |
+| The browser shows `This server's PHP cannot reach the database` | `sudo intelis doctor` | [Site will not open](site-will-not-open.md) |
+| The browser shows `InteLIS is being updated` for more than 30 minutes | `sudo intelis doctor` | [Site will not open](site-will-not-open.md) |
+| phpMyAdmin shows `The mysqli extension is missing` | `sudo intelis doctor` | [Site will not open](site-will-not-open.md) |
+| The browser shows PHP code instead of InteLIS | `sudo intelis doctor` | [Browser shows PHP code](browser-shows-php-code.md) |
+| A user, or the only admin, cannot sign in because the password is forgotten | `sudo intelis reset-password` | [Forgotten password](forgotten-password.md) |
+| MySQL is stopped, or the site reports a database error | `sudo intelis fix-database` | [MySQL will not start](mysql-will-not-start.md) |
+| An update stops at `Running database migrations...` | Nothing yet. Read the page first. | [Update stuck at database migrations](update-stuck-at-migrations.md) |
 | InteLIS fails to start after an update or a server change | `sudo intelis check` | The fix it prints for each failure |
-| `Permission denied` in the browser or a log | `sudo intelis check` | [Permission Denied Issue](permission-denied-issue.md) |
-| `Illegal mix of collations` in the browser or a log | `sudo intelis check` | [Fix Collation Mismatch](fix-collation-issue.md) |
-| The lab was never connected to the STS, or the STS address changed | `sudo intelis sts-setup` | [Connect a Lab to the STS](connect-lab-to-sts.md) |
-| Results or requests are not reaching the STS | `sudo intelis check` | [Results Not Reaching the STS](sts-sync-not-working.md) |
-| Analyzer results are not arriving in InteLIS | `sudo intelis interface` | [Analyzer Results Not Arriving](interfacing-results-not-arriving.md) |
+| `Permission denied` in the browser or a log | `sudo intelis check` | [Permission denied errors](permission-denied-issue.md) |
+| `Illegal mix of collations` in the browser or a log | `sudo intelis check` | [Fix collation errors](fix-collation-issue.md) |
+| The lab was never connected to the STS, or the STS address changed | `sudo intelis sts-setup` | [Connect a lab to the STS](connect-lab-to-sts.md) |
+| Results or requests are not reaching the STS | `sudo intelis check` | [Results not reaching the STS](sts-sync-not-working.md) |
+| Analyzer results are not arriving in InteLIS | `sudo intelis interface` | [Analyzer results not arriving](interfacing-results-not-arriving.md) |
 | The site is slow, or the disk is nearly full | `sudo intelis health` | [Free disk space](maintenance.md#free-disk-space) |
-| Data or a file was lost or deleted by mistake | `sudo intelis restore` | [Restoring from a Backup](restoring-from-backup.md) |
-| Backups are not running, or are old | `sudo intelis backup status` | [Setting Up Off-Machine Backups](setting-up-off-machine-backups.md) |
+| Data or a file was lost or deleted by mistake | `sudo intelis restore` | [Restore from a backup](restoring-from-backup.md) |
+| Backups are not running, or are old | `sudo intelis backup status` | [Set up off-machine backups](setting-up-off-machine-backups.md) |
 | Scheduled work stopped: no imports, no sync, no backups | `sudo crontab -l \| grep cron.sh` | [Check the scheduled tasks are running](maintenance.md#check-the-scheduled-tasks-are-running) |
 
 !!! warning "Do not reinstall or reformat the machine"

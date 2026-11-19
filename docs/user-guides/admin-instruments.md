@@ -6,7 +6,7 @@ type: how-to
 reviewed: 2026-11-19
 reviewed_against: 5.8.8
 ---
-# How to set up an instrument
+# Set up an instrument
 
 Register an analyzer under **ADMIN → Settings → Instruments**, so
 InteLIS can read its results. An instrument that is not registered cannot be
@@ -15,7 +15,7 @@ chosen for a batch, and its result files cannot be imported.
 Two related tasks have their own guides:
 
 - To send results straight from the analyzer, see
-  [Connect an Instrument to InteLIS](../guides/setting-up-interfacing-tool.md).
+  [Connect an instrument to InteLIS](../guides/setting-up-interfacing-tool.md).
 - To link an Interface Tool installation to the lab, see
   [Interface Tool connections](admin-interface-tool-connections.md).
 

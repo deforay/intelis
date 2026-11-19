@@ -6,7 +6,7 @@ type: how-to
 reviewed: 2026-11-19
 reviewed_against: 5.8.8
 ---
-# How to add or update many facilities at once
+# Add or update many facilities at once
 
 Load a list of facilities from one Excel file, or correct many existing
 facilities in one pass. Nothing is saved until the review is accepted.
