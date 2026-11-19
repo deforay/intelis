@@ -986,9 +986,9 @@ check_hosts_names() {
   report "names this machine cannot look up: ${MISSING_NAMES:-none}"
   [ -n "$MISSING_NAMES" ] || return 0
   first="${MISSING_NAMES%% *}"
-  local detail
-  detail="InteLIS answers to it, but opening http://${first}/ in a browser here fails with \"Server Not Found\". The repair adds the name to /etc/hosts." # NOSONAR: an address shown to the operator, not a request
-  finding warning hosts "This computer does not know the name ${MISSING_NAMES// / or }." "$detail"
+  finding warning hosts \
+    "This computer does not know the name ${MISSING_NAMES// / or }." \
+    "InteLIS answers to it, but typing ${first} in the browser here fails with \"Server Not Found\". The repair adds the name to /etc/hosts."
 }
 
 check_permissions() {
