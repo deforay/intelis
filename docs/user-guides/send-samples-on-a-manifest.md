@@ -128,29 +128,48 @@ test's group.
 === "Move manifests to another lab"
 
     Use this when a testing lab cannot take the packages already sent to it.
-    **Move Manifest** has its own permission. If the button is missing, ask the
-    administrator.
+    Only an administrator on the STS can move manifests. **Move Manifest** also
+    has its own permission. If the button is missing, ask the administrator.
+
+    A manifest with a sample the first lab has already tested cannot move. Its
+    row has no **Move** button.
 
     1. Go to **HIV VIRAL LOAD → Request Management → VL Manifest**.
     2. Select **Move Manifest**.
-    3. Choose the lab the manifests were sent to in **Manifest From Testing
-       Lab**.
-    4. To narrow the list, set a **Date Range**. It filters on the date each
-       manifest was created.
-    5. Select **Search Manifests**.
-    6. Move each manifest to be reassigned to the right-hand list.
-    7. Choose the new lab in **Assign to Testing Lab**.
-    8. Enter the **Reason for Moving Manifest(s)**. It is the only record of why
-       the samples went to a different lab.
-    9. Select **Save Changes**. The manifest list opens.
-    10. Send the physical packages to the new lab. The move changes the records
+    3. Under **Find Manifests**, choose one tab:
+        - **By Manifest Code**: type, paste or scan the codes into **Manifest
+          Codes**, one per line.
+        - **By Testing Lab**: choose the lab the manifests are at in **Testing
+          Lab**. **Manifest Date** covers the last 6 months unless you change
+          it.
+    4. Select **Search**. The manifests appear under **Move Selected
+       Manifests**.
+    5. Tick the box of each manifest to move.
+    6. Choose the new lab in **Move to Testing Lab**.
+    7. Enter the **Reason for Moving**. It is the only record of why the
+       samples went to a different lab.
+    8. If the screen asks what should happen to cancelled and rejected samples,
+       choose one:
+
+        | Choice | What happens |
+        | --- | --- |
+        | **Send them to the new lab to be tested** | These samples move with the rest and wait for testing at the new lab. |
+        | **Keep them cancelled or rejected at their current lab** | These samples stay at the first lab with their status. |
+
+    9. Select **Move**.
+    10. If a manifest was already received at the first lab, InteLIS asks
+        whether its samples have physically been sent on to the new lab. Select
+        **OK** only if they have.
+    11. Select **OK** to confirm the move.
+    12. Send the physical packages to the new lab. The move changes the records
         only.
 
     ??? info "If the first lab already activated the manifest"
 
         The move clears the Sample IDs the first lab issued. The new lab
         activates the manifest and issues its own Sample IDs. The identifier
-        the sending facility used stays the same.
+        the sending facility used stays the same. The first lab is asked to
+        cancel its copies of the samples.
 
 ## Confirm it worked
 
