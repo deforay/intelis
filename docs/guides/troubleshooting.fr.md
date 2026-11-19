@@ -1,6 +1,6 @@
 ---
-description: Relier ce qui ne fonctionne pas sur une machine InteLIS à la commande qui en fait le diagnostic et à la page qui le corrige.
-audience: [system-admin, lab-admin]
+description: Relier ce qui ne fonctionne pas, au laboratoire ou sur la machine InteLIS, à la page qui le corrige.
+audience: [lab-staff, lab-supervisor, lab-admin, system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
@@ -9,9 +9,42 @@ reviewed_against: 5.8.5
 ---
 # Par où commencer
 
-Trouver le symptôme dans le tableau. Exécuter sa commande sur la machine
-InteLIS, puis suivre la page indiquée. Chaque commande indique ce qu'elle a
-trouvé et affiche la commande suivante à exécuter.
+Trouver le problème dans l'un des deux tableaux ci-dessous. Chaque ligne mène
+à la page qui le corrige.
+
+- [Problèmes en utilisant InteLIS](#problemes-en-utilisant-intelis) : un
+  échantillon, un résultat, un manifeste ou un formulaire dans le navigateur.
+- [Problèmes sur la machine](#problemes-sur-la-machine) : le site ne s'ouvre
+  pas, MySQL, une mise à jour, les sauvegardes ou la connexion de l'automate.
+
+## Problèmes en utilisant InteLIS
+
+| Problème | Lire |
+| --- | --- |
+| La connexion échoue, ou demande le texte d'une image | **Si la connexion échoue** dans [Se connecter et naviguer dans InteLIS](../user-guides/signing-in.md) |
+| Un mot de passe est oublié | Demander à l'administrateur d'en définir un nouveau. Si aucun administrateur ne peut se connecter, voir [Mot de passe oublié](forgotten-password.md) |
+| La barre latérale est vide, ou un menu ou un bouton manque | Le rôle n'a pas la permission. S'adresser à l'administrateur. Voir [Gérer les utilisateurs et les rôles](../user-guides/admin-users-and-roles.md) |
+| Une structure manque dans le formulaire de demande | **Si la structure est absente de la liste** dans [Enregistrer une demande de test de charge virale](../user-guides/register-a-request.md) |
+| Un échantillon est introuvable | [Trouver un échantillon qui n'est ni dans un lot ni sur un manifeste](../user-guides/signing-in.md#trouver-un-echantillon-qui-nest-ni-dans-un-lot-ni-sur-un-manifeste) |
+| Un encadré **À vérifier** s'affiche au-dessus de la liste des demandes | [Agir sur l'encadré À vérifier](../user-guides/signing-in.md#agir-sur-lencadre-a-verifier) |
+| Un échantillon manque dans la liste lors de la création d'un lot | **Si un échantillon manque dans la liste** dans [Créer un lot pour le test](../user-guides/batch-samples.md) |
+| Un échantillon manque dans la liste lors de la création d'un manifeste | **Si un échantillon manque dans la liste** dans [Envoyer des échantillons à un laboratoire avec un manifeste](../user-guides/send-samples-on-a-manifest.md) |
+| **Edit** est grisé sur un manifeste | **Si Edit est grisé** dans [Envoyer des échantillons à un laboratoire avec un manifeste](../user-guides/send-samples-on-a-manifest.md) |
+| Un message s'affiche à la place des échantillons à la réception d'un manifeste | **Si un message apparaît à la place des échantillons** dans [Réceptionner des échantillons envoyés avec un manifeste](../user-guides/receive-referred-samples.md) |
+| Les résultats de l'automate n'apparaissent pas dans InteLIS | **Si les résultats n'arrivent pas** dans [Saisir les résultats de charge virale](../user-guides/capture-results.md), puis [Les résultats des automates n'arrivent pas](interfacing-results-not-arriving.md) |
+| Les résultats importés affichent **En attente d'approbation** | **Si les résultats affichent Awaiting Approval** dans [Saisir les résultats de charge virale](../user-guides/capture-results.md) |
+| Un échantillon a échoué sur l'automate, ou est en attente | [Gérer les échecs et les échantillons en attente](../user-guides/failed-and-held-samples.md) |
+| Un résultat affiche **Verrouillé** et ne peut pas être corrigé | **Si la ligne affiche Verrouillé** dans [Vérifier et approuver les résultats](../user-guides/approve-results.md) |
+| Un échantillon rejeté manque dans la liste d'envoi par e-mail | **Si un échantillon rejeté manque dans la liste** dans [Diffuser les résultats à la structure demandeuse](../user-guides/release-results.md) |
+| La structure ne voit pas un résultat approuvé | [Résultats qui n'atteignent pas le STS](sts-sync-not-working.md) |
+| Le nom d'un statut n'est pas clair | [Statuts des échantillons](../user-guides/sample-statuses.md) |
+| Un mot de ces guides n'est pas clair | [Les mots de ces guides](../user-guides/glossary.md) |
+
+## Problèmes sur la machine
+
+Exécuter la commande sur la machine InteLIS, puis suivre la page indiquée.
+Chaque commande indique ce qu'elle a trouvé et affiche la commande suivante à
+exécuter.
 
 | Symptôme | Exécuter d'abord | Puis lire |
 | --- | --- | --- |
@@ -31,6 +64,7 @@ trouvé et affiche la commande suivante à exécuter.
 | Les résultats ou les demandes n'arrivent pas au STS | `sudo intelis check` | [Résultats qui n'atteignent pas le STS](sts-sync-not-working.md) |
 | Les résultats des automates n'arrivent pas dans InteLIS | `sudo intelis interface` | [Les résultats des automates n'arrivent pas](interfacing-results-not-arriving.md) |
 | Le site est lent, ou le disque est presque plein | `sudo intelis health` | [Libérer de l'espace disque](maintenance.md#liberer-de-lespace-disque) |
+| Des données ou un fichier ont été perdus ou supprimés par erreur | `sudo intelis restore` | [Restaurer depuis une sauvegarde](restoring-from-backup.md) |
 | Les sauvegardes ne s'exécutent pas, ou sont anciennes | `sudo intelis backup status` | [Configurer des sauvegardes hors de la machine](setting-up-off-machine-backups.md) |
 | Le travail planifié s'est arrêté : aucune importation, aucune synchronisation, aucune sauvegarde | `sudo crontab -l \| grep cron.sh` | [Vérifier que les tâches planifiées s'exécutent](maintenance.md#verifier-que-les-taches-planifiees-sexecutent) |
 
