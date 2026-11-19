@@ -3,8 +3,8 @@ description: Add or update many facilities from one Excel file, reviewing every 
 audience: [system-admin, lab-admin]
 module: [all]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 # How to add or update many facilities at once
 
@@ -52,7 +52,7 @@ facilities in one pass. Nothing is saved until the review is accepted.
         | Result | Meaning |
         | --- | --- |
         | New | The row is added |
-        | Skipped | A facility with this name or code already exists |
+        | Skipped | A facility with this code, or with this name in the same Province/State and District/County, already exists |
         | Error | The row cannot be saved. **Details** gives the reason |
 
     9. Select the **Warnings** tile above the table. Read each warning. Rows
@@ -78,8 +78,9 @@ facilities in one pass. Nothing is saved until the review is accepted.
 
         ??? failure "If rows were not saved"
 
-            A row is not saved when its name, code or external code is already
-            used by another facility. Select **Download rows not saved**.
+            InteLIS does not save a row when another facility already uses its
+            code or external code. The same applies when another facility in
+            the same Province/State and District/County uses its name. Select **Download rows not saved**.
             Correct the rows, then upload that file from step 5.
 
     14. Link the new facilities to their test types. The file carries no test
@@ -105,9 +106,16 @@ facilities in one pass. Nothing is saved until the review is accepted.
         | --- | --- |
         | Match by name and code | Updates only when the name and the code belong to the same facility. The safest update |
         | Match by code | Updates the facility with the same code. Use it to rename facilities |
-        | Match by name | Updates the facility with the same name |
+        | Match by name | Updates the facility with the same name in the same Province/State and District/County |
 
         Rows that match nothing are added as new facilities.
+
+        ??? warning "To move a facility to another Province/State or District/County"
+
+            Choose **Match by code**. **Match by name** looks for the name only
+            within its Province/State and District/County. With **Match by name**, a row
+            with the new location finds no facility and adds a second one. With
+            **Match by name and code**, InteLIS skips the row.
 
     6. Drop the file on the page, or select **browse** and pick it.
     7. Select **Review Upload**. Nothing is saved yet. The review expires after
@@ -151,8 +159,9 @@ facilities in one pass. Nothing is saved until the review is accepted.
             A row is not saved for one of two reasons:
 
             - Its facility was changed by someone else after the review.
-            - Its name, code or external code is already used by another
-              facility.
+            - Its code or external code is already used by another facility,
+              or its name is used by another facility in the same
+              Province/State and District/County.
 
             Select **Download rows not saved**, correct the rows, then upload
             that file from step 5.

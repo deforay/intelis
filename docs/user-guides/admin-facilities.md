@@ -3,8 +3,8 @@ description: Add facilities and testing labs, link them to test types, configure
 audience: [system-admin, lab-admin]
 module: [all]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 # How to manage facilities and testing labs
 
@@ -34,7 +34,9 @@ Other tasks on the same page have their own guides:
 
 1. Go to **ADMIN → Facilities**.
 2. Select **Add Facility**.
-3. Enter **Facility Name**. It must not already be in use.
+3. Enter **Facility Name**. Two facilities can share a name only when they
+   are in different **Province/State** or **District/County**. Where a name
+   repeats, the facility dropdowns show the district after it.
 4. Optionally enter **Facility Code**, the national unique code. It accepts
    letters, numbers and hyphens and is saved in capitals. Left blank on a
    testing lab, InteLIS generates one. A code already used by another facility
