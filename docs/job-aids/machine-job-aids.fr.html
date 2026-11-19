@@ -172,24 +172,26 @@
 
   @media print {
     /* Sized so every card fits one A4 page in both languages. The French cards
-       run longer, so check both with a print preview after changing any card. */
-    body { background: #fff; padding: 0; font-size: 9.5pt; line-height: 1.34; }
+       run longer. After changing any card, print both files to PDF and check the
+       page count equals the card count. */
+    body { background: #fff; padding: 0; font-size: 9pt; line-height: 1.25; }
     .card > header { margin-bottom: 10px; }
-    h3 { margin: 12px 0 5px; }
+    h3 { margin: 9px 0 4px; }
     li { margin-bottom: 3px; }
-    ol.steps > li { margin-bottom: 6px; }
+    ol.steps > li { margin-bottom: 4px; padding-left: 24px; min-height: 15px; }
+    ol.steps > li::before { top: 0; width: 15px; height: 15px; font-size: 7.5pt; line-height: 12px; }
     .cmd { margin: 5px 0 8px; padding: 5px 9px; font-size: 9pt; }
     .cmd.big { font-size: 11pt; }
     .screen { margin: 5px 0 8px; padding: 6px 10px; font-size: 8.5pt; line-height: 1.25; }
     .warn { margin: 8px 0; padding: 7px 11px; }
-    table { font-size: 9pt; margin-bottom: 8px; }
-    th, td { padding: 3px 7px; }
+    table { font-size: 8.5pt; margin-bottom: 8px; }
+    th, td { padding: 2px 6px; }
     footer.cardfoot { margin-top: 8px; }
     .toolbar { display: none; }
     .card {
       margin: 0; border: 0; box-shadow: none;
       min-height: 0; max-width: none;
-      padding: 6mm 10mm;
+      padding: 4mm 8mm;
       page-break-after: always;
       break-after: page;
     }
@@ -254,18 +256,15 @@ Type a number and press Enter:</div>
     <tr><td>Sur demande</td><td>Mettre à jour InteLIS (menu 5).</td></tr>
     <tr><td>Quand quelque chose cloche</td><td>Vérifier la machine (menu 1) avant d'appeler qui que ce soit.</td></tr>
     <tr><td>Quand le site ne s'ouvre pas</td><td>Trouver la cause et réparer (menu 2). Rien n'est modifié sans confirmation.</td></tr>
-    <tr><td>Jamais, normalement</td><td>Sauvegarder à la main. La machine se sauvegarde toutes les 8 heures.</td></tr>
+    <tr><td>Avant une mise à jour</td><td>Sauvegarder à la main : <span class="path">intelis backup</span>. Sinon, une fois la fiche 4 suivie, la machine se sauvegarde toutes les 8 heures.</td></tr>
   </table>
 
-  <div class="warn">
-    <strong>Ne jamais saisir sudo devant intelis</strong>
-    La commande demande elle-même les droits d'administrateur, uniquement pour les
-    étapes qui en ont besoin. Ajouter <span class="path">sudo</span> exécute en tant
-    qu'administrateur un travail qui doit s'exécuter sous le compte d'InteLIS, ce qui
-    casse certaines commandes.
-  </div>
+  <h3>Inutile de saisir sudo</h3>
+  <p><span class="path">intelis</span> demande elle-même les droits d'administrateur,
+  uniquement pour les étapes qui en ont besoin. Saisir <span class="path">sudo intelis</span>,
+  comme certains écrans et guides l'indiquent, fonctionne aussi.</p>
 
-  <h3>Si la saisie de intelis répond « command not found »</h3>
+  <h3>Si la saisie de intelis répond « command not found » ou liste des commandes Composer</h3>
   <p>La machine est une installation ancienne. Lancer la mise à jour une fois avec la
   commande longue de la fiche 3. La commande courte fonctionne ensuite.</p>
 
@@ -357,7 +356,9 @@ Type a number and press Enter:</div>
   <h3>Avant et après</h3>
   <table class="wrapfirst">
     <tr><td>Avant</td><td>Prévenir le laboratoire. Les pages peuvent ne pas s'afficher pendant un court moment.</td></tr>
-    <tr><td>Avant</td><td>Vérifier que les sauvegardes sont à jour : <span class="path">intelis backup status</span></td></tr>
+    <tr><td>Avant</td><td>Sauvegarder maintenant : <span class="path">intelis backup</span>. Attendre <em>Database and settings saved on this machine</em>.</td></tr>
+    <tr><td>Pendant</td><td>Ubuntu met d'abord à jour ses propres paquets, ce qui peut prendre du temps. À la question <em>Run the optional maintenance scripts now?</em>, répondre non.</td></tr>
+    <tr><td>Terminé</td><td>La dernière ligne indique <em>Total time</em>. Juste au-dessus, la mise à jour a déjà vérifié la machine.</td></tr>
     <tr><td>Après</td><td>Lancer <span class="path">intelis check</span>. Aucune ligne ne doit indiquer FAIL.</td></tr>
     <tr><td>Après</td><td>Se connecter et ouvrir une page, pour vérifier qu'elle s'affiche.</td></tr>
   </table>
@@ -370,9 +371,10 @@ Type a number and press Enter:</div>
   </div>
 
   <h3>En cas d'échec</h3>
-  <p>La mise à jour conserve un instantané et indique ce qui n'a pas fonctionné. Ne pas
-  tenter de réparer la machine à la main. Lancer <span class="path">intelis check</span>
-  et envoyer la totalité du résultat au support.</p>
+  <p>La mise à jour conserve un instantané et affiche <em>Why the update failed</em> en bas
+  de la fenêtre. Ne pas tenter de réparer la machine à la main. Envoyer au support cette
+  partie de la fenêtre, le résultat de <span class="path">intelis check</span> et le
+  fichier <span class="path">/tmp/intelis-upgrade-*.log</span> le plus récent.</p>
 
   <footer class="cardfoot"><span>InteLIS — aide-mémoire machine</span><span>Fiche 3 : mettre à jour</span></footer>
 </section>
@@ -403,20 +405,21 @@ Type a number and press Enter:</div>
   <h3>Les dix secondes hebdomadaires</h3>
   <div class="cmd">intelis backup status</div>
   <div class="screen">Lab            : kigali-central (kigali-central-a1b2c3d4)
-Backing up to  : backup@192.168.1.20:/home/backup/backups/...
+Backing up to  : lisbackup@192.168.1.20:/home/lisbackup/backups/...
 Last good backup: 2026-08-13T04:00:11Z (6 hours ago)
 Size on backup  : 4.2G
-History         : 2026-07-15 to 2026-08-13 (30 days)
+History         : 2026-07-16 to 2026-08-13 (11 days)
 Last attempt    : succeeded in 143s
+Server snapshots: 30 kept, newest 2026-08-13
 Schedule        : every 8 hours and after every restart</div>
 
   <table class="wrapfirst">
     <tr><th>Ce qui est affiché</th><th>Que faire</th></tr>
-    <tr><td>Last good backup : il y a quelques heures</td><td>Rien. C'est exactement ce qu'il faut voir.</td></tr>
-    <tr><td>Last good backup : never</td><td>Elle n'a jamais fonctionné. Lancer <span class="path">intelis backup test</span>.</td></tr>
+    <tr><td>Last good backup: il y a quelques heures</td><td>Rien. C'est exactement ce qu'il faut voir.</td></tr>
+    <tr><td>Last good backup: never</td><td>Elle n'a jamais fonctionné. Lancer <span class="path">intelis backup test</span>.</td></tr>
     <tr><td>Plus d'un jour</td><td>Lancer <span class="path">intelis backup test</span> pour en connaître la raison.</td></tr>
-    <tr><td>Last attempt : FAILED</td><td>Lire la raison à la ligne suivante. En général, l'autre machine est éteinte.</td></tr>
-    <tr><td>Schedule : OFF</td><td>Les sauvegardes ne sont pas programmées. Lancer <span class="path">intelis backup enable</span>.</td></tr>
+    <tr><td>Last attempt: FAILED</td><td>Lire la raison à la ligne suivante. En général, l'autre machine est éteinte.</td></tr>
+    <tr><td>Schedule: OFF</td><td>Les sauvegardes ne sont pas programmées. Lancer <span class="path">intelis backup enable</span>.</td></tr>
   </table>
 
   <h3>Les deux autres commandes</h3>
@@ -427,7 +430,7 @@ Schedule        : every 8 hours and after every restart</div>
 
   <div class="warn">
     <strong>Une sauvegarde jamais restaurée n'est pas une sauvegarde</strong>
-    C'est un espoir. Une fois par an, en restaurer une sur une machine de réserve et
+    C'est un espoir. Tous les trois mois, en restaurer une sur une machine de réserve et
     vérifier que les données sont bien là. La fiche 5 explique comment.
   </div>
 
@@ -499,17 +502,21 @@ Schedule        : every 8 hours and after every restart</div>
   fonctionne même quand InteLIS refuse de démarrer, c'est-à-dire précisément quand on
   en a besoin.</p>
 
-  <div class="screen">  PASS  PHP version                8.4.5
-  PASS  Database host              localhost
-  WARN  Apache post_max_size       8M — large imports will be truncated
-  FAIL  Schema version             database is at 5.6.3, migrations go to 5.6.5
-                                     run: intelis migrate</div>
+  <div class="screen">  PASS  PHP version                8.4.27
+  PASS  DB target                  localhost:3306/vlsm
+  WARN  Apache post_max_size       8M — large imports will be truncated; setup.sh sets 1G
+  FAIL  Schema version             database is at 5.8.9, migrations go to 5.8.10
+                                     run: intelis migrate
+
+  41 passed, 1 warning(s), 1 failed, 2 skipped</div>
 
   <h3>Comment la lire</h3>
   <table class="wrapfirst">
     <tr><td>PASS</td><td>Correct. Ne rien faire.</td></tr>
     <tr><td>WARN</td><td>Fonctionne, mais quelque chose posera problème plus tard. À signaler.</td></tr>
     <tr><td>FAIL</td><td>Cassé. C'est la ligne qui compte.</td></tr>
+    <tr><td>SKIP</td><td>Ne concerne pas cette machine. Ne rien faire.</td></tr>
+    <tr><td>La dernière ligne</td><td>Les totaux. Si le nombre de failed n'est pas 0, lire les lignes FAIL.</td></tr>
     <tr><td>La ligne en retrait</td><td>La commande exacte qui corrige le problème. La saisir telle quelle.</td></tr>
   </table>
 
@@ -530,8 +537,8 @@ Schedule        : every 8 hours and after every restart</div>
 
   <div class="warn">
     <strong>En appelant le support, envoyer le résultat</strong>
-    Lancer <span class="path">intelis check</span>, sélectionner tout le texte de la
-    fenêtre, le copier et l'envoyer. Cela répond à la plupart des questions que le
+    Lancer <span class="path">intelis check</span> et <span class="path">intelis health</span>,
+    sélectionner tout le texte de la fenêtre, le copier et l'envoyer. Cela répond à la plupart des questions que le
     support devrait sinon poser, et transforme deux jours d'échanges en un seul message.
   </div>
 
