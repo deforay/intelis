@@ -1125,11 +1125,38 @@ $remoteURL = $general->getRemoteURL();
     })();
 
 
+    // Request add forms show a predicted sample ID. The saved sample can get a
+    // different one, so say so under the ID. Every add page defines
+    // insertSampleCode(), and no other page does. A lab that types its own IDs
+    // has an editable field, which gets no note.
+    function showSampleCodePreviewNote() {
+        if (typeof window.insertSampleCode !== 'function' || $('#sampleCodePreviewNote').length > 0) {
+            return;
+        }
+        let $code = $('#sampleCodeInText');
+        if ($code.length === 0) {
+            $code = $('#sampleCode[readonly]');
+        }
+        if ($code.length === 0) {
+            return;
+        }
+        const $info = $('<i class="fa-solid fa-circle-info" data-toggle="tooltip" data-placement="bottom"></i>')
+            .attr('title', "<?= _jsTranslate('The form shows the next free Sample ID. If another sample is saved first, this sample gets the next ID after it. Use the Sample ID shown after saving.'); ?>")
+            .css('cursor', 'help');
+        const $note = $('<div id="sampleCodePreviewNote" class="help-block" style="font-size:11px;margin:2px 0 0;"></div>')
+            .text("<?= _jsTranslate('This Sample ID can change when you save.'); ?> ")
+            .append($info);
+        $code.after($note);
+        $info.tooltip();
+    }
+
     $(document).ready(function() {
 
         $('.filter-panel').each(function() {
             window.FilterPanel.init(this);
         });
+
+        showSampleCodePreviewNote();
 
         if ($(".pageFilters").length > 0) {
             // Initialize filter highlighter. The handle is kept so a page that
