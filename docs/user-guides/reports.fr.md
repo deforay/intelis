@@ -4,7 +4,7 @@ audience: [lab-staff, lab-supervisor, requesting-facility]
 module: [vl]
 type: reference
 reviewed: 2026-11-19
-reviewed_against: 5.8.8
+reviewed_against: 5.8.9
 ---
 
 # Rapports charge virale
@@ -14,7 +14,7 @@ le contenu charge virale du tableau de bord, et le rapport d'ancienneté des
 échantillons. Pour l'EID, la TB et les autres tests, voir
 [Rapports des autres tests](reports-other-tests.md).
 
-S'applique à InteLIS 5.8.8.
+S'applique à InteLIS 5.8.9.
 
 Toutes les pages de rapport utilisent les mêmes commandes. Régler les filtres,
 sélectionner **Rechercher**, et utiliser la commande d'export lorsqu'elle est
@@ -176,8 +176,8 @@ télécharge le questionnaire sous forme de tableur :
 **Emplacement :** **CHARGE VIRALE DU VIH → Gestion → CV-Rapport d'objectif de
 test**
 
-Compare les échantillons testés à l'objectif mensuel de chaque laboratoire
-d'analyse.
+Compare les échantillons testés par chaque laboratoire d'analyse au cours d'un
+mois à l'objectif mensuel du laboratoire.
 
 Les objectifs se définissent par laboratoire d'analyse, sur la fiche du
 laboratoire sous **ADMIN → Structures sanitaires**.
@@ -188,8 +188,34 @@ laboratoire sous **ADMIN → Structures sanitaires**.
 | **Cible mensuelle de suppression virale** | Le nombre de résultats supprimés attendu chaque mois. Charge virale uniquement |
 
 **ADMIN → Paramètres → Configuration générale** ne contient que
-l'interrupteur **Objectif mensuel VL**. Il affiche ou masque les graphiques
-d'objectif sur le tableau de bord.
+l'interrupteur **Objectif mensuel VL**. Il affiche ou masque les lignes
+d'objectif sur le tableau de bord. La ligne d'objectif de test compte les
+laboratoires qui ont manqué leur objectif lors d'un mois terminé de la plage de
+dates du tableau de bord. Le mois en cours ne compte pas.
+
+| Filtre | Contenu |
+|---|---|
+| **Plage de dates** | Les mois à afficher. Chaque mois compte en entier, du premier au dernier jour. S'ouvre sur les 12 derniers mois, celui-ci compris |
+| **Laboratoire d'analyse** | Un ou plusieurs laboratoires d'analyse |
+| **Type de cible** | **Objectifs mensuels non atteints**, **Objectifs mensuels atteints** ou **Tout afficher** |
+
+Chaque ligne correspond à un laboratoire d'analyse pour un mois. Un laboratoire
+qui a un objectif figure pour chaque mois de la plage, à zéro les mois sans
+activité.
+
+| Colonne | Contenu |
+|---|---|
+| **Laboratoire d'analyse** | Le laboratoire d'analyse |
+| **Mois** | Le mois que compte la ligne |
+| **Nombre d'échantillons reçus** | Les échantillons reçus au laboratoire ce mois-là |
+| **Nombre d'échantillons rejetés** | Les échantillons reçus au laboratoire ce mois-là puis rejetés |
+| **Nombre d'échantillons testés** | Les échantillons testés ce mois-là qui n'ont pas été rejetés. **Type de cible** compare ce nombre à l'objectif |
+| **Objectif de test mensuel** | L'objectif mensuel du laboratoire. Vide lorsque le laboratoire n'en a pas |
+| **Objectif atteint** | **Oui** lorsque le **Nombre d'échantillons testés** atteint l'objectif, **Non** sinon. Vide lorsque le laboratoire n'a pas d'objectif |
+
+Les échantillons annulés ne sont pas comptés. Sur le STS, un utilisateur limité
+à certaines structures ne voit que les échantillons de ces structures.
+**Exporter vers Excel** télécharge les lignes.
 
 ## Rapports sur les congélateurs et le stockage
 
