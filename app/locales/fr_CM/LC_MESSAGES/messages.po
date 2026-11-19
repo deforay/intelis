@@ -38056,3 +38056,9 @@ msgstr "Veuillez choisir un fichier à charger"
 
 msgid "(Upload xlsx format)"
 msgstr "(Format accepté : xlsx)"
+
+msgid "This Sample ID can change when you save."
+msgstr "Cet ID de l'échantillon peut changer lors de l'enregistrement."
+
+msgid "The form shows the next free Sample ID. If another sample is saved first, this sample gets the next ID after it. Use the Sample ID shown after saving."
+msgstr "Le formulaire affiche le prochain ID de l'échantillon disponible. Si un autre échantillon est enregistré avant, cet échantillon reçoit l'ID suivant. Utilisez l'ID de l'échantillon affiché après l'enregistrement."
