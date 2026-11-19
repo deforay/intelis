@@ -53,6 +53,7 @@ nav:
       - Start Here:
           - How a Sample Moves Through InteLIS: user-guides/index.md
           - Signing In and Navigating InteLIS: user-guides/signing-in.md
+          - Words Used in These Guides: user-guides/glossary.md
       - Register & Receive:
           - Register a Test Request: user-guides/register-a-request.md
           - Receive Samples Sent on a Manifest: user-guides/receive-referred-samples.md
@@ -90,6 +91,7 @@ nav:
       # Connecting an analyzer is a setup task, not a repair. It sat under
       # Troubleshooting, where nobody setting up an instrument would look.
       - Connect an Instrument: guides/setting-up-interfacing-tool.md
+      - Connect a Lab to the STS: guides/connect-lab-to-sts.md
   - Updates:
       - Updating InteLIS on Ubuntu: guides/updating-intelis-on-ubuntu.md
       - Updating InteLIS on Windows: guides/updating-intelis-on-windows.md
@@ -110,9 +112,8 @@ nav:
       - Browser Shows PHP Code: guides/browser-shows-php-code.md
       - Forgotten Password: guides/forgotten-password.md
       - Fix Collation Mismatch: guides/fix-collation-issue.md
-      - Permission Denied Issue: guides/permission-denied-issue.md
+      - Permission Denied Errors: guides/permission-denied-issue.md
       - Update Stuck at Database Migrations: guides/update-stuck-at-migrations.md
-      - Connect a Lab to the STS: guides/connect-lab-to-sts.md
       - Results Not Reaching the STS: guides/sts-sync-not-working.md
       - Analyzer Results Not Arriving: guides/interfacing-results-not-arriving.md
   - Reference:
@@ -156,6 +157,7 @@ plugins:
             Statuses & Reports: Statuts et rapports
             How a Sample Moves Through InteLIS: Le parcours d'un échantillon
             Signing In and Navigating InteLIS: Se connecter et naviguer
+            Words Used in These Guides: Les mots de ces guides
             Register a Test Request: Enregistrer une demande de test
             Receive Samples Sent on a Manifest: Réceptionner un colis avec manifeste
             Send Samples on a Manifest: Envoyer des échantillons avec un manifeste
@@ -202,7 +204,7 @@ plugins:
             Browser Shows PHP Code: Le navigateur affiche du code PHP
             Forgotten Password: Mot de passe oublié
             Fix Collation Mismatch: Corriger une incohérence de collation
-            Permission Denied Issue: Corriger une erreur de permission
+            Permission Denied Errors: Corriger une erreur de permission
             Analyzer Results Not Arriving: Les résultats de l'automate n'arrivent pas
             Where to Start: Par où commencer
             Update Stuck at Database Migrations: Mise à jour bloquée sur les migrations
