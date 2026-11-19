@@ -2,12 +2,11 @@
 
 # Point Apache's default host (000-default.conf) at an InteLIS installation.
 #
-# Run it either way. The ?v= cache buster matters: raw.githubusercontent serves a
-# stale copy for a few minutes after a push, so without it you can easily run the
-# previous version of this script. Keep the URL quoted so the shell doesn't treat
-# the ? as a glob.
-#   curl -fsSL "https://raw.githubusercontent.com/deforay/intelis/master/scripts/default-host-setup.sh?v=$(date +%s)" | sudo bash -s -- -p /var/www/intelis -n vlsm
-#   wget -O intelis-host-setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/default-host-setup.sh?v=$(date +%s)" && sudo bash intelis-host-setup.sh
+# Run it either way. A copy fetched within 5 minutes of a push can be the
+# previous version: raw.githubusercontent.com caches the branch URL and ignores
+# any ?v= query string. shared-functions.sh is fetched from the exact commit.
+#   curl -fsSL https://raw.githubusercontent.com/deforay/intelis/master/scripts/default-host-setup.sh | sudo bash -s -- -p /var/www/intelis -n vlsm
+#   wget -O intelis-host-setup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/default-host-setup.sh && sudo bash intelis-host-setup.sh
 #
 # Options:
 #   -p PATH   InteLIS installation path (default: /var/www/intelis)
@@ -41,7 +40,7 @@ USAGE
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
-    echo "❌ Error: This script must be run as root. Please use sudo."
+    echo "❌ Error: This script needs administrator rights. Run it again with sudo in front, for example: sudo bash intelis-host-setup.sh"
     exit 1
 fi
 
@@ -144,20 +143,52 @@ while getopts ":p:n:yh" opt; do
 done
 
 # Ask on the terminal rather than on stdin, so prompting still works under
-# `curl ... | bash` (where stdin is the script itself). With no terminal — cron,
-# CI, a piped run on a headless box — fall back to the default and carry on.
-prompt_with_default() {
-    local message=$1 fallback=$2 answer=""
-    if [ "$assume_yes" -eq 0 ] && [ -r /dev/tty ]; then
-        print info "$message [press enter for ${fallback}]: " >&2
-        read -r -t 60 answer </dev/tty || answer=""
-    fi
-    printf '%s' "${answer:-$fallback}"
+# `curl ... | bash` (where stdin is the script itself). With no terminal (cron,
+# CI, a piped run on a headless box) or with -y, the default is used.
+#
+# Nothing here is on a clock. The old prompt took the default after 60 seconds
+# without saying so, so an operator who looked away came back to a decision
+# already made for them.
+# /dev/tty can exist with read and write permission on a machine that has no
+# terminal, so the test is whether it actually opens.
+can_prompt() {
+    [ "$assume_yes" -eq 0 ] && { : </dev/tty >/dev/tty; } 2>/dev/null
+}
+
+# Lines that explain a question. Shown only when a person is there to read them.
+note() {
+    can_prompt || return 0
+    local line
+    for line in "$@"; do printf '   %s\n' "$line" >/dev/tty; done
+}
+
+# ask_until_valid <question> <default> <validator> -> the answer on stdout.
+# A wrong answer is asked again, with the validator naming the fix. Returns 1
+# when the default is wrong and nobody is there to type another answer.
+ask_until_valid() {
+    local question=$1 fallback=$2 validator=$3 answer
+    while true; do
+        answer=""
+        if can_prompt; then
+            printf '\n %s\n   press enter for: %s\n > ' "$question" "$fallback" >/dev/tty
+            # A failed read (Ctrl-D, terminal gone) would fail again on every
+            # retry, so stop instead of asking forever.
+            IFS= read -r answer </dev/tty || return 1
+            answer="${answer#"${answer%%[![:space:]]*}"}"
+            answer="${answer%"${answer##*[![:space:]]}"}"
+        fi
+        answer="${answer:-$fallback}"
+        if "$validator" "$answer"; then
+            printf '%s' "$answer"
+            return 0
+        fi
+        can_prompt || return 1
+    done
 }
 
 # Pick the default install path: the first candidate that actually holds an
 # installation, so a box that predates the intelis rename still resolves. Prefer
-# a real installation over a bare directory — an empty /var/www/intelis left
+# a real installation over a bare directory: an empty /var/www/intelis left
 # behind by a half-finished setup must not win over a working /var/www/vlsm.
 detect_default_lis_path() {
     local candidate
@@ -170,36 +201,63 @@ detect_default_lis_path() {
     printf '%s' "${DEFAULT_LIS_PATHS[0]}"
 }
 
-[ -n "$lis_path" ] || lis_path=$(prompt_with_default "Enter the LIS installation path" "$(detect_default_lis_path)")
-[ -n "$server_name" ] || server_name=$(prompt_with_default "Enter the ServerName for this site" "$DEFAULT_SERVER_NAME")
+# Validators print their complaint to stderr, because ask_until_valid's stdout
+# is the answer.
+valid_lis_path() {
+    local path found=() dir
+    path="$(to_absolute_path "$1")"
+    is_valid_application_path "$path" && return 0
+    print error "${1} is not an InteLIS installation." >&2
+    print info "An InteLIS installation has configs/config.production.php and a public folder." >&2
+    for dir in /var/www/*/; do
+        dir="${dir%/}"
+        is_valid_application_path "$dir" && found+=("$dir")
+    done
+    if [ ${#found[@]} -gt 0 ]; then
+        print info "InteLIS is installed in: ${found[*]}" >&2
+    fi
+    return 1
+}
 
 # A ServerName lands in both an Apache directive and /etc/hosts, so reject
 # anything that isn't a plain hostname before it reaches either file.
-if ! [[ $server_name =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]]; then
-    print error "Invalid ServerName: '${server_name}'. Use letters, digits, dots and hyphens."
-    log_action "Invalid ServerName specified: $server_name"
-    exit 1
-fi
+valid_server_name() {
+    [[ $1 =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]] && return 0
+    print error "'${1}' is not a valid name." >&2
+    print info "Use only letters, digits, dots and hyphens, for example intelis or lab.health.gov.zm." >&2
+    return 1
+}
 
-# Convert to absolute path using function from shared_functions.sh
+if [ -n "$lis_path" ]; then
+    valid_lis_path "$lis_path" || { log_action "Invalid LIS path specified: $lis_path"; exit 1; }
+else
+    note "The folder where InteLIS is installed on this machine." \
+        "To keep the suggested folder, press enter."
+    lis_path=$(ask_until_valid "Installation folder" "$(detect_default_lis_path)" valid_lis_path) || {
+        print error "No InteLIS installation was found. Run this again with -p and the installation folder, for example: -p /var/www/intelis"
+        log_action "No valid LIS path and no terminal to ask on"
+        exit 1
+    }
+fi
 lis_path=$(to_absolute_path "$lis_path")
 
-# Check if the LIS path is valid using function from shared_functions.sh
-if ! is_valid_application_path "$lis_path"; then
-    print error "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
-    log_action "Invalid LIS path specified: $lis_path"
-    exit 1
+if [ -n "$server_name" ]; then
+    valid_server_name "$server_name" || { log_action "Invalid ServerName specified: $server_name"; exit 1; }
+else
+    note "The name people type in a browser on this machine to open InteLIS." \
+        "To keep the suggested name, press enter."
+    server_name=$(ask_until_valid "Site name" "$DEFAULT_SERVER_NAME" valid_server_name) || exit 1
 fi
 
 print info "Using LIS installation path: $lis_path"
-print info "Using ServerName: $server_name"
+print info "Using site name: $server_name"
 log_action "Using LIS path: $lis_path, ServerName: $server_name"
 
 # Prepare the system
 prepare_system
 
 if ! command -v apache2ctl >/dev/null 2>&1; then
-    print error "Apache is not installed on this host. Install it (or run setup.sh) first."
+    print error "Apache is not installed on this machine. Install InteLIS with the setup script first."
     log_action "Apache not installed; aborting"
     exit 1
 fi
@@ -291,7 +349,7 @@ fi
 # swallow IP traffic instead.
 first_site=$(LC_ALL=C ls /etc/apache2/sites-enabled/*.conf 2>/dev/null | head -n 1)
 if [ -n "$first_site" ] && [ "$(basename "$first_site")" != "000-default.conf" ]; then
-    print warning "$(basename "$first_site") loads before 000-default.conf and will answer requests made by IP address."
+    print warning "$(basename "$first_site") loads before 000-default.conf, so it answers requests made by IP address."
     print warning "Rename or disable it if this site should be the one reachable at http://$(hostname -I | awk '{print $1}')/"
     log_action "Default-host conflict: $(basename "$first_site") sorts before 000-default.conf"
 fi
@@ -318,7 +376,7 @@ else
     fi
 
     if ! restart_service apache; then
-        restore_vhost_and_exit "Failed to restart Apache. Please check the configuration."
+        restore_vhost_and_exit "Apache did not restart. To see the problem, run: sudo apache2ctl configtest"
     fi
 
     print success "Apache configuration updated successfully"
