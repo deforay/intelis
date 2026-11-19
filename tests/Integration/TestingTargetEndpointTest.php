@@ -174,6 +174,25 @@ final class TestingTargetEndpointTest extends TestCase
     }
 
     #[RunInSeparateProcess]
+    public function testASearchWithAnAmpersandFindsTheLab(): void
+    {
+        LegacyAppHarness::db()->rawQuery(
+            "UPDATE facility_details SET facility_name = 'Lab C & Annex' WHERE facility_id = 30"
+        );
+        LegacyAppHarness::withSession(['roleId' => 1, 'instance' => ['type' => 'remoteuser']]);
+
+        // A served request's sanitizer turns "c & annex" into "c &amp; annex".
+        // The test harness does not, so the search goes in as the endpoint gets it.
+        $answer = $this->drive([
+            'dateRange' => '01-Sep-2026 to 30-Sep-2026',
+            'targetType' => '3',
+            'sSearch' => 'c &amp; annex',
+        ]);
+
+        $this->assertSame(['Lab C &amp; Annex|Sep-2026|0|5|No'], self::cells($answer));
+    }
+
+    #[RunInSeparateProcess]
     public function testARoleWithoutTheReportIsRefused(): void
     {
         LegacyAppHarness::withSession([
