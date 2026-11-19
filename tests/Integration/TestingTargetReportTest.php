@@ -63,10 +63,21 @@ final class TestingTargetReportTest extends TestCase
             sample_received_at_lab_datetime DATETIME NULL,
             sample_tested_datetime DATETIME NULL
         ) ENGINE=InnoDB');
+        $bootstrap->query('CREATE TABLE form_vl (
+            vl_sample_id INT AUTO_INCREMENT PRIMARY KEY,
+            lab_id INT NULL,
+            facility_id INT NULL,
+            result_status INT NULL,
+            is_sample_rejected VARCHAR(10) NULL,
+            vl_result_category VARCHAR(32) NULL,
+            sample_received_at_lab_datetime DATETIME NULL,
+            sample_tested_datetime DATETIME NULL
+        ) ENGINE=InnoDB');
         $bootstrap->query('CREATE TABLE testing_labs (
             test_type VARCHAR(24) NOT NULL,
             facility_id INT NOT NULL,
             monthly_target VARCHAR(255) NULL,
+            suppressed_monthly_target VARCHAR(255) NULL,
             PRIMARY KEY (test_type, facility_id)
         ) ENGINE=InnoDB');
         $bootstrap->query('CREATE TABLE facility_details (
@@ -97,14 +108,14 @@ final class TestingTargetReportTest extends TestCase
         if (self::$db === null) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        foreach (['form_eid', 'testing_labs', 'facility_details'] as $table) {
+        foreach (['form_eid', 'form_vl', 'testing_labs', 'facility_details'] as $table) {
             self::$mysqli->query("TRUNCATE $table");
         }
         self::$mysqli->query("INSERT INTO facility_details VALUES
             (10, 'Lab A'), (20, 'Lab B'), (30, 'Lab C'), (101, 'Clinic 1'), (102, 'Clinic 2')");
         // Lab A must test 3 a month. Lab B has no target. Lab C must test 5.
         // Lab D (40) has a blank target, which means none.
-        self::$mysqli->query("INSERT INTO testing_labs VALUES
+        self::$mysqli->query("INSERT INTO testing_labs (test_type, facility_id, monthly_target) VALUES
             ('eid', 10, '3'), ('eid', 30, '5'), ('eid', 40, ''), ('vl', 20, '100')");
     }
 
@@ -268,5 +279,49 @@ final class TestingTargetReportTest extends TestCase
             TestingTargetReportService::months('2026-11-30', '2027-01-01')
         );
         $this->assertSame([], TestingTargetReportService::months('2026-12-01', '2026-11-01'));
+    }
+
+    public function testTheSuppressedKindCountsSuppressedResultsAgainstTheirOwnTarget(): void
+    {
+        // Lab A must test 50 VL a month, and have 3 suppressed. Lab C must have 5 suppressed.
+        self::$mysqli->query("INSERT INTO testing_labs VALUES ('vl', 10, '50', '3'), ('vl', 30, '50', '5')");
+        $samples = [
+            ['suppressed', 'no'],
+            ['suppressed', 'no'],
+            ['not suppressed', 'no'],
+            // A rejected sample is never a suppressed result.
+            ['suppressed', 'yes'],
+        ];
+        foreach ($samples as [$category, $rejected]) {
+            $stmt = self::$mysqli->prepare("INSERT INTO form_vl (lab_id, facility_id, result_status, is_sample_rejected,
+                vl_result_category, sample_received_at_lab_datetime, sample_tested_datetime)
+                VALUES (10, 101, 7, ?, ?, '2026-09-02', '2026-09-03')");
+            $stmt->bind_param('ss', $rejected, $category);
+            $stmt->execute();
+        }
+        $service = $this->service()->withKind(TestingTargetReportService::KIND_SUPPRESSED);
+
+        $rows = $this->byLabMonth($service->rows('vl', '2026-09-01', '2026-09-30'));
+
+        // 3 tested would meet a target of 3. Only 2 are suppressed, so it is missed.
+        $this->assertSame([3, 2, 3, false], [
+            $rows['Lab A|2026-09']['tested'],
+            $rows['Lab A|2026-09']['suppressed'],
+            $rows['Lab A|2026-09']['target'],
+            $rows['Lab A|2026-09']['met'],
+        ]);
+        $this->assertSame([0, 5, false], [
+            $rows['Lab C|2026-09']['suppressed'],
+            $rows['Lab C|2026-09']['target'],
+            $rows['Lab C|2026-09']['met'],
+        ]);
+        // The tests kind of the same data holds tested against the testing target.
+        $tests = $this->byLabMonth($this->service()->rows('vl', '2026-09-01', '2026-09-30'));
+        $this->assertSame([50, false, null], [
+            $tests['Lab A|2026-09']['target'],
+            $tests['Lab A|2026-09']['met'],
+            $tests['Lab A|2026-09']['suppressed'],
+        ]);
+        $this->assertSame(2, $service->labsBelowTarget('vl', '2026-09-01', '2026-09-30', today: '2026-11-19'));
     }
 }

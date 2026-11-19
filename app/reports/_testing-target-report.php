@@ -1,15 +1,33 @@
 <?php
 
 // The Testing Target Report page, shared by every test. Each test's own page
-// sets $testType, $title, $dataUrl and $exportUrl, then includes this.
+// sets $testType, $title, $dataUrl and $exportUrl, and $targetKind for a target
+// other than tests, then includes this.
 // One row is one testing lab for one month, set against that lab's monthly
 // test target. TestingTargetReportService explains how each count is taken.
 
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestingTargetReportService;
 
+require_once __DIR__ . '/_testing-target-common.php';
 require_once APPLICATION_PATH . '/header.php';
+
+$targetKind ??= TestingTargetReportService::KIND_TESTS;
+$columns = _testingTargetColumns($targetKind);
+// How each count is taken, shown above the table.
+$notes = $targetKind === TestingTargetReportService::KIND_SUPPRESSED
+    ? [
+        _translate("Tested counts samples tested in the month that were not rejected."),
+        _translate("Suppressed counts those whose result is suppressed."),
+    ]
+    : [
+        _translate("Received counts samples received at the lab in the month."),
+        _translate("Rejected counts those received in the month and rejected."),
+        _translate("Tested counts samples tested in the month that were not rejected."),
+    ];
+$notes[] = _translate("Cancelled samples are left out.");
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -70,27 +88,22 @@ $testingLabsDropdown = $general->generateSelectOptions($facilitiesService->getTe
           </table>
           <div class="box-body">
             <p class="text-muted">
-              <?= _htmlTranslate("Received counts samples received at the lab in the month."); ?>
-              <?= _htmlTranslate("Rejected counts those received in the month and rejected."); ?>
-              <?= _htmlTranslate("Tested counts samples tested in the month that were not rejected."); ?>
-              <?= _htmlTranslate("Cancelled samples are left out."); ?>
+              <?= htmlspecialchars(implode(' ', $notes), ENT_QUOTES, 'UTF-8'); ?>
             </p>
             <table aria-describedby="table" id="targetTable" class="table table-bordered table-striped"
               aria-hidden="true">
               <thead>
                 <tr>
-                  <th scope="col"><?= _htmlTranslate("Testing Lab"); ?></th>
-                  <th scope="col"><?= _htmlTranslate("Month"); ?></th>
-                  <th scope="col"><?= _htmlTranslate("Number of Samples Received"); ?></th>
-                  <th scope="col"><?= _htmlTranslate("Number of Samples Rejected"); ?></th>
-                  <th scope="col"><?= _htmlTranslate("Number of Samples Tested"); ?></th>
-                  <th scope="col"><?= _htmlTranslate("Monthly Test Target"); ?></th>
-                  <th scope="col"><?= _htmlTranslate("Target Met"); ?></th>
+                  <?php foreach ($columns as [$label]) { ?>
+                    <th scope="col"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?></th>
+                  <?php } ?>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="7" class="dataTables_empty"><?= _htmlTranslate("Loading data from server"); ?></td>
+                  <td colspan="<?= count($columns); ?>" class="dataTables_empty">
+                    <?= _htmlTranslate("Loading data from server"); ?>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -149,8 +162,7 @@ $testingLabsDropdown = $general->generateSelectOptions($facilitiesService->getTe
       "bInfo": true,
       "iDisplayLength": 25,
       "bRetrieve": true,
-      "aoColumns": [{}, {"sClass": "center"}, {"sClass": "center"}, {"sClass": "center"},
-        {"sClass": "center"}, {"sClass": "center"}, {"sClass": "center"}],
+      "aoColumns": [{}].concat(Array(<?= count($columns) - 1; ?>).fill({"sClass": "center"})),
       "aaSorting": [[0, "asc"]],
       "bProcessing": true,
       "bServerSide": true,

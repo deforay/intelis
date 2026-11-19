@@ -132,6 +132,7 @@ $userModules = $_SESSION['modules'] ?? [];
 							<!-- Small boxes (Stat box) -->
 							<div id="cont"> </div>
 							<div id="contVl"> </div>
+							<div id="contVlSuppression"> </div>
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
 									<form autocomplete="off">
@@ -1344,17 +1345,18 @@ $userModules = $_SESSION['modules'] ?? [];
 			url: "/vl/program-management/getSuppressedTargetReport.php",
 			type: 'POST',
 			data: {
-				targetType: '1',
+				labsBelowTarget: 'yes',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
 			async: true,
 			success: function(data) {
-				if (data == 1) {
+				var dataObj = JSON.parse(data);
+				if (dataObj.labsBelowTarget > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span> <?= _translate("VL testing lab(s) did not meet suppression targets", true); ?> </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span>' + dataObj.labsBelowTarget + ' <?= _translate("VL testing lab(s) did not meet suppression targets", true); ?>. </span><a href="/vl/program-management/vlSuppressedTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
-					$("#contVl").html(div);
+					$("#contVlSuppression").html(div);
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {

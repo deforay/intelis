@@ -26,7 +26,9 @@ use const SAMPLE_STATUS\ACCEPTED;
 final class TestingTargetEndpointTest extends TestCase
 {
     private const DATABASE = 'intelis_testing_target_endpoint';
-    private const TABLES = ['form_eid', 'testing_labs', 'facility_details', 'system_config', 'global_config'];
+    private const TABLES = [
+        'r_sample_status', 'form_eid', 'form_vl', 'testing_labs', 'facility_details', 'system_config', 'global_config',
+    ];
     private const ENDPOINT = '/eid/management/getEidMonthlyThresholdReport.php';
 
     private static function booted(): bool
@@ -46,6 +48,8 @@ final class TestingTargetEndpointTest extends TestCase
         LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES);
 
         $db = LegacyAppHarness::db();
+        // form_vl.result_status is a foreign key.
+        $db->insert('r_sample_status', ['status_id' => ACCEPTED, 'status_name' => 'Accepted', 'status' => 'active']);
         foreach ([[10, 'Lab A'], [30, 'Lab C'], [101, 'Clinic 1'], [102, 'Clinic 2']] as [$id, $name]) {
             $db->insert('facility_details', ['facility_id' => $id, 'facility_name' => $name, 'status' => 'active']);
         }
@@ -75,7 +79,13 @@ final class TestingTargetEndpointTest extends TestCase
     /** @return array<string, mixed> */
     private function drive(array $post): array
     {
-        $request = LegacyAppHarness::withPost($post, self::ENDPOINT);
+        return $this->driveAt(self::ENDPOINT, $post);
+    }
+
+    /** @return array<string, mixed> */
+    private function driveAt(string $endpoint, array $post): array
+    {
+        $request = LegacyAppHarness::withPost($post, $endpoint);
         $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
         ob_start();
         try {
@@ -216,5 +226,33 @@ final class TestingTargetEndpointTest extends TestCase
 
         $this->assertSame(403, $refused);
         $this->assertStringNotContainsString('labsBelowTarget', $printed);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheSuppressedEndpointShowsSuppressedResultsAgainstTheSuppressedTarget(): void
+    {
+        $db = LegacyAppHarness::db();
+        $db->rawQuery("UPDATE testing_labs SET test_type = 'vl', suppressed_monthly_target = '1'");
+        $db->insert('form_vl', [
+            'lab_id' => 10,
+            'facility_id' => 101,
+            'result_status' => ACCEPTED,
+            'is_sample_rejected' => 'no',
+            'vl_result_category' => 'suppressed',
+            'sample_received_at_lab_datetime' => '2026-09-02 09:00:00',
+            'sample_tested_datetime' => '2026-09-03 09:00:00',
+        ]);
+        LegacyAppHarness::withSession(['roleId' => 1, 'instance' => ['type' => 'remoteuser']]);
+
+        $answer = $this->driveAt('/vl/program-management/getSuppressedTargetReport.php', [
+            'dateRange' => '01-Sep-2026 to 30-Sep-2026',
+            'targetType' => '3',
+        ]);
+
+        // Testing Lab, Month, Tested, Suppressed, Suppressed Monthly Target, Target Met.
+        $this->assertSame(
+            [['Lab A', 'Sep-2026', 1, 1, 1, 'Yes'], ['Lab C', 'Sep-2026', 0, 0, 1, 'No']],
+            $answer['aaData']
+        );
     }
 }

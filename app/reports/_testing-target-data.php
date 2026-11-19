@@ -2,7 +2,7 @@
 
 // The data behind a Testing Target Report page, and the count behind its
 // dashboard alert. Included by each test's own endpoint, which sets $testType
-// and $reportPage.
+// and $reportPage, and $targetKind for a target other than tests.
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -22,8 +22,9 @@ _requirePrivilege($reportPage);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$targetKind ??= TestingTargetReportService::KIND_TESTS;
 /** @var TestingTargetReportService $targets */
-$targets = ContainerRegistry::get(TestingTargetReportService::class);
+$targets = ContainerRegistry::get(TestingTargetReportService::class)->withKind($targetKind);
 
 $filters = _testingTargetFilters($_POST, $general);
 
@@ -54,16 +55,9 @@ $yes = _translate('Yes');
 $no = _translate('No');
 $aaData = [];
 foreach ($rows as $row) {
-    $aaData[] = [
-        $row['labName'],
-        $row['month'],
-        $row['received'],
-        $row['rejected'],
-        $row['tested'],
-        $row['target'] ?? '',
-        $row['met'] === null ? '' : ($row['met'] ? $yes : $no),
-    ];
+    $aaData[] = _testingTargetCells($row, $targetKind, $yes, $no);
 }
+$columnCount = count(_testingTargetColumns($targetKind));
 
 // The grid's search box: a row stays when any cell shown contains the text.
 // The request is entity-encoded on the way in, so "A & B" arrives as
@@ -87,7 +81,7 @@ if ($search !== '') {
 // shown as Mon-YYYY afterwards, so Jan-2027 follows Dec-2026.
 $column = (int) ($_POST['iSortCol_0'] ?? 0);
 $descending = ($_POST['sSortDir_0'] ?? 'asc') === 'desc';
-if ($column >= 0 && $column < 7) {
+if ($column >= 0 && $column < $columnCount) {
     usort($aaData, static function (array $a, array $b) use ($column, $descending): int {
         $order = [$a[$column], $a[0], $a[1]] <=> [$b[$column], $b[0], $b[1]];
         return $descending ? -$order : $order;
