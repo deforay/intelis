@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 # How to set up off-machine backups
 
@@ -410,7 +410,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
         | Where should the backup be sent? | **A shared folder on a Windows machine**. |
         | Windows hostname or IP | The address from step 8. |
         | Name of the shared folder | `InteLIS-Backups` |
-        | Windows username | `lisbackup` |
+        | Windows username | `lisbackup`. For a domain account, type `DOMAIN\name`, such as `HEALTH\backup`. |
         | Windows password for lisbackup | The password from step 3. |
 
         ??? failure "If it says `Could not connect to //…`"
