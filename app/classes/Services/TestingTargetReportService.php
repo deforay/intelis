@@ -159,7 +159,8 @@ final class TestingTargetReportService
         string $to,
         array $labIds = [],
         array $scopeWhere = [],
-        ?string $today = null
+        ?string $today = null,
+        bool $fillTargetLabs = true
     ): int {
         $lastCompleted = (new DateTimeImmutable($today ?? 'today'))
             ->modify('first day of this month')
@@ -170,7 +171,7 @@ final class TestingTargetReportService
         if ($to < $from) {
             return 0;
         }
-        $rows = $this->rows($testType, $from, $to, $labIds, self::TARGET_NOT_MET, $scopeWhere);
+        $rows = $this->rows($testType, $from, $to, $labIds, self::TARGET_NOT_MET, $scopeWhere, $fillTargetLabs);
         return count(array_unique(array_column($rows, 'labId')));
     }
 

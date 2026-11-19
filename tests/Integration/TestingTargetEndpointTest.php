@@ -141,4 +141,61 @@ final class TestingTargetEndpointTest extends TestCase
 
         $this->assertSame(['labsBelowTarget' => 2], $answer);
     }
+
+    #[RunInSeparateProcess]
+    public function testAFacilityUsersDashboardCountLeavesOutLabsTheySentNothingTo(): void
+    {
+        LegacyAppHarness::withSession([
+            'roleId' => 1,
+            'instance' => ['type' => 'remoteuser'],
+            'facilityMap' => '101',
+        ]);
+
+        // Lab A tested one of Clinic 1's samples in September, short of 2. Lab C
+        // had nothing from Clinic 1, so this user is not told about it.
+        $answer = $this->drive(['labsBelowTarget' => 'yes', 'sampleTestDate' => '01-Sep-2026 to 30-Sep-2026']);
+
+        $this->assertSame(['labsBelowTarget' => 1], $answer);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheSearchBoxNarrowsTheRowsBeforeTheyAreCounted(): void
+    {
+        LegacyAppHarness::withSession(['roleId' => 1, 'instance' => ['type' => 'remoteuser']]);
+
+        $answer = $this->drive([
+            'dateRange' => '01-Sep-2026 to 30-Sep-2026',
+            'targetType' => '3',
+            'sSearch' => 'lab c',
+        ]);
+
+        $this->assertSame(['Lab C|Sep-2026|0|5|No'], self::cells($answer));
+        $this->assertSame(1, $answer['iTotalDisplayRecords']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testARoleWithoutTheReportIsRefused(): void
+    {
+        LegacyAppHarness::withSession([
+            'roleId' => 4,
+            'instance' => ['type' => 'remoteuser'],
+            'privileges' => ['/eid/requests/eid-requests.php' => true],
+        ]);
+
+        $request = LegacyAppHarness::withPost(['labsBelowTarget' => 'yes'], self::ENDPOINT);
+        $handler = new LegacyRequestHandler(LegacyAppHarness::db(), ContainerRegistry::get(CommonService::class));
+        $refused = null;
+        ob_start();
+        try {
+            $response = $handler->handle($request);
+            $refused = $response->getStatusCode();
+        } catch (\Throwable $e) {
+            $refused = $e->getCode();
+        } finally {
+            $printed = (string) ob_get_clean();
+        }
+
+        $this->assertSame(403, $refused);
+        $this->assertStringNotContainsString('labsBelowTarget', $printed);
+    }
 }
