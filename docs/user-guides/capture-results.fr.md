@@ -21,7 +21,9 @@ Faire parvenir à InteLIS les résultats d'une série terminée sur l'automate.
 
     À utiliser lorsque l'automate est relié à l'outil d'interface. L'outil
     d'interface transmet les résultats de charge virale du VIH, d'EID et
-    d'hépatite. Il ne transmet pas les résultats de TB ni de Tests personnalisés.
+    d'hépatite et de TB (GeneXpert). Il ne transmet pas les résultats des Tests
+    personnalisés. Pour les échantillons TB groupés, voir
+    [Tester des échantillons TB groupés sur GeneXpert](test-pooled-tb-samples.md).
 
     1. Sur l'automate, libérer la série. Sauter cette étape si l'automate libère
        les résultats de lui-même.

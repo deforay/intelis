@@ -20,8 +20,9 @@ Get the results of a finished analyzer run into InteLIS.
 === "Interface Tool"
 
     Use this when the analyzer is connected to the Interface Tool. The Interface
-    Tool carries HIV viral load, EID and hepatitis results. It does not carry TB
-    or Custom Tests results.
+    Tool carries HIV viral load, EID, hepatitis and TB (GeneXpert) results. It
+    does not carry Custom Tests results. For pooled TB samples, see
+    [How to test pooled TB samples on GeneXpert](test-pooled-tb-samples.md).
 
     1. On the analyzer, release the run. Skip this step if the analyzer releases
        results on its own.
