@@ -101,15 +101,15 @@ récente** et être connectée à Internet.
 
         | Question | Réponse |
         | --- | --- |
-        | Installation directory | Appuyer sur Entrée. |
+        | Installation folder | Appuyer sur Entrée. |
         | Which backup should be restored? | Appuyer sur Entrée. La sauvegarde la plus récente est en haut et déjà sélectionnée. |
         | What is this machine? | **Lab machine (LIS)**. |
-        | Remote STS URL | L'adresse du STS utilisée par l'ancienne machine. Laisser vide si le laboratoire n'a pas de STS. |
+        | STS address | L'adresse du STS utilisée par l'ancienne machine. Laisser vide si le laboratoire n'a pas de STS. |
         | New MySQL root password | Un nouveau mot de passe pour cette machine, saisi deux fois. Le noter. |
         | Is this correct? | Vérifier le récapitulatif, puis appuyer sur Entrée (Yes). |
 
     12. Attendre 10 à 20 minutes. Le programme d'installation se termine par
-        `Setup complete`.
+        la ligne `Setup is complete.`
 
         Vers la fin, il affiche `Signatures, report templates and logos restored`.
         Les paramètres du laboratoire, comme l'adresse du STS et les modules
@@ -153,7 +153,7 @@ récente** et être connectée à Internet.
             sudo bash setup.sh --restore-from-backup-folder '<folder>' --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
             ```
 
-            La deuxième exécution demande `Reuse your previous setup answers and skip the prompts?`.
+            La deuxième exécution demande `Use the same answers as last time and skip the questions?`.
             Appuyer sur Entrée (Yes) pour réutiliser les réponses. S'il indique
             `An existing database was found`, choisir **Keep a copy, then start
             fresh** (garder une copie, puis repartir de zéro).
@@ -247,15 +247,15 @@ récente** et être connectée à Internet.
 
         | Question | Réponse |
         | --- | --- |
-        | Installation directory | Appuyer sur Entrée. |
+        | Installation folder | Appuyer sur Entrée. |
         | Which backup should be restored? | Appuyer sur Entrée. La sauvegarde la plus récente est en haut et déjà sélectionnée. |
         | What is this machine? | **Lab machine (LIS)**. |
-        | Remote STS URL | L'adresse du STS utilisée par l'ancienne machine. Laisser vide si le laboratoire n'a pas de STS. |
+        | STS address | L'adresse du STS utilisée par l'ancienne machine. Laisser vide si le laboratoire n'a pas de STS. |
         | New MySQL root password | Un nouveau mot de passe pour cette machine, saisi deux fois. Le noter. |
         | Is this correct? | Vérifier le récapitulatif, puis appuyer sur Entrée (Yes). |
 
     8. Attendre 10 à 20 minutes. Le programme d'installation se termine par
-       `Setup complete`.
+       la ligne `Setup is complete.`
 
         Vers la fin, il affiche `Signatures, report templates and logos restored`.
         Les paramètres du laboratoire, comme l'adresse du STS et les modules
@@ -299,7 +299,7 @@ récente** et être connectée à Internet.
             sudo bash setup.sh --restore-from-backup-folder '<folder>' --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
             ```
 
-            La deuxième exécution demande `Reuse your previous setup answers and skip the prompts?`.
+            La deuxième exécution demande `Use the same answers as last time and skip the questions?`.
             Appuyer sur Entrée (Yes) pour réutiliser les réponses. S'il indique
             `An existing database was found`, choisir **Keep a copy, then start
             fresh** (garder une copie, puis repartir de zéro).
@@ -386,15 +386,15 @@ récente** et être connectée à Internet.
 
         | Question | Réponse |
         | --- | --- |
-        | Installation directory | Appuyer sur Entrée. |
+        | Installation folder | Appuyer sur Entrée. |
         | Which backup should be restored? | Appuyer sur Entrée. La sauvegarde la plus récente est en haut et déjà sélectionnée. |
         | What is this machine? | **Lab machine (LIS)**. |
-        | Remote STS URL | L'adresse du STS utilisée par l'ancienne machine. Laisser vide si le laboratoire n'a pas de STS. |
+        | STS address | L'adresse du STS utilisée par l'ancienne machine. Laisser vide si le laboratoire n'a pas de STS. |
         | New MySQL root password | Un nouveau mot de passe pour cette machine, saisi deux fois. Le noter. |
         | Is this correct? | Vérifier le récapitulatif, puis appuyer sur Entrée (Yes). |
 
     9. Attendre 10 à 20 minutes. Le programme d'installation se termine par
-       `Setup complete`.
+       la ligne `Setup is complete.`
 
         Vers la fin, il affiche `Signatures, report templates and logos restored`.
         Les paramètres du laboratoire, comme l'adresse du STS et les modules
@@ -437,7 +437,7 @@ récente** et être connectée à Internet.
             --sts-url https://sts.example.org --recovery-token ABCD-EFGH-JKMN-PQRS
             ```
 
-            La deuxième exécution demande `Reuse your previous setup answers and skip the prompts?`.
+            La deuxième exécution demande `Use the same answers as last time and skip the questions?`.
             Appuyer sur Entrée (Yes) pour réutiliser les réponses. S'il indique
             `An existing database was found`, choisir **Keep a copy, then start
             fresh** (garder une copie, puis repartir de zéro).

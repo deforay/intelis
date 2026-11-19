@@ -68,7 +68,7 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
             The configuration file holds no MySQL password. Enter the MySQL root
             password of this machine.
 
-            If it asks for the password twice and then for the **Remote STS URL**,
+            If it asks for the password twice and then for the **STS address**,
             the configuration file was missing or damaged and the update is
             rebuilding it. Enter the MySQL root password twice. Then enter the
             STS address the lab uses, or press Enter if the lab has no STS.
@@ -78,10 +78,10 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
 
         [A normal update, from `intelis update` to `Total time:`. Long waits play shortened. The test machine has no STS, so its check shows two `WARN` lines about the STS.](../assets/casts/intelis-update.cast){ .asciicast }
 
-        ??? info "If it asks `Do you want to run maintenance scripts?`"
+        ??? info "If it asks `Run the optional maintenance scripts now?`"
 
-            On some older machines, the update asks this question. Press Enter
-            to answer No. After 30 seconds without an answer, the
+            The update asks this when the machine has optional maintenance
+            scripts. Press Enter to answer No. After 30 seconds without an answer, the
             update continues with No.
 
         ??? failure "If the summary shows `Failed to update`"
@@ -194,7 +194,7 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
             The configuration file holds no MySQL password. Enter the MySQL root
             password of this machine.
 
-            If it asks for the password twice and then for the **Remote STS URL**,
+            If it asks for the password twice and then for the **STS address**,
             the configuration file was missing or damaged and the update is
             rebuilding it. Enter the MySQL root password twice. Then enter the
             STS address the lab uses, or press Enter if the lab has no STS.
@@ -202,10 +202,10 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
     5. Wait. Keep the terminal window open until the last line reads
        `Total time:`.
 
-        ??? info "If it asks `Do you want to run maintenance scripts?`"
+        ??? info "If it asks `Run the optional maintenance scripts now?`"
 
-            On some older machines, the update asks this question. Press Enter
-            to answer No. After 30 seconds without an answer, the
+            The update asks this when the machine has optional maintenance
+            scripts. Press Enter to answer No. After 30 seconds without an answer, the
             update continues with No.
 
         ??? failure "If the summary shows `Failed to update`"

@@ -73,7 +73,7 @@ appuyer sur Entrée :
             Le fichier de configuration ne contient aucun mot de passe MySQL.
             Saisir le mot de passe root de MySQL de cette machine.
 
-            S'il demande le mot de passe deux fois, puis le **Remote STS URL**,
+            S'il demande le mot de passe deux fois, puis le **STS address**,
             le fichier de configuration manquait ou était endommagé, et la mise
             à jour le reconstruit. Saisir deux fois le mot de passe root de
             MySQL. Saisir ensuite l'adresse du STS qu'utilise le laboratoire, ou
@@ -84,10 +84,10 @@ appuyer sur Entrée :
 
         [Une mise à jour normale, de `intelis update` à `Total time:`. Les longues attentes sont raccourcies. La machine de test n'a pas de STS, donc sa vérification affiche deux lignes `WARN` sur le STS.](../assets/casts/intelis-update.cast){ .asciicast }
 
-        ??? info "S'il demande `Do you want to run maintenance scripts?`"
+        ??? info "S'il demande `Run the optional maintenance scripts now?`"
 
-            Sur certaines machines anciennes, la mise à jour pose cette
-            question. Appuyer sur Entrée pour répondre No. Après 30 secondes
+            La mise à jour pose cette question quand la machine a des scripts
+            de maintenance facultatifs. Appuyer sur Entrée pour répondre No. Après 30 secondes
             sans réponse, la mise à jour continue avec No.
 
         ??? failure "Si le résumé affiche `Failed to update`"
@@ -205,7 +205,7 @@ appuyer sur Entrée :
             Le fichier de configuration ne contient aucun mot de passe MySQL.
             Saisir le mot de passe root de MySQL de cette machine.
 
-            S'il demande le mot de passe deux fois, puis le **Remote STS URL**,
+            S'il demande le mot de passe deux fois, puis le **STS address**,
             le fichier de configuration manquait ou était endommagé, et la mise
             à jour le reconstruit. Saisir deux fois le mot de passe root de
             MySQL. Saisir ensuite l'adresse du STS qu'utilise le laboratoire, ou
@@ -214,10 +214,10 @@ appuyer sur Entrée :
     5. Attendre. Garder la fenêtre du terminal ouverte jusqu'à ce que la
        dernière ligne indique `Total time:`.
 
-        ??? info "S'il demande `Do you want to run maintenance scripts?`"
+        ??? info "S'il demande `Run the optional maintenance scripts now?`"
 
-            Sur certaines machines anciennes, la mise à jour pose cette
-            question. Appuyer sur Entrée pour répondre No. Après 30 secondes
+            La mise à jour pose cette question quand la machine a des scripts
+            de maintenance facultatifs. Appuyer sur Entrée pour répondre No. Après 30 secondes
             sans réponse, la mise à jour continue avec No.
 
         ??? failure "Si le résumé affiche `Failed to update`"

@@ -51,13 +51,13 @@ données, suivre plutôt
 
         | Question | Réponse |
         | --- | --- |
-        | Installation directory | Appuyer sur Entrée. |
+        | Installation folder | Appuyer sur Entrée. |
         | What is this machine? | **Lab machine (LIS)** (machine du laboratoire). |
-        | Remote STS URL | L'adresse du STS, par exemple `https://sts.example.org`. La demander au programme national. Laisser vide si le laboratoire n'a pas de STS. |
+        | STS address | L'adresse du STS, par exemple `https://sts.example.org`. La demander au programme national. Laisser vide si le laboratoire n'a pas de STS. |
         | New MySQL root password | Un nouveau mot de passe pour cette machine, saisi deux fois. Le noter. |
         | Is this correct? | Vérifier le récapitulatif, puis appuyer sur Entrée (Yes). |
 
-        ??? failure "S'il indique `Failed to validate the provided STS URL`"
+        ??? failure "S'il indique `Could not reach` suivi de l'adresse du STS"
 
             Le programme d'installation n'a pas pu joindre
             `<STS address>/api/version.php`. Vérifier l'adresse et corriger
@@ -65,7 +65,7 @@ données, suivre plutôt
             essais échoués, le programme d'installation continue sans STS.
             Saisir l'adresse plus tard, à l'étape 8.
 
-        ??? info "S'il demande `Reuse your previous setup answers and skip the prompts?`"
+        ??? info "S'il demande `Use the same answers as last time and skip the questions?`"
 
             Une exécution précédente sur cette machine s'est arrêtée en cours
             de route. Appuyer sur Entrée (Yes) pour réutiliser les mêmes
@@ -83,20 +83,19 @@ données, suivre plutôt
             (garder une copie, puis repartir de zéro) pour mettre les
             anciennes données de côté sans les perdre.
 
-        ??? info "S'il demande `Do you want to set up backups for this installation?`"
-
-            Les sauvegardes sont facultatives. Choisir **I have a backup server
-            ready and configured for backups** (un serveur de sauvegarde est
-            prêt et configuré) seulement si la destination des sauvegardes est
-            déjà préparée. Le programme d'installation lance alors la
-            configuration des sauvegardes. Sinon, choisir **Not now** (pas
-            maintenant), puis configurer les sauvegardes plus tard avec
-            `intelis backup setup`.
 
     4. Attendre la fin du programme d'installation. Il vérifie la nouvelle
-       installation, puis se termine par `Setup complete`.
-    5. Lire la liste `Install Check` affichée au-dessus de `Setup complete`.
-       Chaque ligne commence par l'un de ces mots :
+       installation, et sa dernière ligne est `Setup is complete.`
+
+        ??? info "S'il demande `Set up backups now?`"
+
+            Choisir **Set up backups now** seulement si le serveur de
+            sauvegarde, le dossier partagé ou la clé USB est déjà préparé.
+            Sinon, choisir **Not now**, puis configurer les sauvegardes plus
+            loin dans ce guide.
+
+    5. Lire la liste affichée sous le titre `Install Check`. Chaque ligne
+       commence par l'un de ces mots :
 
         | Mot | Signification |
         | --- | --- |
@@ -207,7 +206,7 @@ données, suivre plutôt
 
         | Question | Réponse |
         | --- | --- |
-        | Installation directory | Appuyer sur Entrée. |
+        | Installation folder | Appuyer sur Entrée. |
         | What is this machine? | **Central server (STS)** (serveur central). |
         | Web address of this server | L'adresse de l'étape 1, sans `http://`. Appuyer sur Entrée si les laboratoires utilisent l'adresse IP. |
         | New MySQL root password | Un nouveau mot de passe pour cette machine, saisi deux fois. Le noter. |
@@ -219,7 +218,7 @@ données, suivre plutôt
             No à `Use … anyway?`. Puis saisir l'adresse correcte, ou appuyer
             sur Entrée pour utiliser l'adresse IP.
 
-        ??? info "S'il demande `Reuse your previous setup answers and skip the prompts?`"
+        ??? info "S'il demande `Use the same answers as last time and skip the questions?`"
 
             Une exécution précédente sur cette machine s'est arrêtée en cours
             de route. Appuyer sur Entrée (Yes) pour réutiliser les mêmes
@@ -237,20 +236,19 @@ données, suivre plutôt
             copie, puis repartir de zéro) pour mettre les anciennes données de
             côté sans les perdre.
 
-        ??? info "S'il demande `Do you want to set up backups for this installation?`"
-
-            Les sauvegardes sont facultatives. Choisir **I have a backup server
-            ready and configured for backups** (un serveur de sauvegarde est
-            prêt et configuré) seulement si la destination des sauvegardes est
-            déjà préparée. Le programme d'installation lance alors la
-            configuration des sauvegardes. Sinon, choisir **Not now** (pas
-            maintenant), puis configurer les sauvegardes plus tard avec
-            `intelis backup setup`.
 
     5. Attendre la fin du programme d'installation. Il vérifie la nouvelle
-       installation, puis se termine par `Setup complete`.
-    6. Lire la liste `Install Check` affichée au-dessus de `Setup complete`.
-       Chaque ligne commence par l'un de ces mots :
+       installation, et sa dernière ligne est `Setup is complete.`
+
+        ??? info "S'il demande `Set up backups now?`"
+
+            Choisir **Set up backups now** seulement si le serveur de
+            sauvegarde, le dossier partagé ou la clé USB est déjà préparé.
+            Sinon, choisir **Not now**, puis configurer les sauvegardes plus
+            loin dans ce guide.
+
+    6. Lire la liste affichée sous le titre `Install Check`. Chaque ligne
+       commence par l'un de ces mots :
 
         | Mot | Signification |
         | --- | --- |
