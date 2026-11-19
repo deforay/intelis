@@ -22,3 +22,15 @@ UPDATE `privileges`
    SET `shared_privileges` = JSON_ARRAY_APPEND(`shared_privileges`, '$', '/reports/sample-status-details.php?testType=covid19')
  WHERE `privilege_name` = '/covid-19/management/covid-19-sample-status.php'
    AND NOT JSON_CONTAINS(`shared_privileges`, '"/reports/sample-status-details.php?testType=covid19"');
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

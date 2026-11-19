@@ -315,7 +315,7 @@ $userModules = $_SESSION['modules'] ?? [];
 					<div class="tab-pane fade in" id="hepatitisDashboard">
 						<!-- COVID-19 content -->
 						<section class="content">
-							<div id="contCovid"> </div>
+							<div id="contHepatitis"> </div>
 							<!-- Small boxes (Stat box) -->
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
@@ -431,7 +431,7 @@ $userModules = $_SESSION['modules'] ?? [];
 					<div class="tab-pane fade in" id="cd4Dashboard">
 						<!-- TB content -->
 						<section class="content">
-							<div id="contCovid"> </div>
+							<div id="contCd4"> </div>
 							<!-- Small boxes (Stat box) -->
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
@@ -481,7 +481,7 @@ $userModules = $_SESSION['modules'] ?? [];
 					<div class="tab-pane fade in" id="genericTestsDashboard">
 						<!-- OTHER LAB TESTS content -->
 						<section class="content">
-							<div id="contCovid"> </div>
+							<div id="contGenericTests"> </div>
 							<!-- Small boxes (Stat box) -->
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
@@ -1412,7 +1412,7 @@ $userModules = $_SESSION['modules'] ?? [];
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
 				<span >' + dataObj['aaData'].length + ' <?= _translate("Hepatitis testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 				</div>';
-					$("#contCovid").html(div);
+					$("#contHepatitis").html(div);
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
@@ -1441,7 +1441,7 @@ $userModules = $_SESSION['modules'] ?? [];
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
 							<span>' + dataObj['aaData'].length + ' <?= _translate("TB testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/tb/management/tb-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
-					$("#contTB").html(div);
+					$("#contTb").html(div);
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
@@ -1468,9 +1468,9 @@ $userModules = $_SESSION['modules'] ?? [];
 				if (dataObj['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + dataObj['aaData'].length + ' <?= _translate("CD4 testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
+				<span >' + dataObj['aaData'].length + ' <?= _translate("CD4 testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/cd4/management/cd4-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 				</div>';
-					$("#contCovid").html(div);
+					$("#contCd4").html(div);
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
