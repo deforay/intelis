@@ -385,11 +385,25 @@ connect_smb() {
   while true; do
     ask SMB_HOST  "Windows hostname or IP" "${SMB_HOST:-}"
     ask SMB_SHARE "Name of the shared folder" "${SMB_SHARE:-}"
+    ui_note "The Windows account that can read that shared folder." \
+      "For a domain account, type DOMAIN\\name, for example HEALTH\\backup."
     ask SMB_USER  "Windows username" "${SMB_USER:-}"
     ask_secret smb_pass "Windows password for ${SMB_USER}"
 
+    # mount.cifs does not split DOMAIN\name or DOMAIN/name in a credentials
+    # file: the whole string is sent as the user name and Windows refuses it.
+    # The domain goes on its own line, as remote-backup.sh writes it.
+    local smb_name="$SMB_USER" smb_domain=""
+    case "$SMB_USER" in
+      *\\*) smb_domain="${SMB_USER%%\\*}"; smb_name="${SMB_USER#*\\}" ;;
+      */*)  smb_domain="${SMB_USER%%/*}";  smb_name="${SMB_USER#*/}" ;;
+    esac
+
     umask 077
-    printf 'username=%s\npassword=%s\n' "$SMB_USER" "$smb_pass" > "$RESTORE_CRED"
+    printf 'username=%s\npassword=%s\n' "$smb_name" "$smb_pass" > "$RESTORE_CRED"
+    if [ -n "$smb_domain" ]; then
+      printf 'domain=%s\n' "$smb_domain" >> "$RESTORE_CRED"
+    fi
     REMOVE_RESTORE_CRED=true
     chmod 600 "$RESTORE_CRED"
     umask 022

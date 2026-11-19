@@ -124,7 +124,7 @@ was made are lost.
             | Choice | Questions |
             | --- | --- |
             | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
-            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
+            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. For a domain account, type the username as `DOMAIN\name`. |
             | **On a USB or external drive plugged into this machine** | Choose the drive from the list. The script finds its `backups` folder, then asks which lab to restore. If the backup is elsewhere, choose **Browse folders inside a drive**. Open folders until you reach the backup, then choose **Use this folder**. |
 
         ??? failure "If it says `Could not connect`"
@@ -302,7 +302,7 @@ was made are lost.
             | Choice | Questions |
             | --- | --- |
             | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
-            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
+            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. For a domain account, type the username as `DOMAIN\name`. |
             | **On a USB or external drive plugged into this machine** | Choose the drive from the list. The script finds its `backups` folder, then asks which lab to restore. If the backup is elsewhere, choose **Browse folders inside a drive**. Open folders until you reach the backup, then choose **Use this folder**. |
 
         ??? failure "If it says `Could not connect`"
@@ -474,7 +474,7 @@ was made are lost.
             | Choice | Questions |
             | --- | --- |
             | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
-            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
+            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. For a domain account, type the username as `DOMAIN\name`. |
             | **On a USB or external drive plugged into this machine** | Choose the drive from the list. The script finds its `backups` folder, then asks which lab to restore. If the backup is elsewhere, choose **Browse folders inside a drive**. Open folders until you reach the backup, then choose **Use this folder**. |
 
         ??? failure "If it says `Could not connect`"
@@ -690,7 +690,7 @@ was made are lost.
             | Choice | Questions |
             | --- | --- |
             | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
-            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
+            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. For a domain account, type the username as `DOMAIN\name`. |
             | **On a USB or external drive plugged into this machine** | Choose the drive from the list. The script finds its `backups` folder, then asks which lab to restore. If the backup is elsewhere, choose **Browse folders inside a drive**. Open folders until you reach the backup, then choose **Use this folder**. |
 
         ??? failure "If it says `Could not connect`"
@@ -786,7 +786,7 @@ was made are lost.
             | Choice | Questions |
             | --- | --- |
             | **On another Linux machine** | The username, the hostname or IP address, and the SSH port (press Enter for `22`). Then type that user's password when asked. |
-            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. |
+            | **In a shared folder on a Windows machine** | The hostname or IP address, the name of the shared folder, the Windows username, and its password. For a domain account, type the username as `DOMAIN\name`. |
             | **On a USB or external drive plugged into this machine** | Choose the drive from the list. The script finds its `backups` folder, then asks which lab to restore. If the backup is elsewhere, choose **Browse folders inside a drive**. Open folders until you reach the backup, then choose **Use this folder**. |
 
         ??? failure "If it says `Could not connect`"

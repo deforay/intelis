@@ -135,7 +135,7 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             | Choix | Questions |
             | --- | --- |
             | **On another Linux machine** | Le nom d'utilisateur, le nom d'hôte ou l'adresse IP, et le port SSH (appuyer sur Entrée pour `22`). Saisir ensuite le mot de passe de cet utilisateur quand il est demandé. |
-            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. |
+            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. Pour un compte de domaine, saisir le nom d'utilisateur sous la forme `DOMAIN\name`. |
             | **On a USB or external drive plugged into this machine** | Choisir le disque dans la liste. Le script trouve son dossier `backups`, puis demande quel laboratoire restaurer. Si la sauvegarde se trouve ailleurs, choisir **Browse folders inside a drive**. Ouvrir les dossiers jusqu'à la sauvegarde, puis choisir **Use this folder**. |
 
         ??? failure "S'il indique `Could not connect`"
@@ -338,7 +338,7 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             | Choix | Questions |
             | --- | --- |
             | **On another Linux machine** | Le nom d'utilisateur, le nom d'hôte ou l'adresse IP, et le port SSH (appuyer sur Entrée pour `22`). Saisir ensuite le mot de passe de cet utilisateur quand il est demandé. |
-            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. |
+            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. Pour un compte de domaine, saisir le nom d'utilisateur sous la forme `DOMAIN\name`. |
             | **On a USB or external drive plugged into this machine** | Choisir le disque dans la liste. Le script trouve son dossier `backups`, puis demande quel laboratoire restaurer. Si la sauvegarde se trouve ailleurs, choisir **Browse folders inside a drive**. Ouvrir les dossiers jusqu'à la sauvegarde, puis choisir **Use this folder**. |
 
         ??? failure "S'il indique `Could not connect`"
@@ -530,7 +530,7 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             | Choix | Questions |
             | --- | --- |
             | **On another Linux machine** | Le nom d'utilisateur, le nom d'hôte ou l'adresse IP, et le port SSH (appuyer sur Entrée pour `22`). Saisir ensuite le mot de passe de cet utilisateur quand il est demandé. |
-            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. |
+            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. Pour un compte de domaine, saisir le nom d'utilisateur sous la forme `DOMAIN\name`. |
             | **On a USB or external drive plugged into this machine** | Choisir le disque dans la liste. Le script trouve son dossier `backups`, puis demande quel laboratoire restaurer. Si la sauvegarde se trouve ailleurs, choisir **Browse folders inside a drive**. Ouvrir les dossiers jusqu'à la sauvegarde, puis choisir **Use this folder**. |
 
         ??? failure "S'il indique `Could not connect`"
@@ -770,7 +770,7 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             | Choix | Questions |
             | --- | --- |
             | **On another Linux machine** | Le nom d'utilisateur, le nom d'hôte ou l'adresse IP, et le port SSH (appuyer sur Entrée pour `22`). Saisir ensuite le mot de passe de cet utilisateur quand il est demandé. |
-            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. |
+            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. Pour un compte de domaine, saisir le nom d'utilisateur sous la forme `DOMAIN\name`. |
             | **On a USB or external drive plugged into this machine** | Choisir le disque dans la liste. Le script trouve son dossier `backups`, puis demande quel laboratoire restaurer. Si la sauvegarde se trouve ailleurs, choisir **Browse folders inside a drive**. Ouvrir les dossiers jusqu'à la sauvegarde, puis choisir **Use this folder**. |
 
         ??? failure "S'il indique `Could not connect`"
@@ -878,7 +878,7 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             | Choix | Questions |
             | --- | --- |
             | **On another Linux machine** | Le nom d'utilisateur, le nom d'hôte ou l'adresse IP, et le port SSH (appuyer sur Entrée pour `22`). Saisir ensuite le mot de passe de cet utilisateur quand il est demandé. |
-            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. |
+            | **In a shared folder on a Windows machine** | Le nom d'hôte ou l'adresse IP, le nom du dossier partagé, le nom d'utilisateur Windows et son mot de passe. Pour un compte de domaine, saisir le nom d'utilisateur sous la forme `DOMAIN\name`. |
             | **On a USB or external drive plugged into this machine** | Choisir le disque dans la liste. Le script trouve son dossier `backups`, puis demande quel laboratoire restaurer. Si la sauvegarde se trouve ailleurs, choisir **Browse folders inside a drive**. Ouvrir les dossiers jusqu'à la sauvegarde, puis choisir **Use this folder**. |
 
         ??? failure "S'il indique `Could not connect`"

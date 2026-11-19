@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-19
+reviewed_against: 5.8.8
 ---
 # Configurer des sauvegardes hors de la machine
 
@@ -455,7 +455,7 @@ machine.
         | Where should the backup be sent? | **A shared folder on a Windows machine**. |
         | Windows hostname or IP | L'adresse de l'étape 8. |
         | Name of the shared folder | `InteLIS-Backups` |
-        | Windows username | `lisbackup` |
+        | Windows username | `lisbackup`. Pour un compte de domaine, saisir `DOMAIN\name`, par exemple `HEALTH\backup`. |
         | Windows password for lisbackup | Le mot de passe de l'étape 3. |
 
         ??? failure "S'il indique `Could not connect to //…`"
