@@ -12,7 +12,8 @@ reviewed_against: 5.8.10
 Install InteLIS on a new Ubuntu machine, as a lab machine or as a central server.
 
 The machine must run **Ubuntu 24.04 LTS or a later LTS release** and be
-connected to the internet. The account used needs `sudo` rights.
+connected to the internet. Use Ubuntu 26.04 LTS for a new machine. The account
+used needs `sudo` rights.
 
 InteLIS requires **PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)**. PHP 8.2, 8.3, and older
 versions are not supported. The installer selects PHP 8.4, or 8.5 on Ubuntu
@@ -45,7 +46,7 @@ instead.
         ??? failure "If it stops with `This script requires an Ubuntu LTS release` or `requires Ubuntu 22.04 or newer`"
 
             The machine runs a non-LTS or too-old Ubuntu release. Reinstall the
-            machine with Ubuntu 24.04 LTS or later, then start again from
+            machine with Ubuntu 26.04 LTS, or 24.04 LTS, then start again from
             step 1.
 
     3. Answer the installer's questions:
@@ -182,7 +183,7 @@ instead.
         ??? failure "If it stops with `This script requires an Ubuntu LTS release` or `requires Ubuntu 22.04 or newer`"
 
             The machine runs a non-LTS or too-old Ubuntu release. Reinstall the
-            machine with Ubuntu 24.04 LTS or later, then start again from
+            machine with Ubuntu 26.04 LTS, or 24.04 LTS, then start again from
             step 2.
 
     4. Answer the installer's questions:

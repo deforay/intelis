@@ -13,7 +13,8 @@ Déplacer un laboratoire vers une nouvelle machine Ubuntu, ou reconstruire une
 machine hors service, à partir des sauvegardes de l'ancienne machine.
 
 La nouvelle machine doit exécuter **Ubuntu 24.04 LTS ou une version plus
-récente** et être connectée à Internet.
+récente** et être connectée à Internet. Utiliser Ubuntu 26.04 LTS pour la
+nouvelle machine.
 
 **Choisir la situation qui correspond, puis suivre ses étapes de haut en bas.**
 

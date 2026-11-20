@@ -107,6 +107,7 @@ PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)
 PHP 8.4 (8.4.27 ou plus récent) ou PHP 8.5 (8.5.12 ou plus récent)
 Ubuntu 22.04 LTS or later
 Ubuntu 22.04 LTS ou plus récent
+Ubuntu 24.04 LTS or later
 Ubuntu 24.04 LTS or a later LTS release
 Ubuntu 24.04 LTS ou une version LTS ultérieure
 Ubuntu 24.04 LTS ou une version plus récente
