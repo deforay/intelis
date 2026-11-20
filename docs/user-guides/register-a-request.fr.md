@@ -68,8 +68,8 @@ astérisque rouge sont obligatoires.
 
     8. Saisir l'**N° ART (TRACNET)** exactement tel qu'il figure sur la fiche
        papier. InteLIS affiche les demandes antérieures du patient : **Nombre de
-       fois où le test a été demandé pour ce patient**, **Dernière demande
-       envoyée par LIS/STS** et **Date de prélèvement de l'échantillon pour la
+       fois où le test a été demandé pour ce patient**, **Dernière demande de test
+       ajoutée sur LIS/STS** et **Date de prélèvement de l'échantillon pour la
        dernière demande**.
 
         ??? warning "Si la dernière demande a la même date de prélèvement que la fiche papier"
@@ -102,7 +102,7 @@ astérisque rouge sont obligatoires.
 
     16. Remplir les **Informations sur le traitement** d'après la fiche papier :
         **Date de début du traitement**, **Régime actuel**, **Date
-        d'instauration du régime actuel** et **Adhésion aux ARV**.
+        d'instauration du régime actuel** et **Observance des ARV**.
     17. Choisir l'**Indications pour l'analyse de la charge virale** : **Routine
         Monitoring**, **Repeat VL test after suspected treatment failure
         adherence counselling** ou **Suspect Treatment Failure**.
@@ -165,8 +165,8 @@ astérisque rouge sont obligatoires.
 
     8. Saisir l'**N° ART (TRACNET)** exactement tel qu'il figure sur la fiche
        papier. InteLIS affiche les demandes antérieures du patient : **Nombre de
-       fois où le test a été demandé pour ce patient**, **Dernière demande
-       envoyée par LIS/STS** et **Date de prélèvement de l'échantillon pour la
+       fois où le test a été demandé pour ce patient**, **Dernière demande de test
+       ajoutée sur LIS/STS** et **Date de prélèvement de l'échantillon pour la
        dernière demande**.
 
         ??? warning "Si la dernière demande a la même date de prélèvement que la fiche papier"
@@ -199,7 +199,7 @@ astérisque rouge sont obligatoires.
 
     16. Remplir les **Informations sur le traitement** d'après la fiche papier :
         **Date de début du traitement**, **Régime actuel**, **Date
-        d'instauration du régime actuel** et **Adhésion aux ARV**.
+        d'instauration du régime actuel** et **Observance des ARV**.
     17. Choisir l'**Indications pour l'analyse de la charge virale** : **Routine
         Monitoring**, **Repeat VL test after suspected treatment failure
         adherence counselling** ou **Suspect Treatment Failure**.

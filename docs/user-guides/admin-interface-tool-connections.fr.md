@@ -53,7 +53,7 @@ Pour installer l'outil et y ajouter l'automate, voir
             connexion**.
 
             La page ne garde qu'un code à la fois. Pour en créer un autre avant
-            l'expiration, sélectionner d'abord **Code d'annulation**. Recharger
+            l'expiration, sélectionner d'abord **Annuler le code**. Recharger
             la page masque le code sans l'annuler.
 
     7. Recharger la page. L'installation apparaît sous **Installations

@@ -77,8 +77,8 @@ formulaire EID. L'ajouter sur l'onglet de chaque test qui en a besoin.
 
     ??? info "Ajouter un district"
 
-        Sur **Divisions géographiques**, laisser **Division géographique de la
-        société mère** vide lors de l'ajout d'une province. Le régler sur la
+        Sur **Divisions géographiques**, laisser **Division géographique
+        parente** vide lors de l'ajout d'une province. Le régler sur la
         province lors de l'ajout d'un district. Un district sans parent
         n'apparaît sous aucune province sur le formulaire de demande.
 
@@ -104,8 +104,8 @@ formulaire EID. L'ajouter sur l'onglet de chaque test qui en a besoin.
         Le Stockage en laboratoire est tenu par le laboratoire : sur le LIS, ou
         sur le STS par un utilisateur de laboratoire d'analyse.
         **ADMIN → Paramètres → Stockage en laboratoire** relève du
-        laboratoire. Y sélectionner **Ajout d'un congélateur/stockage de
-        laboratoire** pour ajouter un congélateur.
+        laboratoire. Y sélectionner **Ajouter un congélateur/stockage
+        de laboratoire** pour ajouter un congélateur.
 
 ## Retirer une entrée
 

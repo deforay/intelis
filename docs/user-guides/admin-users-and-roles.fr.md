@@ -156,7 +156,7 @@ enregistre ses propres demandes, afin que chacun ne voie que sa structure.
 
 1. Aller à **ADMIN → Utilisateurs et rôles → Utilisateurs**.
 2. Sélectionner **Modifier** sur l'utilisateur.
-3. Sous **Carte de l'utilisateur vers les installations sélectionnées
+3. Sous **Associer l'utilisateur aux structures sélectionnées
    (facultatif)**, faire passer les structures dans la liste sélectionnée.
    Pour restreindre la liste des structures, sélectionner **Show Advanced
    Search Options**, renseigner **Province** et **District**, puis

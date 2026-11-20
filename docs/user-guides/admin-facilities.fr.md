@@ -70,9 +70,9 @@ D'autres tâches de la même page ont leur propre guide :
     | Numéro de téléphone | Le numéro de contact. Il ne doit pas déjà être utilisé par une autre structure |
     | Nom du Hub lié (le cas échéant) | Le hub par lequel transitent les échantillons de la structure |
 
-9. Si la structure est un laboratoire d'analyse, renseigner **Autoriser le
-   téléchargement de fichiers de résultats ?**, et **Plates-formes
-   disponibles** pour la TB.
+9. Si la structure est un laboratoire d'analyse, renseigner **Autoriser
+   l'import de fichiers de résultats ?**, et **Plates-formes disponibles**
+   pour la TB.
 10. Sélectionner **Envoyer**.
 11. Pour un laboratoire d'analyse, régler le logo, l'en-tête et les réglages
     de rapport sous

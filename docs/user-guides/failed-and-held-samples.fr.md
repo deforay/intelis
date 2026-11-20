@@ -61,7 +61,7 @@ Pour tous les statuts, voir [Statuts des échantillons](sample-statuses.md).
 === "Retester"
 
     1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests →
-       Échec/Echantillons en attente**.
+       Échantillons en échec/en attente**.
     2. Vérifier **Statut du résultat**. **Échec** et **En attente** sont
        sélectionnés par défaut. Ajouter **Perdu** si nécessaire.
     3. Restreindre avec les autres filtres si nécessaire, par exemple **Nom de la
@@ -111,7 +111,7 @@ Pour tous les statuts, voir [Statuts des échantillons](sample-statuses.md).
     résultat sur le tirage de l'automate.
 
     1. Aller à **CHARGE VIRALE DU VIH → Gestion des résultats des tests →
-       Échec/Echantillons en attente**.
+       Échantillons en échec/en attente**.
     2. Régler **Statut du résultat** sur **Échec** uniquement.
     3. Restreindre avec les autres filtres si nécessaire.
     4. Sélectionner **Rechercher**.

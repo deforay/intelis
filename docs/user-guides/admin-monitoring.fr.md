@@ -19,7 +19,7 @@ référencement des échantillons** se trouvent sous **ADMIN → Rapports**.
 - Un compte dont le rôle porte les pages de Surveillance nécessaires. Le rôle
   Admin intégré les voit toutes
 - Sur la page des rôles, **Indicateurs de performance du laboratoire**,
-  **Activité des instruments** et **Exemple de réseau de recommandation**
+  **Activité des instruments** et **Réseau de référence des échantillons**
   s'accordent sous **Rapports**, et non sous Surveillance
 
 ??? info "Quelles pages apparaissent"
@@ -202,7 +202,7 @@ l'utilisateur. Ce n'est pas la durée de la connexion.
    un **Code d'échec**. Pour garder la liste, sélectionner **Exporter vers
    Excel**.
 6. Si rien de récent n'apparaît, ouvrir les **Connexions des outils
-   d'interface** du laboratoire d'analyse et lire la **Dernière connexion**.
+   d'interface** du laboratoire d'analyse et lire la **Dernière activité**.
    Voir [Connexions de l'outil d'interface](admin-interface-tool-connections.md).
 
 Une **Dernière activité** ancienne signifie que l'outil d'interface n'atteint

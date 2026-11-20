@@ -129,7 +129,7 @@ contact est terminé des autres.
 ## Rapport hebdomadaire du laboratoire VL
 
 **Emplacement :** **CHARGE VIRALE DU VIH → Gestion → Rapport hebdomadaire du
-labo VL**
+laboratoire VL**
 
 Deux rapports sur une même page.
 

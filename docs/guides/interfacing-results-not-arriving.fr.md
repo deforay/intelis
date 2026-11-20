@@ -107,7 +107,7 @@ sudo intelis interface
             - Dans l'outil, vérifier la colonne **Sync Status**. Si tous les
               résultats sont `Pending`, l'outil n'écrit pas dans la base de
               données. Refaire **Test Connection** dans les **Settings** de
-              l'outil, sous **MySQL**.
+              l'outil, sous **Database**.
             - Seuls les résultats définitifs et les analyses en échec sont
               importés. Un résultat que l'automate n'a pas finalisé reste dans
               l'outil.

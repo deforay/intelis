@@ -41,7 +41,7 @@ toujours celle où il se trouve.
     2. Sélectionner **Stockage des échantillons** en haut à droite de la liste.
     3. Choisir le laboratoire dans **Nom du laboratoire**.
     4. Filtrer les échantillons à stocker, avec **Date de prélèvement de
-       l'échantillon**, **Échantillon reçu au laboratoire Date** ou **Nom de la
+       l'échantillon**, **Date de réception de l'échantillon au laboratoire** ou **Nom de la
        structure**.
     5. Sélectionner **Obtenir des échantillons**.
 
@@ -129,7 +129,7 @@ toujours celle où il se trouve.
 
     7. Sélectionner **Charger le fichier** et choisir le fichier rempli.
     8. Sélectionner **Envoyer**. InteLIS affiche le **Nombre total
-       d'enregistrements dans le fichier**, le **Nombre d'entrepôts de
+       d'enregistrements dans le fichier**, le **Nombre de stockages de
        laboratoire ajoutés** et le **Nombre de stockages non ajoutés**.
 
         ??? failure "Si certaines lignes n'ont pas été ajoutées"
