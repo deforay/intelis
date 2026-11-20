@@ -133,7 +133,7 @@ try {
         'district' => ['f.facility_district_id', ListingFilterClauseBuilder::EQUALS],
         'state' => ['f.facility_state_id', ListingFilterClauseBuilder::EQUALS],
         'patientId' => ['vl.patient_id', ListingFilterClauseBuilder::CONTAINS],
-        'patientName' => ["CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,''))", ListingFilterClauseBuilder::CONTAINS],
+        'patientName' => [ListingFilterClauseBuilder::fullName('vl.patient_name', 'vl.patient_surname'), ListingFilterClauseBuilder::CONTAINS],
         'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
         'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
         'sampleType' => ['s.sample_id', ListingFilterClauseBuilder::EQUALS],
