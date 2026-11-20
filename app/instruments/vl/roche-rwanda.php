@@ -6,6 +6,7 @@ use App\Registries\AppRegistry;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Exceptions\SystemException;
+use App\Services\InstrumentsService;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
@@ -36,13 +37,8 @@ try {
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
 
     $extension = MiscUtility::getFileExtension($fileName);
-    $fileName = $_POST['fileName'] . "-" . MiscUtility::generateRandomString(12) . "." . $extension;
-
-    // $fileName          = $ranNumber . "." . $extension;
-
-
-
-    $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
+    $resultFile = InstrumentsService::importedResultPath((string) $_POST['fileName'], $extension);
+    $fileName = basename($resultFile);
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
         //$file_info = new finfo(FILEINFO_MIME); // object oriented approach!
         //$mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
