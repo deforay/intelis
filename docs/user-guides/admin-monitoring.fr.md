@@ -3,8 +3,8 @@ description: Retracer les modifications, vérifier la synchronisation et les aut
 audience: [lab-admin, system-admin, lab-supervisor]
 module: [all]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Surveiller et auditer InteLIS
 
@@ -12,7 +12,7 @@ Trouver qui a modifié une fiche, vérifier que les données et les résultats d
 automates circulent, et lire la performance du laboratoire. La plupart des
 pages se trouvent sous **ADMIN → Surveillance**. **Activité des
 instruments**, **Indicateurs de performance du laboratoire** et **Réseau de
-référencement des échantillons** se trouvent sous **ADMIN → Rapports**.
+référence des échantillons** se trouvent sous **ADMIN → Rapports**.
 
 ## Avant de commencer
 
@@ -49,7 +49,7 @@ référencement des échantillons** se trouvent sous **ADMIN → Rapports**.
 | Combien de temps le laboratoire met-il, et à quelle fréquence les tests échouent-ils ? | Indicateurs de performance du laboratoire |
 | Où les échantillons se perdent-ils entre la demande et le résultat ? | Source des demandes |
 | Que contient InteLIS derrière un résultat ? | Métadonnées des résultats des tests |
-| Quelles structures envoient des échantillons à quel laboratoire ? | Réseau de référencement des échantillons |
+| Quelles structures envoient des échantillons à quel laboratoire ? | Réseau de référence des échantillons |
 | Quelles erreurs le système a-t-il consignées ? | Visualisateur de fichiers journaux |
 
 ## Trouver qui a modifié un échantillon
@@ -61,7 +61,7 @@ référencement des échantillons** se trouvent sous **ADMIN → Rapports**.
 5. Lire l'**Vue tableau** : une ligne par révision, avec l'utilisateur qui
    l'a enregistrée et le moment. Ouvrir **Changements uniquement** pour voir
    chaque champ modifié avec son **Ancienne valeur** et sa **Nouvelle
-   Valeur**.
+   valeur**.
 
     ??? info "Autres vues"
 

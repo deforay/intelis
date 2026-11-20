@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Résultats qui n'atteignent pas le STS
 
@@ -47,8 +47,8 @@ d'abord [Connecter un laboratoire au STS](connect-lab-to-sts.md).
     4. Lire la sortie de haut en bas. Chercher chaque message qui signale une
        erreur dans [Messages et corrections](#messages-et-corrections).
 
-        `Metadata Synced` s'affiche même quand les listes ont échoué. Lire les
-        lignes au-dessus.
+        `Metadata is up to date.` s'affiche même quand une liste n'a pas pu être
+        enregistrée. Lire les lignes au-dessus.
 
     5. Vérifier que la synchronisation a atteint le STS. Suivre l'onglet
        **LIS** de
@@ -109,11 +109,11 @@ d'abord [Connecter un laboratoire au STS](connect-lab-to-sts.md).
               `--`, composer ignore toutes les options, et la synchronisation
               envoie tous les statuts.
             - Quand un filtre de statut est utilisé, la sortie affiche
-              `Sending only statuses:` sous `Syncing results since:`. Si cette
+              `Statuses:` sous `Results changed since:`. Si cette
               ligne manque, le filtre n'a pas été appliqué. Appuyer sur Ctrl+C
               et relancer la commande.
 
-        ??? failure "S'il affiche `Another results sync is already running. Exiting.`"
+        ??? failure "S'il affiche `Another results sending run is already in progress. Exiting.`"
 
             Une autre synchronisation envoie en ce moment. Il peut s'agir de la
             synchronisation planifiée, d'un renvoi manuel précédent, ou du
@@ -200,7 +200,7 @@ d'abord [Connecter un laboratoire au STS](connect-lab-to-sts.md).
         sudo -u www-data php /var/www/intelis/app/tasks/remote/lab-metadata-sender.php -f
         ```
 
-    3. Attendre `Sync complete.` à la fin.
+    3. Attendre `Lab metadata sent.` à la fin.
 
     L'administrateur du STS peut faire la même chose depuis le STS, avec la
     commande **Resynchronisation des métadonnées (forcée)** du
@@ -239,7 +239,7 @@ d'abord [Connecter un laboratoire au STS](connect-lab-to-sts.md).
     3. Enregistrer avec Ctrl+O, puis Entrée. Fermer avec Ctrl+X.
     4. Relancer `sudo intelis check`.
 
-??? failure "`No internet connectivity while trying remote sync.`, ou `Checking connectivity... FAILED`"
+??? failure "`Cannot reach the STS at ...`"
 
     La machine ne peut pas joindre le STS. Le point dans l'en-tête de page
     d'InteLIS affiche aussi **Le serveur STS est inaccessible**.
@@ -250,11 +250,12 @@ d'abord [Connecter un laboratoire au STS](connect-lab-to-sts.md).
       `STS URL`. L'adresse enregistrée au laboratoire est peut-être fausse. La
       corriger avec [Connecter un laboratoire au STS](connect-lab-to-sts.md).
 
-??? failure "`HTTP 401`, ou `Unauthorized Access on ... sync`, ou `STS token` : `no STS token is stored`"
+??? failure "Une erreur `401`, ou `STS token` : `no STS token is stored`"
 
-    Le STS n'a pas accepté le jeton du laboratoire. La raison suit
-    `Unauthorized Access on ... sync:`. Elle figure aussi dans le journal du
-    STS lui-même.
+    Le STS n'a pas accepté le jeton du laboratoire. La raison figure dans le
+    journal du STS lui-même. Quand le STS envoie un identifiant d'erreur, la
+    sortie de la synchronisation affiche `STS error ID:` et un lien vers cette
+    entrée sur le STS.
 
     1. Obtenir le jeton actuel auprès du STS :
 
@@ -262,13 +263,13 @@ d'abord [Connecter un laboratoire au STS](connect-lab-to-sts.md).
         sudo intelis token
         ```
 
-    2. Attendre `Token generated`.
+    2. Attendre `STS token created`.
     3. Relancer `sudo intelis sync-sts`.
 
     Si l'erreur 401 revient, demander à l'administrateur du STS d'envoyer
     **Renouveler le jeton STS** depuis le
-    [Plan de commande à distance](remote-command-plane.md). Lui envoyer la
-    raison affichée après `Unauthorized Access`.
+    [Plan de commande à distance](remote-command-plane.md). Lui envoyer
+    l'identifiant d'erreur du STS.
 
 ??? failure "`Instance registered` : `not registered, but an STS is configured`"
 
@@ -277,7 +278,7 @@ d'abord [Connecter un laboratoire au STS](connect-lab-to-sts.md).
     `/setup/index.php` sur l'adresse du laboratoire, terminer le formulaire,
     puis relancer `sudo intelis check`.
 
-??? failure "`Could not deliver the receipt for ...; it will be sent next run.`"
+??? failure "`...: could not confirm to the STS that the requests arrived. The next run sends it.`"
 
     Rien d'anormal. Le laboratoire a enregistré les demandes, et le signale au
     STS à la synchronisation suivante.

@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: reference
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Scripts et outils de maintenance
 

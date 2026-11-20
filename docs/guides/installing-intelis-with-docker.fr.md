@@ -4,8 +4,8 @@ audience: [system-admin, developer]
 module: [all]
 type: how-to
 platform: docker
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Installer InteLIS avec Docker
 
@@ -182,9 +182,9 @@ PHP 8.4.
         cd ~/intelis && sudo bash scripts/remote-backup.sh
         ```
 
-    16. À `InteLIS folder path` (chemin du dossier InteLIS), saisir le chemin
-        complet du dossier `intelis`, par exemple `/home/labadmin/intelis`. La
-        commande `echo ~/intelis` l'affiche.
+    16. À `InteLIS installation folder` (dossier d'installation d'InteLIS),
+        saisir le chemin complet du dossier `intelis`, par exemple
+        `/home/labadmin/intelis`. La commande `echo ~/intelis` l'affiche.
     17. Répondre aux autres questions. [Configurer les sauvegardes hors de la machine](setting-up-off-machine-backups.md)
         les détaille pour chaque destination.
 

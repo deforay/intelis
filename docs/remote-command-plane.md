@@ -4,8 +4,8 @@ audience: [system-admin, developer]
 module: [all]
 type: explanation
 platform: any
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # About the remote command plane
 
@@ -80,10 +80,11 @@ the runner decides whether that name means anything.
 | --- | --- | --- |
 | `ping` | www-data | `command-handlers/ping.php`. No side effects. |
 | `resend-results` | www-data | `command-handlers/resend-results.php`, which runs `results-sender.php` with the module, days and status filters. The status filter is offered only to couriers that list `resend-results-by-status` in `supports`. |
-| `resend-requests` | www-data | `command-handlers/resend-requests.php`, which runs `requests-receiver.php` with the module filter. |
+| `resend-requests` | www-data | `command-handlers/resend-requests.php`, which runs `requests-receiver.php` with the module and days filters. |
 | `metadata-resync` | www-data | `command-handlers/metadata-resync.php`, which runs `sts-metadata-receiver.php -f` and `lab-metadata-sender.php -f`. |
 | `refresh-cache` | www-data | `command-handlers/refresh-cache.php`. Clears the file cache, or only the given tags. |
 | `rotate-token` | www-data | `command-handlers/rotate-token.php`. Drops the STS token and fetches a new one. |
+| `withdraw-samples` | www-data | `command-handlers/withdraw-samples.php`. Cancels the lab's copies of samples that **Move Manifest** gave to another lab, except any the lab tested since its last sync. |
 | `refresh-perms` | root | `intelis-refresh -p <path> -m full` |
 | `restart-apache` | root | `apache2ctl -k graceful`, or `systemctl reload apache2` without `apache2ctl` |
 | `upgrade` | root | `intelis-update -p <path> -s`, with `-M` when the maintenance page is requested |
@@ -98,7 +99,10 @@ default. A command goes to the runner only when it needs root.
 for it. `refresh-cache` accepts tags, and the form sends none, so a queued
 refresh clears the whole cache.
 
-The command set is listed in four places, and they must agree:
+`withdraw-samples` is queued by **Move Manifest** on the STS, never from the
+queue form. It is not in the queue endpoint's whitelist or the `<select>`.
+
+The other commands are listed in four places, and they must agree:
 
 - the queue endpoint's whitelist, `app/admin/monitoring/queue-lis-command.php`
 - the courier's `$inProcessHandlers` and `$rootRunnerCommands`

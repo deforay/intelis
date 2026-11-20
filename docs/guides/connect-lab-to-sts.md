@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.78
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Connect a lab to the STS
 
@@ -69,10 +69,10 @@ Run it on the lab's InteLIS machine, never on the STS itself.
 
         ```text
         [OK] STS setup complete!
-        [OK] Token generated: ...
+        [OK] STS token created: ...
         ```
 
-        ??? failure "If it prints `Failed to generate token`"
+        ??? failure "If it prints `Could not get an STS token`"
 
             The STS refused this machine. Send the full message to the STS
             administrator. Once they fix it, get a new token alone:
@@ -108,7 +108,7 @@ Run it on the lab's InteLIS machine, never on the STS itself.
             Results and requests follow the lab set here. Change it only when
             the machine was set to the wrong lab.
 
-    4. Check the last lines for `STS setup complete!` and `Token generated`.
+    4. Check the last lines for `STS setup complete!` and `STS token created`.
     5. Run a sync. Use the **Check the connection** situation.
 
 === "Check the connection"

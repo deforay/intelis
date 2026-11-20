@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-23
-reviewed_against: 5.8.2
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # MySQL will not start
 
@@ -38,7 +38,7 @@ MySQL refuses to start, so InteLIS cannot open and nothing can be backed up.
 
     [The doctor finds a setting above the first heading of the MySQL configuration and repairs it.](../assets/casts/mysql-doctor.cast){ .asciicast }
 
-    ??? failure "If it shows `The database still will not start.`"
+    ??? failure "If it shows `The database still does not start.`"
 
         The doctor prints the last errors MySQL wrote, under
         **Last errors the database wrote**.

@@ -3,8 +3,8 @@ description: Maps each ADMIN menu task to its guide and lists installation-wide 
 audience: [lab-admin, system-admin]
 module: [all]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Administer InteLIS
 

@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: windows
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Installer InteLIS sur une machine Windows
 
@@ -64,10 +64,10 @@ verte.
     | Paramètre | Nouvelle valeur |
     | --- | --- |
     | `memory_limit` | `2G`, ou plus si la machine le permet |
-    | `post_max_size` | `500M` |
-    | `upload_max_filesize` | `500M` |
+    | `post_max_size` | `1G` |
+    | `upload_max_filesize` | `1G` |
     | `max_execution_time` | `1200` |
-    | `error_reporting` | `E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_WARNING` |
+    | `error_reporting` | `E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING` |
     | `;openssl.cafile=` | `openssl.cafile='C:\wamp64\cacert.pem'` (retirer le `;` du début) |
     | `;curl.cainfo =` | `curl.cainfo ='C:\wamp64\cacert.pem'` (retirer le `;` du début) |
 
@@ -175,7 +175,7 @@ de l'étape 14.
     sur un poste en français) :
 
     ```sql
-    CREATE DATABASE `vlsm` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    CREATE DATABASE `vlsm` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
     ```
 
 32. Sélectionner la base de données `vlsm` dans le panneau de gauche.

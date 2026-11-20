@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Update InteLIS on Ubuntu
 
@@ -71,8 +71,8 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
             password of this machine.
 
             If it asks for the password twice and then for the **STS address**,
-            the configuration file was missing or damaged and the update is
-            rebuilding it. Enter the MySQL root password twice. Then enter the
+            the configuration file was damaged and the update is rebuilding
+            it. Enter the MySQL root password twice. Then enter the
             STS address the lab uses, or press Enter if the lab has no STS.
 
     4. Wait. Keep the terminal window open until the last line reads
@@ -178,7 +178,7 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
               Interface Tool.
             - When asked for the location, enter `/var/www/intelis/backups/db`.
               On older installs, enter `/var/www/vlsm/backups/db`.
-            - Wait for `Script completed.` If it prints
+            - Wait for `Backup complete. The files are in`. If it prints
               `These databases were NOT backed up`, do not update.
 
     ### Update
@@ -197,8 +197,8 @@ To tell which one fits, open a terminal, type `intelis` and press Enter:
             password of this machine.
 
             If it asks for the password twice and then for the **STS address**,
-            the configuration file was missing or damaged and the update is
-            rebuilding it. Enter the MySQL root password twice. Then enter the
+            the configuration file was damaged and the update is rebuilding
+            it. Enter the MySQL root password twice. Then enter the
             STS address the lab uses, or press Enter if the lab has no STS.
 
     5. Wait. Keep the terminal window open until the last line reads

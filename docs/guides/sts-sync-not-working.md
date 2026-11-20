@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.78
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Results not reaching the STS
 
@@ -45,8 +45,8 @@ The lab must already be connected to the STS. If it never was, follow
     4. Read the output from top to bottom. Find each message that names an
        error in [Messages and fixes](#messages-and-fixes).
 
-        `Metadata Synced` is printed even when the lists failed. Read the lines
-        above it.
+        `Metadata is up to date.` is printed even when one list could not be
+        saved. Read the lines above it.
 
     5. Check that the sync reached the STS. Follow the **LIS** tab of
        [Check that data reached the STS](../user-guides/admin-monitoring.md#check-that-data-reached-the-sts).
@@ -105,11 +105,11 @@ The lab must already be connected to the STS. If it never was, follow
               `--`, composer drops every option, and the sync sends all
               statuses.
             - When a status filter is in use, the output shows
-              `Sending only statuses:` under `Syncing results since:`. If that
+              `Statuses:` under `Results changed since:`. If that
               line is missing, the filter was not applied. Press Ctrl+C and
               run the command again.
 
-        ??? failure "If it prints `Another results sync is already running. Exiting.`"
+        ??? failure "If it prints `Another results sending run is already in progress. Exiting.`"
 
             Another sync is sending now. It can be the scheduled sync, an
             earlier manual resend, or the **Sync** button on a request list.
@@ -190,7 +190,7 @@ The lab must already be connected to the STS. If it never was, follow
         sudo -u www-data php /var/www/intelis/app/tasks/remote/lab-metadata-sender.php -f
         ```
 
-    3. Expect `Sync complete.` at the end.
+    3. Expect `Lab metadata sent.` at the end.
 
     The STS administrator can do the same from the STS, with the **Metadata
     resync (force)** command of the
@@ -229,7 +229,7 @@ The lab must already be connected to the STS. If it never was, follow
     3. Save with Ctrl+O, then Enter. Close with Ctrl+X.
     4. Run `sudo intelis check` again.
 
-??? failure "`No internet connectivity while trying remote sync.`, or `Checking connectivity... FAILED`"
+??? failure "`Cannot reach the STS at ...`"
 
     The machine cannot reach the STS. The dot in the page header of InteLIS
     also shows `STS server is unreachable`.
@@ -240,10 +240,11 @@ The lab must already be connected to the STS. If it never was, follow
       row. The address saved on the lab may be wrong. Correct it with
       [Connect a lab to the STS](connect-lab-to-sts.md).
 
-??? failure "`HTTP 401`, or `Unauthorized Access on ... sync`, or `STS token`: `no STS token is stored`"
+??? failure "A `401` error, or `STS token`: `no STS token is stored`"
 
-    The STS did not accept the lab's token. The reason follows
-    `Unauthorized Access on ... sync:`. It is also in the STS's own log.
+    The STS did not accept the lab's token. The reason is in the STS's own
+    log. When the STS sends an error ID, the sync output prints
+    `STS error ID:` and a link to that entry on the STS.
 
     1. Get the current token from the STS:
 
@@ -251,12 +252,12 @@ The lab must already be connected to the STS. If it never was, follow
         sudo intelis token
         ```
 
-    2. Expect `Token generated`.
+    2. Expect `STS token created`.
     3. Run `sudo intelis sync-sts` again.
 
     If the 401 comes back, ask the STS administrator to send **Rotate STS
     token** from the [Remote command plane](remote-command-plane.md). Send
-    them the reason printed after `Unauthorized Access`.
+    them the STS error ID.
 
 ??? failure "`Instance registered`: `not registered, but an STS is configured`"
 
@@ -264,7 +265,7 @@ The lab must already be connected to the STS. If it never was, follow
     is syncing. Open `/setup/index.php` on the lab's address, finish the
     form, then run `sudo intelis check` again.
 
-??? failure "`Could not deliver the receipt for ...; it will be sent next run.`"
+??? failure "`...: could not confirm to the STS that the requests arrived. The next run sends it.`"
 
     Nothing is wrong. The lab saved the requests, and tells the STS on the next
     sync.

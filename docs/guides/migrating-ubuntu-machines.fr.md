@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Migrer d'une machine Ubuntu à une autre
 
@@ -52,7 +52,7 @@ récente** et être connectée à Internet.
             - Quand l'emplacement est demandé, saisir
               `/var/www/intelis/backups/db`. Sur les installations plus
               anciennes, saisir `/var/www/vlsm/backups/db`.
-            - Attendre `Script completed.` S'il affiche
+            - Attendre `Backup complete.` S'il affiche
               `These databases were NOT backed up`, s'arrêter.
 
         ??? failure "Si MySQL ne démarre pas"

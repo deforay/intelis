@@ -4,8 +4,8 @@ audience: [system-admin, lab-admin]
 module: [vl, eid, covid19, hepatitis, tb, cd4, custom-tests]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Les résultats des automates n'arrivent pas
 
@@ -104,8 +104,8 @@ sudo intelis interface
 
             Le résultat n'a pas atteint la base de données que lit InteLIS.
 
-            - Dans l'outil, vérifier la colonne **Sync Status**. Si tous les
-              résultats sont `Pending`, l'outil n'écrit pas dans la base de
+            - Dans l'outil, vérifier la colonne **Synced to LIS**. Si tous les
+              résultats sont `Not yet`, l'outil n'écrit pas dans la base de
               données. Refaire **Test Connection** dans les **Settings** de
               l'outil, sous **Database**.
             - Seuls les résultats définitifs et les analyses en échec sont

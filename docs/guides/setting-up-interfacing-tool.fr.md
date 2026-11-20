@@ -4,8 +4,8 @@ audience: [system-admin, lab-admin]
 module: [vl, eid, covid19, hepatitis, tb, cd4, custom-tests]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Connecter un automate à InteLIS
 
@@ -53,13 +53,13 @@ L'automate doit être connecté au réseau du laboratoire.
     5. Sous **System**, régler **Skip Sign-in and Connect at Startup** sur
        **Yes**. Avec **No**, l'outil cesse d'écouter après chaque redémarrage,
        jusqu'à ce que quelqu'un se connecte.
-    6. Sous **Instruments**, sélectionner **+ Add Instrument** et remplir ces
+    6. Sous **Instruments**, sélectionner **Add Instrument** et remplir ces
        champs :
 
         | Champ | Valeur |
         | --- | --- |
         | Connection Mode | **TCP Server** si l'automate se connecte à cette machine. **TCP Client** si cette machine se connecte à l'automate. Le manuel de l'automate indique lequel. |
-        | Communication Protocol | **ASTM**, **ASTM (with checksum)** ou **HL7**, comme réglé sur l'automate. |
+        | Communication Protocol | **ASTM (without checksum)**, **ASTM (with checksum)** ou **HL7**, comme réglé sur l'automate. |
         | IP Address | TCP Server : l'adresse de cette machine sur le réseau du laboratoire. TCP Client : l'adresse de l'automate. |
         | Port Number | Le port réglé sur l'automate. |
         | Analyzer Type | Le modèle de l'automate. |
@@ -156,7 +156,7 @@ L'automate doit être connecté au réseau du laboratoire.
             Passer à l'étape 12, et saisir l'hôte `127.0.0.1`, le port `3306`,
             la base de données `interfacing`, le nom d'utilisateur
             `interfacing` et ce mot de passe. Ouvrir l'outil une fois pour qu'il
-            crée ses tables, puis exécuter `intelis interface-migrate`.
+            crée ses tables.
 
     10. Répondre aux questions :
 
@@ -271,8 +271,8 @@ L'automate doit être connecté au réseau du laboratoire.
 
             Le résultat n'a pas atteint la base de données que lit InteLIS.
 
-            - Vérifier la colonne **Sync Status** de l'outil. Si chaque résultat
-              est `Pending`, répéter l'étape 13.
+            - Vérifier la colonne **Synced to LIS** de l'outil. Si chaque
+              résultat est `Not yet`, répéter l'étape 13.
             - Seuls les résultats définitifs et les passages en échec sont lus.
               Un résultat que l'automate n'a pas finalisé reste dans l'outil.
 
@@ -359,13 +359,13 @@ L'automate doit être connecté au réseau du laboratoire.
     5. Sous **System**, régler **Skip Sign-in and Connect at Startup** sur
        **Yes**. Avec **No**, l'outil cesse d'écouter après chaque redémarrage,
        jusqu'à ce que quelqu'un se connecte.
-    6. Sous **Instruments**, sélectionner **+ Add Instrument** et remplir ces
+    6. Sous **Instruments**, sélectionner **Add Instrument** et remplir ces
        champs :
 
         | Champ | Valeur |
         | --- | --- |
         | Connection Mode | **TCP Server** si l'automate se connecte à cet ordinateur. **TCP Client** si cet ordinateur se connecte à l'automate. Le manuel de l'automate indique lequel. |
-        | Communication Protocol | **ASTM**, **ASTM (with checksum)** ou **HL7**, comme réglé sur l'automate. |
+        | Communication Protocol | **ASTM (without checksum)**, **ASTM (with checksum)** ou **HL7**, comme réglé sur l'automate. |
         | IP Address | TCP Server : l'adresse de cet ordinateur sur le réseau du laboratoire. TCP Client : l'adresse de l'automate. |
         | Port Number | Le port réglé sur l'automate. |
         | Analyzer Type | Le modèle de l'automate. |
@@ -483,8 +483,7 @@ L'automate doit être connecté au réseau du laboratoire.
             la première adresse de cette machine donnée par `hostname -I`. À
             l'étape 19, saisir cette adresse comme hôte, le port `3306`, la base
             de données `interfacing`, le nom d'utilisateur `interfacing` et ce
-            mot de passe. Ouvrir l'outil une fois pour qu'il crée ses tables,
-            puis exécuter `intelis interface-migrate`.
+            mot de passe. Ouvrir l'outil une fois pour qu'il crée ses tables.
 
     11. Répondre aux questions :
 
@@ -499,7 +498,7 @@ L'automate doit être connecté au réseau du laboratoire.
         | Name for the account the tool and InteLIS will use | Appuyer sur Entrée (`interfacing`). |
         | Reuse it, and set its password to the one chosen next? | Posée seulement quand le compte existe déjà. Répondre **Yes** si une configuration précédente de l'interfaçage l'a créé. Sinon, appuyer sur Entrée (No) et choisir un autre nom. |
         | Password for that account | Appuyer sur Entrée. **Use a generated password** est déjà sélectionné. |
-        | Open port 3306 to the tool's address? | Posée seulement quand le pare-feu est actif et que le port est fermé. Appuyer sur Entrée (Yes). |
+        | Open port 3306 to TOOL_IP? | Posée seulement quand le pare-feu est actif et que le port est fermé. TOOL_IP est l'adresse de l'étape 9. Appuyer sur Entrée (Yes). |
 
         ??? info "Si la base de données de l'outil d'interface est sur un autre serveur"
 
@@ -632,8 +631,8 @@ L'automate doit être connecté au réseau du laboratoire.
 
             Le résultat n'a pas atteint la base de données que lit InteLIS.
 
-            - Vérifier la colonne **Sync Status** de l'outil. Si chaque résultat
-              est `Pending`, répéter l'étape 20.
+            - Vérifier la colonne **Synced to LIS** de l'outil. Si chaque
+              résultat est `Not yet`, répéter l'étape 20.
             - Seuls les résultats définitifs et les passages en échec sont lus.
               Un résultat que l'automate n'a pas finalisé reste dans l'outil.
 

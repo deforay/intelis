@@ -4,8 +4,8 @@ audience: [system-admin, lab-admin]
 module: [vl, eid, covid19, hepatitis, tb, cd4, custom-tests]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.78
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Analyzer results not arriving
 
@@ -99,8 +99,8 @@ sudo intelis interface
 
             The result has not reached the database InteLIS reads.
 
-            - On the tool, check the **Sync Status** column. If every result
-              is `Pending`, the tool is not writing to the database. Repeat
+            - On the tool, check the **Synced to LIS** column. If every
+              result is `Not yet`, the tool is not writing to the database. Repeat
               **Test Connection** in the tool's **Settings**, under **Database**.
             - Only final results and failed runs are imported. A result the
               analyzer has not finalised stays in the tool.

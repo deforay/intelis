@@ -3,8 +3,8 @@ description: Add, retire and locate the dropdown list entries used on request fo
 audience: [lab-admin, system-admin]
 module: [all]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 
 # Maintain the request form lists
@@ -36,8 +36,9 @@ Each tab lists that test's pages.
 | Custom Tests | Test Type Configuration, Sample Types, Test Reasons, Rejection Reasons, Test Failure Reasons, Symptoms, Test Result Units, Test Methods, Test Categories |
 
 The lists that serve every module sit under **ADMIN → Reference Lists**:
-Geographical Divisions, Implementation Partners and Funding Sources. Lab
-Storage sits under **ADMIN → Settings**.
+Geographical Divisions, Implementation Partners and Funding Sources. On a
+LIS, Lab Storage sits under **ADMIN → Settings**. A standalone installation
+shows no Lab Storage menu item.
 
 A sample type added on the HIV Viral Load tab does not reach the EID form. Add
 it on the tab of each test that needs it.
@@ -98,7 +99,8 @@ it on the tab of each test that needs it.
     ??? info "Lab Storage is maintained by the lab"
 
         Lab Storage is maintained by the lab: on the LIS, or on the STS by a
-        testing-lab user. **ADMIN → Settings → Lab Storage**
+        testing-lab user with the built-in Admin role.
+        **ADMIN → Settings → Lab Storage**
         belongs to the lab. Select **Add Lab Freezer/Storage** there to add a
         freezer.
 

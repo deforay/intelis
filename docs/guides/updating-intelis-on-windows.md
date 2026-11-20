@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: windows
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Update InteLIS on a Windows machine
 
@@ -14,7 +14,7 @@ Update an InteLIS installation on a Windows machine that runs WampServer.
 The installation lives in `C:\wamp64\www\vlsm` and opens at <http://vlsm>.
 WampServer and command-line PHP must run **PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)**.
 PHP 8.2, 8.3, and older versions are not supported. This guide uses PHP 8.4
-paths. If you use PHP 8.5, substitute its installed folder name.
+paths. With PHP 8.5, substitute its installed folder name.
 
 ??? info "Why the folder is named `vlsm`"
 

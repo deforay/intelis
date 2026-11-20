@@ -3,8 +3,8 @@ description: Build a specimen referral manifest on the STS, print it for the pac
 audience: [requesting-facility, lab-staff]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Send samples to a testing lab on a manifest
 
@@ -103,7 +103,11 @@ test's group.
         screen lists it under **Cancelled samples will be removed from this
         manifest**. Saving removes it.
 
-        The **Testing Lab** cannot be changed on this screen once it is set.
+        Changing the **Testing Lab** on this screen removes the samples now on
+        the manifest, after a confirmation. Only samples of the new testing lab
+        can then be added. No sample moves to the new lab. To send packages
+        already listed to another lab, use the
+        **Move manifests to another lab** steps.
 
     3. To add samples, move them from the left-hand list to the right-hand list.
        To narrow the left-hand list, change the filters and select **Search**.

@@ -4,8 +4,8 @@ audience: [system-admin, developer]
 module: [all]
 type: how-to
 platform: docker
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Install InteLIS with Docker
 
@@ -166,7 +166,7 @@ versions are not supported. The default image uses PHP 8.4.
         cd ~/intelis && sudo bash scripts/remote-backup.sh
         ```
 
-    16. At `InteLIS folder path`, type the full path of the `intelis` folder,
+    16. At `InteLIS installation folder`, type the full path of the `intelis` folder,
         for example `/home/labadmin/intelis`. The command `echo ~/intelis`
         prints it.
     17. Answer the remaining questions. [Setting up off-machine backups](setting-up-off-machine-backups.md)

@@ -4,8 +4,8 @@ audience: [system-admin, lab-admin]
 module: [vl, eid, covid19, hepatitis, tb, cd4, custom-tests]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Connect an instrument to InteLIS
 
@@ -51,12 +51,12 @@ be connected to the lab network.
     5. Under **System**, set **Skip Sign-in and Connect at Startup** to
        **Yes**. With **No**, the tool stops listening after every restart until
        somebody signs in.
-    6. Under **Instruments**, select **+ Add Instrument** and fill in these fields:
+    6. Under **Instruments**, select **Add Instrument** and fill in these fields:
 
         | Field | Value |
         | --- | --- |
         | Connection Mode | **TCP Server** if the analyzer connects to this machine. **TCP Client** if this machine connects to the analyzer. The analyzer's manual says which. |
-        | Communication Protocol | **ASTM**, **ASTM (with checksum)** or **HL7**, as set on the analyzer. |
+        | Communication Protocol | **ASTM (without checksum)**, **ASTM (with checksum)** or **HL7**, as set on the analyzer. |
         | IP Address | TCP Server: this machine's address on the lab network. TCP Client: the analyzer's address. |
         | Port Number | The port set on the analyzer. |
         | Analyzer Type | The analyzer model. |
@@ -151,17 +151,16 @@ be connected to the lab network.
 
             Go on to step 12, and enter host `127.0.0.1`, port `3306`, database
             `interfacing`, username `interfacing` and that password. Open the
-            tool once so it creates its tables, then run
-            `intelis interface-migrate`.
+            tool once so it creates its tables.
 
     10. Answer the questions:
 
         | Question | Answer |
         | --- | --- |
-        | How does the Interface Tool store the results InteLIS should read? | Press Enter. **MySQL on this machine** is already selected. |
+        | How does the Interfacing Tool store the results InteLIS should read? | Press Enter. **MySQL on this machine** is already selected. |
         | MySQL port | Press Enter (`3306`). |
         | Database name | Press Enter (`interfacing`). |
-        | Where is the Interface Tool installed? | Press Enter. **On this machine** is already selected. |
+        | Where is the Interfacing Tool installed? | Press Enter. **On this machine** is already selected. |
         | Enter a MySQL administrator account to use? | Asked only when setup finds no account of its own. Press Enter (Yes), then type the MySQL `root` username and password. |
         | Name for the account the tool and InteLIS will use | Press Enter (`interfacing`). |
         | Reuse it, and set its password to the one chosen next? | Asked only when the account exists already. Answer **Yes** if an earlier interfacing setup made it. Otherwise press Enter (No) and choose another name. |
@@ -197,7 +196,7 @@ be connected to the lab network.
             below.
 
     11. Wait for `interfacing is now switched on`. Setup then prints a table
-        under **Enter these in the Interface Tool**. Keep the terminal open.
+        under **Enter these in the Interfacing Tool**. Keep the terminal open.
 
         ??? failure "If it prints **Still to do**"
 
@@ -259,8 +258,8 @@ be connected to the lab network.
 
             The result has not reached the database InteLIS reads.
 
-            - Check the tool's **Sync Status** column. If every result is
-              `Pending`, repeat step 13.
+            - Check the tool's **Synced to LIS** column. If every result is
+              `Not yet`, repeat step 13.
             - Only final results and failed runs are read. A result the
               analyzer has not finalised is left in the tool.
 
@@ -343,12 +342,12 @@ be connected to the lab network.
     5. Under **System**, set **Skip Sign-in and Connect at Startup** to
        **Yes**. With **No**, the tool stops listening after every restart until
        somebody signs in.
-    6. Under **Instruments**, select **+ Add Instrument** and fill in these fields:
+    6. Under **Instruments**, select **Add Instrument** and fill in these fields:
 
         | Field | Value |
         | --- | --- |
         | Connection Mode | **TCP Server** if the analyzer connects to this computer. **TCP Client** if this computer connects to the analyzer. The analyzer's manual says which. |
-        | Communication Protocol | **ASTM**, **ASTM (with checksum)** or **HL7**, as set on the analyzer. |
+        | Communication Protocol | **ASTM (without checksum)**, **ASTM (with checksum)** or **HL7**, as set on the analyzer. |
         | IP Address | TCP Server: this computer's address on the lab network. TCP Client: the analyzer's address. |
         | Port Number | The port set on the analyzer. |
         | Analyzer Type | The analyzer model. |
@@ -464,22 +463,22 @@ be connected to the lab network.
             first address from `hostname -I`. In step 19, enter that address as
             the host, port `3306`, database `interfacing`, username
             `interfacing` and that password. Open the tool once so it creates
-            its tables, then run `intelis interface-migrate`.
+            its tables.
 
     11. Answer the questions:
 
         | Question | Answer |
         | --- | --- |
-        | How does the Interface Tool store the results InteLIS should read? | Press Enter. **MySQL on this machine** is already selected. |
+        | How does the Interfacing Tool store the results InteLIS should read? | Press Enter. **MySQL on this machine** is already selected. |
         | MySQL port | Press Enter (`3306`). |
         | Database name | Press Enter (`interfacing`). |
-        | Where is the Interface Tool installed? | **On another computer on the lab network**. |
+        | Where is the Interfacing Tool installed? | **On another computer on the lab network**. |
         | Address of the computer running the tool | The address from step 9. Do not enter `%`, which admits every computer. |
         | Enter a MySQL administrator account to use? | Asked only when setup finds no account of its own. Press Enter (Yes), then type the MySQL `root` username and password. |
         | Name for the account the tool and InteLIS will use | Press Enter (`interfacing`). |
         | Reuse it, and set its password to the one chosen next? | Asked only when the account exists already. Answer **Yes** if an earlier interfacing setup made it. Otherwise press Enter (No) and choose another name. |
         | Password for that account | Press Enter. **Use a generated password** is already selected. |
-        | Open port 3306 to the tool's address? | Asked only when the firewall is on and the port is closed. Press Enter (Yes). |
+        | Open port 3306 to TOOL_IP? | Asked only when the firewall is on and the port is closed. TOOL_IP is the address from step 9. Press Enter (Yes). |
 
         ??? info "If the interfacing database is on another server"
 
@@ -497,7 +496,7 @@ be connected to the lab network.
             details, not the values below.
 
     12. Wait for `interfacing is now switched on`. Setup then prints a table
-        under **Enter these in the Interface Tool**. Write the five values
+        under **Enter these in the Interfacing Tool**. Write the five values
         down. The host is this machine's address on the lab network.
 
     ### Let the tool's computer reach MySQL
@@ -606,8 +605,8 @@ be connected to the lab network.
 
             The result has not reached the database InteLIS reads.
 
-            - Check the tool's **Sync Status** column. If every result is
-              `Pending`, repeat step 20.
+            - Check the tool's **Synced to LIS** column. If every result is
+              `Not yet`, repeat step 20.
             - Only final results and failed runs are read. A result the
               analyzer has not finalised is left in the tool.
 

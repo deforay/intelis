@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Restaurer depuis une sauvegarde
 
@@ -204,12 +204,10 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             affiché.
 
             Sinon, la base de données est peut-être vide maintenant. Remettre
-            en place la copie de sécurité. Le script affiche la commande à
-            utiliser. Remplacer `<pre-restore-file>` par le nom du fichier
-            commençant par `pre-restore-vlsm-` dans
-            `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` sur les
-            installations plus anciennes). Lancer la commande, puis contacter
-            le support avec le message affiché.
+            en place la copie de sécurité. Lancer la commande affichée après
+            `To put it back:`. Elle nomme déjà la copie de sécurité, un fichier
+            commençant par `pre-restore-vlsm-`. Contacter ensuite le support
+            avec le message affiché.
 
         ??? failure "S'il indique `The database is restored, but its migrations did not finish`"
 
@@ -391,8 +389,9 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
 
         ??? failure "Si le fichier est signalé comme endommagé"
 
-            Ne pas taper le nom de la sauvegarde à la confirmation. Relancer
-            `intelis restore` et choisir une autre date.
+            Le script s'arrête avec `The chosen backup is damaged`, avant de
+            demander la confirmation. La base de données n'est pas modifiée.
+            Relancer `intelis restore` et choisir une autre date.
 
     ### Restaurer la base de données
 
@@ -411,12 +410,10 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             affiché.
 
             Sinon, la base de données est peut-être vide maintenant. Remettre
-            en place la copie de sécurité. Le script affiche la commande à
-            utiliser. Remplacer `<pre-restore-file>` par le nom du fichier
-            commençant par `pre-restore-vlsm-` dans
-            `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` sur les
-            installations plus anciennes). Lancer la commande, puis contacter
-            le support avec le message affiché.
+            en place la copie de sécurité. Lancer la commande affichée après
+            `To put it back:`. Elle nomme déjà la copie de sécurité, un fichier
+            commençant par `pre-restore-vlsm-`. Contacter ensuite le support
+            avec le message affiché.
 
         ??? failure "S'il indique `The database is restored, but its migrations did not finish`"
 
@@ -595,12 +592,10 @@ enregistrements saisis après la création de la sauvegarde sont perdus.
             affiché.
 
             Sinon, la base de données est peut-être vide maintenant. Remettre
-            en place la copie de sécurité. Le script affiche la commande à
-            utiliser. Remplacer `<pre-restore-file>` par le nom du fichier
-            commençant par `pre-restore-vlsm-` dans
-            `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` sur les
-            installations plus anciennes). Lancer la commande, puis contacter
-            le support avec le message affiché.
+            en place la copie de sécurité. Lancer la commande affichée après
+            `To put it back:`. Elle nomme déjà la copie de sécurité, un fichier
+            commençant par `pre-restore-vlsm-`. Contacter ensuite le support
+            avec le message affiché.
 
         ??? failure "S'il indique `The database is restored, but its migrations did not finish`"
 

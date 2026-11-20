@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Lancer des commandes sur un laboratoire depuis le STS
 
@@ -82,7 +82,7 @@ Pour le fonctionnement du plan de commande et ses raisons, voir la
     | Champ | Affiché pour | Valeur à saisir |
     | --- | --- | --- |
     | Module (facultatif) | Renvoyer les résultats, Renvoyer les demandes | Un module, ou laisser **Tous les modules activés**. |
-    | Renvoyer les données des N derniers jours | Renvoyer les résultats, Renvoyer les demandes | Un nombre de jours de 1 à 3650. Laisser vide pour n'envoyer que les enregistrements pas encore synchronisés. **Renvoyer les demandes** ignore ce champ. |
+    | Renvoyer les données des N derniers jours | Renvoyer les résultats, Renvoyer les demandes | Un nombre de jours de 1 à 3650. Laisser vide pour n'envoyer que les enregistrements pas encore synchronisés. Pour **Renvoyer les demandes**, le laboratoire récupère de nouveau toutes les demandes modifiées pendant ces jours, y compris celles déjà reçues. |
     | Only these sample statuses (optional) | Renvoyer les résultats | Les statuts à envoyer, par exemple **Rejeté**. Tout laisser décoché pour envoyer tous les statuts. Un laboratoire sur une version plus ancienne ne peut pas utiliser ce champ avant d'être mis à jour. |
     | Préparation de la mise en scène à mettre en œuvre | Appliquer une mise à jour préparée | La version préparée à installer. |
     | Pas avant (facultatif) | Mise à niveau (préparation + application automatique), Préparer la mise à niveau uniquement, Appliquer une mise à jour préparée | L'heure la plus tôt à laquelle le laboratoire peut commencer, selon l'horloge du STS. Laisser vide pour commencer à la synchronisation suivante. |

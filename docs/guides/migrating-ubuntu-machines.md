@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Migrate from one Ubuntu machine to another
 
@@ -50,7 +50,7 @@ internet.
               Interface Tool.
             - When asked for the location, enter `/var/www/intelis/backups/db`.
               On older installs, enter `/var/www/vlsm/backups/db`.
-            - Wait for `Script completed.` If it prints
+            - Wait for `Backup complete.` If it prints
               `These databases were NOT backed up`, stop.
 
         ??? failure "If MySQL will not start"

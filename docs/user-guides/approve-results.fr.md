@@ -3,8 +3,8 @@ description: Accepter, rejeter, marquer perdu ou annuler des échantillons de ch
 audience: [lab-staff, lab-supervisor]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 
 # Vérifier et approuver les résultats
@@ -131,6 +131,12 @@ NOURRISSON (EID) → Gestion des résultats des tests**.
             résultat. Régler plutôt **Afficher les échantillons qui sont** sur
             **Peut être annulé**. Cette liste montre tous les échantillons qui ne
             sont pas déjà Expiré ou Annulée.
+
+            Un utilisateur du laboratoire peut aussi sélectionner **Rejeter**
+            sur la ligne de l'échantillon dans **Afficher les demandes de
+            test** ou **Saisir le résultat manuellement**. La fenêtre
+            **Rejeter l'échantillon** demande le **Motif de rejet**, **Rejeté
+            le**, **Rejet approuvé par** et **Rejet approuvé le**.
 
     3. Filtrer jusqu'à l'échantillon, par exemple par **Code du lot** ou **Nom
        de la structure**.

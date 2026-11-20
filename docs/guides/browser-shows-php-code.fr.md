@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Le navigateur affiche du code PHP au lieu d'InteLIS
 
@@ -68,8 +68,8 @@ ou propose de télécharger un fichier, au lieu de la page de connexion d'InteLI
 ## Si le site s'ouvre mais affiche une erreur
 
 Le serveur web fonctionne et le problème vient de l'application, le plus souvent
-de la base de données. Le doctor le détecte et propose de lancer le doctor de la
-base de données. Pour y aller directement, lancer :
+de la base de données. Le doctor le détecte et lance le doctor de la base de
+données, qui demande avant chaque réparation. Pour y aller directement, lancer :
 
 ```bash
 sudo intelis fix-database

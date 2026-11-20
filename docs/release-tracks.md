@@ -4,8 +4,8 @@ audience: [system-admin, developer]
 module: [all]
 type: reference
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Release tracks
 
@@ -32,6 +32,9 @@ Verify is defined in `.github/workflows/no-conflict-markers.yml`. A commit
 passes Verify when all of these hold:
 
 - No file contains a conflict marker.
+- The pushed commits pass the attribution check and add no debugging leftovers.
+- `composer.json` is valid, PHP has every extension the packages need, and no
+  package has a known security advisory.
 - Every PHP file parses.
 - The DI container compiles, and `composer check-invariants` passes.
 - The unit tests pass.
@@ -71,7 +74,9 @@ commit that reverts it.
 
 The version number is the schema and feature level. `composer.json` holds it,
 `app/system/version.php` is generated from it, and the database records it in
-`system_config.sc_version`. `intelis check` compares the two.
+`system_config.sc_version`. `intelis check` compares `sc_version` with the
+newest migration file. The page footer warns when `sc_version` differs from the
+app version.
 
 A version number does not control delivery. A commit reaches labs through
 `stable` whether or not the version changes. The page footer shows the version

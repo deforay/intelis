@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # MySQL ne démarre pas
 
@@ -42,7 +42,7 @@ MySQL refuse de démarrer. InteLIS ne peut donc pas s'ouvrir et rien ne peut
 
     [Le doctor trouve un réglage placé au-dessus du premier en-tête de la configuration MySQL, puis le répare.](../assets/casts/mysql-doctor.cast){ .asciicast }
 
-    ??? failure "S'il affiche `The database still will not start.`"
+    ??? failure "S'il affiche `The database still does not start.`"
 
         Le doctor affiche les dernières erreurs écrites par MySQL, sous
         **Last errors the database wrote**.

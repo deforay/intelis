@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: windows
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Install InteLIS on a Windows machine
 
@@ -17,7 +17,7 @@ rights. The installation goes into `C:\wamp64\www\vlsm` and opens at
 
 InteLIS requires **PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)** for both WampServer and the
 command line. PHP 8.2, 8.3, and older versions are not supported. This guide
-uses PHP 8.4 paths. If you use PHP 8.5, substitute its installed folder name.
+uses PHP 8.4 paths. With PHP 8.5, substitute its installed folder name.
 
 ??? info "Why the folder is named `vlsm`"
 
@@ -59,10 +59,10 @@ on until the check passes.**
     | Setting | New value |
     | --- | --- |
     | `memory_limit` | `2G`, or higher if the machine allows |
-    | `post_max_size` | `500M` |
-    | `upload_max_filesize` | `500M` |
+    | `post_max_size` | `1G` |
+    | `upload_max_filesize` | `1G` |
     | `max_execution_time` | `1200` |
-    | `error_reporting` | `E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED & ~E_WARNING` |
+    | `error_reporting` | `E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING` |
     | `;openssl.cafile=` | `openssl.cafile='C:\wamp64\cacert.pem'` (remove the leading `;`) |
     | `;curl.cainfo =` | `curl.cainfo ='C:\wamp64\cacert.pem'` (remove the leading `;`) |
 
@@ -161,7 +161,7 @@ accepts `root` with the new password.
 31. Select **SQL**, run this, and select **Go**:
 
     ```sql
-    CREATE DATABASE `vlsm` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    CREATE DATABASE `vlsm` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
     ```
 
 32. Select the `vlsm` database in the left panel.

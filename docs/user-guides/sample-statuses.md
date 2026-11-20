@@ -3,8 +3,8 @@ description: Reference list of viral load sample statuses, what sets each one, a
 audience: [lab-staff, lab-supervisor, lab-admin]
 module: [vl]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 
 # Sample statuses
@@ -35,11 +35,11 @@ sets each one, and how each one counts in reports.
 | Status | Set by |
 | --- | --- |
 | Sample Currently Registered at Health Center | Registering a request at a health facility |
-| Sample Registered at Testing Lab | Registering a request at a lab, activating a manifest, or sending a sample for retest |
+| Sample Registered at Testing Lab | Registering a request at a lab, activating a manifest, sending a sample for retest, or clearing the result or the rejection on the request or result form when the sample has a lab reception date |
 | Sample Referred to another Lab | No viral load screen sets it. It is used by TB and Custom Tests referrals |
 | Awaiting Approval | Recording a result, or correcting one on the result form |
 | Accepted | Approving a result in **Manage Results Status** or on the **Imported Results** screen, automatic approval of results sent in by the Interface Tool where the lab is configured for it, automatic approval of results received through the API where that option is on, or recovering a result on the **Failed/Hold Samples** page |
-| Rejected | Recording a rejection on the result form, applying **Rejected** in **Manage Results Status**, or choosing **Rejected** on the **Imported Results** screen |
+| Rejected | Recording a rejection on the result form, selecting **Reject** on a sample with no result in **View Test Requests** or **Enter Result Manually**, applying **Rejected** in **Manage Results Status**, or choosing **Rejected** on the **Imported Results** screen |
 | Failed/Invalid | Recording a result that reads as a failure, choosing **Failed** on the **Imported Results** screen, or applying **Accepted** to a result that reads as a failure |
 | Hold | No viral load screen sets it. Choosing **Hold** on the **Imported Results** screen sets that row's result aside and leaves the sample's status unchanged |
 | Sample Reordered | No current workflow. Retesting returns a sample to Sample Registered at Testing Lab. The **Sample Reordered** checkbox on the request form records a separate flag, not this status |

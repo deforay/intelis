@@ -4,8 +4,8 @@ audience: [lab-staff, lab-supervisor, lab-admin, system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-26
-reviewed_against: 5.8.3
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Where to start
 

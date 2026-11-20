@@ -3,8 +3,8 @@ description: Explique le parcours d'un échantillon de charge virale dans InteLI
 audience: [lab-staff, lab-supervisor, requesting-facility]
 module: [vl]
 type: explanation
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Le parcours d'un échantillon dans InteLIS
 

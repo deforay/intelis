@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-23
-reviewed_against: 5.8.2
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Browser shows PHP code instead of InteLIS
 
@@ -61,8 +61,8 @@ a file to download, instead of the InteLIS sign-in page.
 ## If the site opens but shows an error
 
 The web server works and the fault is in the application, most often the
-database. The doctor detects this and offers to run the database doctor. To go
-straight there, run:
+database. The doctor detects this and runs the database doctor, which asks
+before each repair. To go straight there, run:
 
 ```bash
 sudo intelis fix-database

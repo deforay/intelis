@@ -3,8 +3,8 @@ description: Trace record changes, confirm that data sync and analyzers are work
 audience: [lab-admin, system-admin, lab-supervisor]
 module: [all]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Monitor and audit InteLIS
 

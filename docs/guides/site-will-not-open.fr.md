@@ -4,8 +4,8 @@ audience: [system-admin, lab-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Le site ne s'ouvre pas : utiliser le doctor
 
@@ -78,7 +78,7 @@ un autre ordinateur.
             sudo switch-php 8.4 --force
             ```
 
-        ??? info "Si l'encadré indique `The database has stopped`"
+        ??? info "Si l'encadré indique `The database is not running.`"
 
             Le doctor vérifie ensuite la base de données, dans une section
             intitulée **Database**. Quand aucune des causes connues ne

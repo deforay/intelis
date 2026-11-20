@@ -4,8 +4,8 @@ audience: [lab-staff, lab-supervisor, lab-admin, system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Par où commencer
 
@@ -29,7 +29,7 @@ Trouver le problème dans l'un des deux tableaux ci-dessous. Chaque ligne mène
 | Un encadré **À vérifier** s'affiche au-dessus de la liste des demandes | [Agir sur l'encadré À vérifier](../user-guides/signing-in.md#agir-sur-lencadre-a-verifier) |
 | Un échantillon manque dans la liste lors de la création d'un lot | **Si un échantillon manque dans la liste** dans [Créer un lot pour le test](../user-guides/batch-samples.md) |
 | Un échantillon manque dans la liste lors de la création d'un manifeste | **Si un échantillon manque dans la liste** dans [Envoyer des échantillons à un laboratoire avec un manifeste](../user-guides/send-samples-on-a-manifest.md) |
-| **Edit** est grisé sur un manifeste | **Si Edit est grisé** dans [Envoyer des échantillons à un laboratoire avec un manifeste](../user-guides/send-samples-on-a-manifest.md) |
+| **Modifier** est grisé sur un manifeste | **Si Modifier est grisé** dans [Envoyer des échantillons à un laboratoire avec un manifeste](../user-guides/send-samples-on-a-manifest.md) |
 | Un message s'affiche à la place des échantillons à la réception d'un manifeste | **Si un message apparaît à la place des échantillons** dans [Réceptionner des échantillons envoyés avec un manifeste](../user-guides/receive-referred-samples.md) |
 | Les résultats de l'automate n'apparaissent pas dans InteLIS | **Si les résultats n'arrivent pas** dans [Saisir les résultats de charge virale](../user-guides/capture-results.md), puis [Les résultats des automates n'arrivent pas](interfacing-results-not-arriving.md) |
 | Les résultats importés affichent **En attente d'approbation** | **Si les résultats affichent Awaiting Approval** dans [Saisir les résultats de charge virale](../user-guides/capture-results.md) |

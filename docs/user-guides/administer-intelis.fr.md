@@ -3,8 +3,8 @@ description: Relie chaque tâche du menu ADMIN à son guide et liste les modific
 audience: [lab-admin, system-admin]
 module: [all]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Administrer InteLIS
 
@@ -30,7 +30,7 @@ d'[installation](../guides/installing-intelis-on-ubuntu.md) et de
 | Paramètres → Stockage en laboratoire | Les congélateurs et autres lieux de stockage des échantillons du laboratoire | [Listes du formulaire de demande](admin-module-configuration.md) |
 | Paramètres → Configuration générale | Les paramètres qui s'appliquent à toute l'installation | [Configuration générale](admin-general-configuration.md) |
 | Surveillance | Piste d'audit, activité, utilisation des pages, synchronisation, fichiers journaux | [Surveillance et audit](admin-monitoring.md) |
-| Rapports | Indicateurs de performance du laboratoire, Activité des instruments, Réseau de référencement des échantillons | [Surveillance et audit](admin-monitoring.md) |
+| Rapports | Indicateurs de performance du laboratoire, Activité des instruments, Réseau de référence des échantillons | [Surveillance et audit](admin-monitoring.md) |
 
 **Paramètres des tests** ne montre un onglet que pour les tests actifs sur
 l'installation.
