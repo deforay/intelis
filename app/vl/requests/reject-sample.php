@@ -14,6 +14,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\SampleAccessService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -33,7 +34,10 @@ try {
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
-    $vlSampleId = (int) MiscUtility::desqid((string) ($_POST['id'] ?? ''));
+     /** @var SampleAccessService $sampleAccess */
+     $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
+    $vlSampleId = $sampleAccess->decode(($_POST['id'] ?? ''));
     $row = null;
     $reasonId = 0;
     $rejectedOn = $approvedOn = $approvedBy = null;

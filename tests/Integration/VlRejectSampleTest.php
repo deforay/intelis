@@ -7,7 +7,7 @@ namespace Tests\Integration;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-use App\Utilities\MiscUtility;
+use App\Services\SampleAccessService;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\LegacyAppHarness;
@@ -120,8 +120,9 @@ final class VlRejectSampleTest extends TestCase
      */
     private function reject(int $id, array $post = []): array
     {
+        $access = ContainerRegistry::get(SampleAccessService::class);
         $request = LegacyAppHarness::withPost($post + [
-            'id' => MiscUtility::sqid($id),
+            'id' => $access->encode($id),
             'rejectionReason' => '1',
             'rejectionDate' => '2026-10-02',
             'approvedBy' => 'user-2',
