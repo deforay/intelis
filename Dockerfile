@@ -11,14 +11,19 @@
 # Matching the fleet's operating system means the container exercises the same
 # paths a lab does, rather than an approximation of them.
 #
-# UBUNTU_VERSION is overridable at build time:
-#   docker build --build-arg UBUNTU_VERSION=26.04 --build-arg PHP_VERSION=8.5 .
-# 24.04 ships PHP 8.3 and 26.04 no longer ships 8.4, so PHP comes from the
-# ondrej/php PPA in both cases and the version is pinned explicitly.
-ARG UBUNTU_VERSION=24.04
+# The default follows the recommended Ubuntu for a new lab machine: 26.04 LTS
+# with PHP 8.5. UBUNTU_VERSION is overridable at build time:
+#   docker build --build-arg UBUNTU_VERSION=24.04 --build-arg PHP_VERSION=8.4 .
+# 24.04 ships PHP 8.3, so on 24.04 PHP comes from the ondrej/php PPA. 26.04
+# ships PHP 8.5 itself and no longer has 8.4 anywhere. The version is pinned
+# explicitly either way.
+#
+# PHP 8.5 builds OPcache into PHP itself, so php8.5-opcache does not exist and
+# asking for it stops apt. The package is requested only before 8.5.
+ARG UBUNTU_VERSION=26.04
 FROM ubuntu:${UBUNTU_VERSION} AS php-apache
 
-ARG PHP_VERSION=8.4
+ARG PHP_VERSION=8.5
 ENV PHP_VERSION=${PHP_VERSION}
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -36,7 +41,10 @@ RUN apt-get update && \
         ca-certificates curl gnupg lsb-release software-properties-common && \
     add-apt-repository -y ppa:ondrej/php && \
     apt-get update && \
+    OPCACHE_PACKAGE="" && \
+    if dpkg --compare-versions "${PHP_VERSION}" lt 8.5; then OPCACHE_PACKAGE="php${PHP_VERSION}-opcache"; fi && \
     apt-get install -y --no-install-recommends \
+        ${OPCACHE_PACKAGE} \
         acl \
         apache2 \
         cron \
@@ -56,7 +64,6 @@ RUN apt-get update && \
         php${PHP_VERSION}-intl \
         php${PHP_VERSION}-mbstring \
         php${PHP_VERSION}-mysql \
-        php${PHP_VERSION}-opcache \
         php${PHP_VERSION}-xml \
         php${PHP_VERSION}-zip \
         rsync \
