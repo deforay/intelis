@@ -4,6 +4,7 @@
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\TestsService;
 use App\Registries\ContainerRegistry;
 
 $title = _translate("Missing Sample Receipts - Detailed View");
@@ -24,6 +25,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 
 $testType = $_GET['testType'] ?? 'vl';
 $dateRange = $_GET['dateRange'] ?? '';
+$primaryColumn = TestsService::getPrimaryColumn($testType);
 
 ?>
 
@@ -219,8 +221,9 @@ $dateRange = $_GET['dateRange'] ?? '';
                 "data": null,
                 "orderable": false,
                 "render": function (data, type, row) {
+                    primaryColumn = "<?php echo $primaryColumn; ?>";
                     return '<div class="btn-group">' +
-                        '<button class="btn btn-xs btn-primary" onclick="followUpSample(\'' + row.sample_code + '\');" title="Follow Up">' +
+                        '<button class="btn btn-xs btn-primary" onclick="followUpSample(\'' + row.primaryColumn + '\');" title="Follow Up">' +
                         '<em class="fa-solid fa-search"></em></button>' +
                         '<button class="btn btn-xs btn-info" onclick="addNote(\'' + row.sample_code + '\');" title="Add Note">' +
                         '<em class="fa-solid fa-sticky-note"></em></button>' +

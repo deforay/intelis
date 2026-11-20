@@ -266,7 +266,7 @@ try {
                     $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
                }
                if ($canRejectSamples && VlService::isRejectableFromListing($aRow, $general->isLISInstance(), $canEditLocked)) {
-                    $print .= '<a href="javascript:void(0);" class="btn btn-danger btn-xs reject-sample" style="margin-right: 2px;" title="' . _htmlTranslate("Reject Sample") . '" data-id="' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" data-code="' . htmlspecialchars((string) ($aRow['sample_code'] ?: $aRow['remote_sample_code']), ENT_QUOTES) . '"><em class="fa-solid fa-ban"></em> ' . _htmlTranslate("Reject") . '</a>';
+                    $print .= '<a href="javascript:void(0);" class="btn btn-danger btn-xs reject-sample" style="margin-right: 2px;" title="' . _htmlTranslate("Reject Sample") . '" data-id="' . $sampleAccess->encode((int) $aRow['vl_sample_id']) . '" data-code="' . htmlspecialchars((string) ($aRow['sample_code'] ?: $aRow['remote_sample_code']), ENT_QUOTES) . '"><em class="fa-solid fa-ban"></em> ' . _htmlTranslate("Reject") . '</a>';
                }
           }
 
