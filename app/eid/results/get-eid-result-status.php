@@ -77,51 +77,20 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 
-$start_date = '';
-$end_date = '';
-if (!empty($_POST['sampleCollectionDate'])) {
-    $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
-
-$tested_start_date = '';
-$tested_end_date = '';
-if (!empty($_POST['sampleTestDate'])) {
-    $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
-
-    if (isset($s_t_date[0]) && trim($s_t_date[0]) !== "") {
-        $tested_start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
-    }
-    if (isset($s_t_date[1]) && trim($s_t_date[1]) !== "") {
-        $tested_end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
-    }
-}
+[$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+[$tested_start_date, $tested_end_date] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
 
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-    $sWhere[] =  '  b.batch_code LIKE "%' . $db->escapeLike($_POST['batchCode']) . '%"';
+    $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
 }
 if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
     $sWhere[] = ' vl.sample_package_code = "' . $db->escape((string) $_POST['manifestCode']) . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    if (trim((string) $start_date) === trim((string) $end_date)) {
-        $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
-    } else {
-        $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-    }
+    $sWhere[] = " vl.sample_collection_date BETWEEN '" . $db->escape($start_date) . "' AND '" . $db->escape($end_date) . "'";
 }
 if (!empty($_POST['sampleTestDate'])) {
-    if (trim((string) $tested_start_date) === trim((string) $tested_end_date)) {
-        $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $tested_start_date . '"';
-    } else {
-        $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $tested_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $tested_end_date . '"';
-    }
+    $sWhere[] = " vl.sample_tested_datetime BETWEEN '" . $db->escape($tested_start_date) . "' AND '" . $db->escape($tested_end_date) . "'";
 }
 if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
     $sWhere[] =  '  f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';

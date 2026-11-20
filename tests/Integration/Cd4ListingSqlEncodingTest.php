@@ -390,9 +390,18 @@ final class Cd4ListingSqlEncodingTest extends TestCase
     }
 
     #[RunInSeparateProcess]
-    public function testResultStatusStillFindsPartOfABatchCode(): void
+    public function testResultStatusFindsAWholeBatchCode(): void
     {
         self::assertSame(['CD4001'], $this->listed(self::RESULT_STATUS, [
+            'batchCode' => 'B-ONE',
+        ]));
+    }
+
+    #[RunInSeparateProcess]
+    public function testResultStatusDoesNotMatchPartOfABatchCode(): void
+    {
+        // The batch filter is a dropdown of exact codes: B1 must not list B12.
+        self::assertSame([], $this->listed(self::RESULT_STATUS, [
             'batchCode' => 'ONE',
         ]));
     }
