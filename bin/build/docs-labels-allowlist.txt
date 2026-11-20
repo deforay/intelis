@@ -1,0 +1,111 @@
+# Bold text in docs/user-guides and docs/guides that check-docs-labels.py
+# cannot find in this repository, and that is still right.
+#
+# One label per line, as the page shows it. Case, spacing and a trailing
+# colon do not matter. Keep each label under the heading of where it comes
+# from, so a reviewer can check it against that screen.
+
+# The Interface Tool. Its screens live in the vlsm-interfacing repository,
+# and it is English only, so the French pages quote the same labels.
++ Add Instrument
+ASTM (with checksum)
+Backup & Restore
+Enter these in the Interface Tool
+Export Settings
+Import Settings
+Instrument Name/Code
+Save Settings
+Skip Sign-in and Connect at Startup
+TCP Client
+TCP Server
+Test Connection
+
+# WampServer and MySQL on Windows.
+Console MySQL
+Extensions PHP
+my.ini
+MySQL Console
+Redémarrer les services
+Restart All Services
+
+# Windows, in English and in French.
+Add a user without a Microsoft account
+Add account
+Adresse IPv4
+Advanced Sharing
+Ajouter un compte
+Ajouter un utilisateur sans compte Microsoft
+Allow an app or feature through Windows Defender Firewall
+Arrêter la tâche si elle s'exécute plus de
+Autoriser une application ou une fonctionnalité via le Pare-feu Windows Defender
+Autres utilisateurs
+Bureau
+Command Prompt
+Control Panel
+Create Task
+Créer une tâche
+Déclencheurs
+Dossier personnel
+Exécuter même si l'utilisateur n'est pas connecté
+Explorateur de fichiers
+File Explorer
+I don't have this person's sign-in information
+Indéfiniment
+Invite de commandes
+IPv4 Address
+Je ne dispose pas des informations de connexion de cette personne
+L'utilisateur doit changer le mot de passe à la prochaine ouverture de session
+Le mot de passe n'expire jamais
+Nom du partage
+Panneau de configuration
+Pare-feu Windows Defender
+Partage
+Partage avancé
+Partage de fichiers et d'imprimantes
+Partager ce dossier
+Password never expires
+Planificateur de tâches
+Privé
+Propriétés
+Remplacer les fichiers dans la destination
+Repeat task every
+Replace the files in the destination
+Répéter la tâche toutes les
+Run whether user is logged on or not
+Start in
+Stop task if it runs longer than
+Task Scheduler
+Terminal (Admin)
+Terminal (administrateur)
+Tous les jours
+User must change password at next logon
+Windows Defender Firewall
+
+# Ubuntu's Disks app.
+Disques
+Formater la partition
+
+# Sidebar sections of this docs site.
+Sauvegarde et restauration
+
+# Labels InteLIS builds from parts, or quotes in part.
+Cet échantillon faisait partie du pool GeneXpert ..., qui n'était pas négatif
+First Name + Last Name
+Pool 1
+Prénom + Nom
+Préparée: vX.Y.Z
+Staged: vX.Y.Z
+Téléverser Charge virale du VIH Fichier
+This sample was in GeneXpert pool ..., which was not negative
+Upload HIV Viral Load File
+
+# Requirements and lead-ins set in bold, not labels.
+Avant de commencer, vérifier ces deux points :
+Before starting, check both of these:
+PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)
+PHP 8.4 (8.4.27 ou plus récent) ou PHP 8.5 (8.5.12 ou plus récent)
+Ubuntu 22.04 LTS or later
+Ubuntu 22.04 LTS ou plus récent
+Ubuntu 24.04 LTS or a later LTS release
+Ubuntu 24.04 LTS ou une version LTS ultérieure
+Ubuntu 24.04 LTS ou une version plus récente

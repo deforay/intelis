@@ -11,10 +11,13 @@ on:
       - 'mkdocs-requirements.txt'
       - '.github/workflows/api-docs.yml'
       - 'bin/build/check-docs-translations.sh'
+      - 'bin/build/check-docs-labels.py'
+      - 'bin/build/docs-labels-allowlist.txt'
   # A pull request that touches the docs gets the same build and checks, so a
-  # broken link or a page left untranslated stops it before it merges. Only a
-  # push to master deploys. Kept out of Verify on purpose: Publish advances
-  # stable from Verify, and a docs page should never hold back a release.
+  # broken link, a page left untranslated or a stale screen label stops it
+  # before it merges. Only a push to master deploys. Kept out of Verify on
+  # purpose: Publish advances stable from Verify, and a docs page should never
+  # hold back a release.
   pull_request:
     paths:
       - 'docs/**'
@@ -22,6 +25,8 @@ on:
       - 'mkdocs-requirements.txt'
       - '.github/workflows/api-docs.yml'
       - 'bin/build/check-docs-translations.sh'
+      - 'bin/build/check-docs-labels.py'
+      - 'bin/build/docs-labels-allowlist.txt'
   workflow_dispatch:
 
 # No token scopes by default; each job grants itself only what it needs.
@@ -57,6 +62,9 @@ jobs:
 
       - name: Every page has a French twin with the same shape
         run: bash bin/build/check-docs-translations.sh
+
+      - name: Every label a guide quotes exists in the app
+        run: python3 bin/build/check-docs-labels.py
 
       - name: Build site
         run: mkdocs build --strict
