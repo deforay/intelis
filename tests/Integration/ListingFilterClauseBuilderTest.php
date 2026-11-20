@@ -137,6 +137,43 @@ final class ListingFilterClauseBuilderTest extends TestCase
         $this->assertSame([1, 2, 3, 4, 5], $ids(['notBatched']));
     }
 
+    public function testFullNameMatchesFirstAndLastWithASpace(): void
+    {
+        $db = LegacyAppHarness::db();
+        $db->rawQuery(
+            'CREATE TABLE p (id INT PRIMARY KEY, patient_first_name VARCHAR(40) NULL,'
+            . ' patient_middle_name VARCHAR(40) NULL, patient_last_name VARCHAR(40) NULL)'
+        );
+        $db->rawQuery(
+            "INSERT INTO p VALUES
+                (1, 'John', NULL, 'Doe'), (2, 'John', '', 'Doe'), (3, 'John', '  ', 'Doe'),
+                (4, 'John', 'Paul', 'Doe'), (5, 'Jane', NULL, 'Doe'), (6, 'Johnny', NULL, 'Smith'),
+                (7, NULL, NULL, 'Doe')"
+        );
+        $name = Filters::fullName('vl.patient_first_name', 'vl.patient_middle_name', 'vl.patient_last_name');
+        $filters = ['patientName' => [$name, Filters::CONTAINS]];
+        $ids = static function (string $value) use ($db, $filters): array {
+            $where = implode(' AND ', Filters::clauses($db, ['patientName' => $value], $filters));
+            $rows = $db->rawQuery("SELECT vl.id FROM p AS vl WHERE $where ORDER BY vl.id");
+            return array_map(static fn(array $row): int => (int) $row['id'], $rows);
+        };
+
+        $this->assertSame([1, 2, 3], $ids('John Doe'));
+        $this->assertSame([4], $ids('John Paul Doe'));
+        $this->assertSame([1, 2, 3, 4, 5, 7], $ids('Doe'));
+        $this->assertSame([1, 2, 3, 4, 6], $ids('John'));
+        $this->assertSame([], $ids('JohnDoe'));
+        $this->assertSame([], $ids('%" OR "1"="1'));
+    }
+
+    public function testFullNameWithTwoColumns(): void
+    {
+        $this->assertSame(
+            "CONCAT_WS(' ', NULLIF(TRIM(vl.patient_name),''), NULLIF(TRIM(vl.patient_surname),''))",
+            Filters::fullName('vl.patient_name', 'vl.patient_surname')
+        );
+    }
+
     public function testAnUnknownKindIsRefused(): void
     {
         $this->expectException(\InvalidArgumentException::class);

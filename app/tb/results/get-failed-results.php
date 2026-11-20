@@ -130,7 +130,7 @@ try {
         'state' => ['f.facility_state_id', ListingFilterClauseBuilder::EQUALS],
         'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
         'patientId' => ['vl.patient_id', ListingFilterClauseBuilder::CONTAINS],
-        'patientName' => ["CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,''))", ListingFilterClauseBuilder::CONTAINS],
+        'patientName' => [ListingFilterClauseBuilder::fullName('vl.patient_name', 'vl.patient_surname'), ListingFilterClauseBuilder::CONTAINS],
         'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
     ])];
     if (isset($_POST['status']) && !empty($_POST['status'])) {

@@ -63,6 +63,22 @@ final class ListingFilterClauseBuilder
         return $clauses;
     }
 
+    /**
+     * A patient's full name as one SQL expression, for a patient-name filter.
+     *
+     * The parts are joined with single spaces, so "John Doe" matches a patient
+     * saved as first name John and last name Doe. A NULL, empty or blank part
+     * is skipped, so a missing middle name does not leave a double space.
+     *
+     * The columns are written into the SQL as given: pass column names only,
+     * never request values.
+     */
+    public static function fullName(string ...$columns): string
+    {
+        $parts = array_map(static fn(string $column): string => "NULLIF(TRIM($column),'')", $columns);
+        return "CONCAT_WS(' ', " . implode(', ', $parts) . ')';
+    }
+
     /** Request grid quick filter: samples not yet in a batch. */
     public const NOT_BATCHED = 'notBatched';
 

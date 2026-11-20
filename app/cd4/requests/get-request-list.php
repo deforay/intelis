@@ -159,7 +159,7 @@ try {
           'srcOfReqModel' => ['vl.source_of_request', ListingFilterClauseBuilder::LIKE],
           'labIdModel' => ['vl.lab_id', ListingFilterClauseBuilder::LIKE],
           'patientId' => ['vl.patient_art_no', ListingFilterClauseBuilder::LIKE],
-          'patientName' => ["CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", ListingFilterClauseBuilder::CONTAINS],
+          'patientName' => [ListingFilterClauseBuilder::fullName('vl.patient_first_name', 'vl.patient_middle_name', 'vl.patient_last_name'), ListingFilterClauseBuilder::CONTAINS],
           'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
      ])];
      if (!empty($_POST['sampleCollectionDate'])) {

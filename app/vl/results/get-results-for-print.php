@@ -132,7 +132,7 @@ try {
           'district' => ['f.facility_district_id', ListingFilterClauseBuilder::EQUALS],
           'state' => ['f.facility_state_id', ListingFilterClauseBuilder::EQUALS],
           'patientId' => ['vl.patient_art_no', ListingFilterClauseBuilder::CONTAINS],
-          'patientName' => ["CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", ListingFilterClauseBuilder::CONTAINS],
+          'patientName' => [ListingFilterClauseBuilder::fullName('vl.patient_first_name', 'vl.patient_middle_name', 'vl.patient_last_name'), ListingFilterClauseBuilder::CONTAINS],
      ])];
 
      if (!empty($_POST['sampleCollectionDate'])) {
