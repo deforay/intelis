@@ -13,7 +13,7 @@ Move a lab to a new Ubuntu machine, or rebuild a machine that has died, from the
 old machine's backups.
 
 The new machine must run **Ubuntu 24.04 LTS or later** and be connected to the
-internet.
+internet. Use Ubuntu 26.04 LTS for the new machine.
 
 **Choose the situation that fits, then follow its steps from top to bottom.**
 

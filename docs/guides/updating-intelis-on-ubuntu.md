@@ -13,7 +13,7 @@ Update an InteLIS lab machine to the current release.
 
 The machine must run **Ubuntu 22.04 LTS or later**, have an internet
 connection, and have an account with `sudo` rights. A machine still on 22.04
-should move to 24.04 LTS with
+should move to 26.04 LTS, or 24.04 LTS, with
 [Migrate from one Ubuntu machine to another](migrating-ubuntu-machines.md).
 
 The current release requires **PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)**. PHP 8.2, 8.3,

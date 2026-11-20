@@ -6,7 +6,7 @@
 # script never runs against an older copy than the one it was written for.
 # To raise it everywhere: php bin/dev/bump-shared-fn-version.php
 # bin/build/check-shell-loaders.php fails a push that changes this file without it.
-SHARED_FN_VERSION=3
+SHARED_FN_VERSION=4
 
 # Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
 export LANG="${LANG:-en_US.UTF-8}"
@@ -371,7 +371,7 @@ check_ubuntu_version() {
     # Check if version is greater than or equal to min_version
     if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
         print error "This script requires Ubuntu ${min_version} or newer. This machine runs Ubuntu ${current_version}."
-        print info "Move this lab to a new machine on Ubuntu 24.04 LTS or later: https://deforay.github.io/intelis/guides/migrating-ubuntu-machines/"
+        print info "Move this lab to a new machine on Ubuntu 26.04 LTS (24.04 LTS also works): https://deforay.github.io/intelis/guides/migrating-ubuntu-machines/"
         exit 1
     fi
 

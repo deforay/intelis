@@ -29,7 +29,7 @@ InteLIS was previously called VLSM. Some paths and the database keep the old nam
 
 ## Quick start
 
-Ubuntu 24.04 LTS or later is the recommended install. The installer sets up Apache, MySQL, PHP, cron jobs, and the `intelis` command that runs the machine from then on.
+Ubuntu 26.04 LTS is the recommended install. Ubuntu 24.04 LTS is also supported. The installer sets up Apache, MySQL, PHP, cron jobs, and the `intelis` command that runs the machine from then on.
 
 ```bash
 # Download the script to a file, then run it. Do NOT pipe it (curl ... | bash).

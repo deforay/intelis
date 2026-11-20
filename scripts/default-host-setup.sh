@@ -120,7 +120,7 @@ fi
 
 # Source the shared functions
 source "$SHARED_FN_PATH"
-intelis_require_shared_fn_version 3
+intelis_require_shared_fn_version 4
 
 # Set up log file (log_action falls back to a dated file if this is unset)
 log_file="/tmp/intelis-host-setup-$(date +'%Y%m%d-%H%M%S').log"
