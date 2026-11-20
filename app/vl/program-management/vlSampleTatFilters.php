@@ -39,25 +39,25 @@ function vlSampleTatFilterConditions(array $post, CommonService $general): array
         $params[] = (string) $post['batchCode'];
     }
     if (!empty($post['sampleCollectionDate'])) {
-        [$startDate, $endDate] = DateUtility::convertDateRange($post['sampleCollectionDate']);
+        [$startDate, $endDate] = DateUtility::dayRange($post['sampleCollectionDate']);
         if ($startDate !== '' && $endDate !== '') {
-            $where[] = " DATE(vl.sample_collection_date) BETWEEN ? AND ?";
+            $where[] = " vl.sample_collection_date BETWEEN ? AND ?";
             $params[] = $startDate;
             $params[] = $endDate;
         }
     }
     if (!empty($post['sampleReceivedDateAtLab'])) {
-        [$labStartDate, $labEndDate] = DateUtility::convertDateRange($post['sampleReceivedDateAtLab']);
+        [$labStartDate, $labEndDate] = DateUtility::dayRange($post['sampleReceivedDateAtLab']);
         if ($labStartDate !== '' && $labEndDate !== '') {
-            $where[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN ? AND ?";
+            $where[] = " vl.sample_received_at_lab_datetime BETWEEN ? AND ?";
             $params[] = $labStartDate;
             $params[] = $labEndDate;
         }
     }
     if (!empty($post['sampleTestedDate'])) {
-        [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($post['sampleTestedDate']);
+        [$testedStartDate, $testedEndDate] = DateUtility::dayRange($post['sampleTestedDate']);
         if ($testedStartDate !== '' && $testedEndDate !== '') {
-            $where[] = " DATE(vl.sample_tested_datetime) BETWEEN ? AND ?";
+            $where[] = " vl.sample_tested_datetime BETWEEN ? AND ?";
             $params[] = $testedStartDate;
             $params[] = $testedEndDate;
         }
