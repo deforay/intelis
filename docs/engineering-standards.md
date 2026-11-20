@@ -3,8 +3,8 @@ description: The review process, standing invariants and pre-push checks every c
 audience: [developer]
 module: [all]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Engineering standards
 
@@ -86,7 +86,7 @@ against them without running a review.
 - **Schema changes live in `sys/migrations/`.** `sql/init.sql` is a seed for fresh installs
   and is not edited to change the schema; migrations replay on fresh installs too, so they
   must be re-runnable and must not assume an upgraded database. A new migration means a
-  version bump in `composer.json` and `version.php`, and `composer update --lock` so the
+  version bump in `composer.json` and `app/system/version.php`, and `composer update --lock` so the
   lockfile hash stays current.
 - **Request saves touch only the result fields their form shows.** Add/edit request
   helpers write request fields. Some country request forms also show a result section to
@@ -143,14 +143,14 @@ against them without running a review.
   migration runs. A statement that fails benignly is skipped silently while `sc_version`
   advances, so a data migration that quietly does nothing is the failure to think about,
   not just a hard stop.
-- **An integration test that owns a database names it with the process id.** Two suites run
+- **An integration test that owns a database names it with `TestRun::database()`.** Two suites run
   against one MySQL here — a second terminal, or a watcher beside a manual run — and a
   fixed-name database is dropped and recreated underneath the other run, so the fixture is
   gone by the time the assertions read it. It presents as an intermittent failure that looks
-  like a test-order bug and disappears on a re-run. `tests/Support/MigrationRunnerFunctions`
+  like a test-order bug and disappears on a re-run. `TestRun::database()` adds the run's id
+  and the ParaTest worker number to the name. `tests/Support/MigrationRunnerFunctions`
   shares one database across the migration suites because the runner caches the schema name
-  in a static — but that only requires one database per PROCESS, not one fixed name across
-  every process, so its name wants the process id too.
+  in a static. It takes that name from `TestRun::database()` too.
 - **`mysqladmin ping` is not a credential check.** It answers "is the server alive", and
   answers yes when access is denied — which is why it is the right probe for "is MySQL up"
   and useless for "is this password correct". Test a password by running a statement.
@@ -158,7 +158,7 @@ against them without running a review.
   context.
 - **Exports use OpenSpout.**
 - **A caught error still has to reach someone.** `LegacyRequestHandler` discards the page
-  buffer on a throw, logs it and rethrows. `ErrorHandlerMiddleware` passes it to
+  buffer on a throw and rethrows without logging. `ErrorHandlerMiddleware` passes it to
   `ErrorResponseGenerator`, which renders the styled page
   for a browser, JSON for an AJAX caller, and logs both with an error ID the user can quote.
   A terminal `try/catch` that only logs bypasses all of that and returns a blank 200: the
@@ -169,8 +169,8 @@ against them without running a review.
 
 ## 4. Before you push
 
-- `composer test` green. It runs the suite in 8 ParaTest workers, about a minute with
-  MySQL. `vendor/bin/phpunit` still runs it in one process, which is easier to debug.
+- `composer test` green. It runs the suite in ParaTest, one worker per CPU core by
+  default, about a minute with MySQL. `vendor/bin/phpunit` still runs it in one process, which is easier to debug.
 - `php -l` clean on every changed PHP file.
 - `composer check-invariants` and `composer check-di` clean.
 - The Integration suite (`composer test -- --testsuite Integration`) needs a real MySQL.

@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Restore from a backup
 
@@ -182,10 +182,9 @@ was made are lost.
             not changed. Contact support with the message shown.
 
             Otherwise the database may now be empty. Put the safety copy back.
-            The script prints the command to use. Replace `<pre-restore-file>`
-            with the name of the file starting with `pre-restore-vlsm-` in
-            `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` on older
-            installs), run it, then contact support with the message shown.
+            Run the command printed after `To put it back:`. It already names
+            the safety copy, a file starting with `pre-restore-vlsm-`. Then
+            contact support with the message shown.
 
         ??? failure "If it says `The database is restored, but its migrations did not finish`"
 
@@ -348,7 +347,8 @@ was made are lost.
 
         ??? failure "If the file is reported as damaged"
 
-            Do not type the backup name at the confirmation. Run
+            The script stops with `The chosen backup is damaged`, before it
+            asks for confirmation. The database is not changed. Run
             `intelis restore` again and choose another date.
 
     ### Restore the database
@@ -366,10 +366,9 @@ was made are lost.
             not changed. Contact support with the message shown.
 
             Otherwise the database may now be empty. Put the safety copy back.
-            The script prints the command to use. Replace `<pre-restore-file>`
-            with the name of the file starting with `pre-restore-vlsm-` in
-            `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` on older
-            installs), run it, then contact support with the message shown.
+            Run the command printed after `To put it back:`. It already names
+            the safety copy, a file starting with `pre-restore-vlsm-`. Then
+            contact support with the message shown.
 
         ??? failure "If it says `The database is restored, but its migrations did not finish`"
 
@@ -531,10 +530,9 @@ was made are lost.
             not changed. Contact support with the message shown.
 
             Otherwise the database may now be empty. Put the safety copy back.
-            The script prints the command to use. Replace `<pre-restore-file>`
-            with the name of the file starting with `pre-restore-vlsm-` in
-            `/var/www/intelis/backups/db` (`/var/www/vlsm/backups/db` on older
-            installs), run it, then contact support with the message shown.
+            Run the command printed after `To put it back:`. It already names
+            the safety copy, a file starting with `pre-restore-vlsm-`. Then
+            contact support with the message shown.
 
         ??? failure "If it says `The database is restored, but its migrations did not finish`"
 

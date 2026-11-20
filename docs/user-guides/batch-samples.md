@@ -3,8 +3,8 @@ description: Group registered viral load samples into a batch for one analyzer r
 audience: [lab-staff]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Batch samples for testing
 

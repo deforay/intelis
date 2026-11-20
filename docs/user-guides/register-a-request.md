@@ -3,8 +3,8 @@ description: Steps to register a viral load test request from a paper form, at t
 audience: [lab-staff, requesting-facility]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Register a viral load test request
 
@@ -88,7 +88,8 @@ mandatory.
         of data entry. InteLIS fills the **Sample ID**. It cannot be typed.
     13. Enter the **Sample Dispatched On** date.
     14. Choose the **Sample Type**.
-    15. Enter the **Date Sample Received at Testing Lab**.
+    15. Enter the **Date Sample Received at Hub (PHL)** and the **Date Sample
+        Received at Testing Lab**. Both dates are required at the testing lab.
 
     ### Treatment and indication
 
@@ -97,7 +98,7 @@ mandatory.
         Regimen** and **ARV Adherence**.
     17. Choose the **Indication for Viral Load Testing**: **Routine Monitoring**,
         **Repeat VL test after suspected treatment failure adherence
-        counselling** or **Suspect Treatment Failure**.
+        counselling** or **Suspected Treatment Failure**.
     18. Leave **Laboratory Information** empty. It is filled when the result is
         captured. See [Capture viral load results](capture-results.md).
 
@@ -175,8 +176,8 @@ mandatory.
         of data entry. InteLIS fills the **Sample ID**. It cannot be typed.
     13. Enter the **Sample Dispatched On** date.
     14. Choose the **Sample Type**.
-    15. Leave **Date Sample Received at Testing Lab** empty. The testing lab
-        fills it.
+    15. Leave **Date Sample Received at Hub (PHL)** and **Date Sample Received
+        at Testing Lab** empty. The testing lab fills them.
 
     ### Treatment and indication
 
@@ -185,7 +186,7 @@ mandatory.
         Regimen** and **ARV Adherence**.
     17. Choose the **Indication for Viral Load Testing**: **Routine Monitoring**,
         **Repeat VL test after suspected treatment failure adherence
-        counselling** or **Suspect Treatment Failure**.
+        counselling** or **Suspected Treatment Failure**.
 
     ### Save
 

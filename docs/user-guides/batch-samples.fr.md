@@ -3,8 +3,8 @@ description: Regrouper des échantillons de charge virale enregistrés dans un l
 audience: [lab-staff]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Créer un lot pour le test
 

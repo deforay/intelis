@@ -3,8 +3,8 @@ description: Étapes pour enregistrer une demande de test de charge virale à pa
 audience: [lab-staff, requesting-facility]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Enregistrer une demande de test de charge virale
 
@@ -95,17 +95,18 @@ astérisque rouge sont obligatoires.
         l'échantillon**. Il ne peut pas être saisi.
     13. Saisir la date **Échantillon envoyé le**.
     14. Choisir le **Type d'échantillon**.
-    15. Saisir la **Date de réception de l'échantillon au laboratoire
-        d'analyse**.
+    15. Saisir la **Date de réception de l'échantillon au hub (PHL)** et la
+        **Date de réception de l'échantillon au laboratoire d'analyse**. Ces
+        deux dates sont obligatoires au laboratoire d'analyse.
 
     ### Traitement et indication
 
     16. Remplir les **Informations sur le traitement** d'après la fiche papier :
         **Date de début du traitement**, **Régime actuel**, **Date
         d'instauration du régime actuel** et **Observance des ARV**.
-    17. Choisir l'**Indications pour l'analyse de la charge virale** : **Routine
-        Monitoring**, **Repeat VL test after suspected treatment failure
-        adherence counselling** ou **Suspect Treatment Failure**.
+    17. Choisir l'**Indications pour l'analyse de la charge virale** : **Suivi de
+        routine**, **Test VL répété après conseil à l'observance pour échec
+        présumé du traitement** ou **Échec présumé du traitement**.
     18. Laisser les **Informations sur le laboratoire** vides. Elles sont
         remplies à la saisie du résultat. Voir
         [Saisir les résultats de charge virale](capture-results.md).
@@ -192,17 +193,18 @@ astérisque rouge sont obligatoires.
         l'échantillon**. Il ne peut pas être saisi.
     13. Saisir la date **Échantillon envoyé le**.
     14. Choisir le **Type d'échantillon**.
-    15. Laisser vide la **Date de réception de l'échantillon au laboratoire
-        d'analyse**. Le laboratoire de test la remplit.
+    15. Laisser vides la **Date de réception de l'échantillon au hub (PHL)** et
+        la **Date de réception de l'échantillon au laboratoire d'analyse**. Le
+        laboratoire d'analyse les remplit.
 
     ### Traitement et indication
 
     16. Remplir les **Informations sur le traitement** d'après la fiche papier :
         **Date de début du traitement**, **Régime actuel**, **Date
         d'instauration du régime actuel** et **Observance des ARV**.
-    17. Choisir l'**Indications pour l'analyse de la charge virale** : **Routine
-        Monitoring**, **Repeat VL test after suspected treatment failure
-        adherence counselling** ou **Suspect Treatment Failure**.
+    17. Choisir l'**Indications pour l'analyse de la charge virale** : **Suivi de
+        routine**, **Test VL répété après conseil à l'observance pour échec
+        présumé du traitement** ou **Échec présumé du traitement**.
 
     ### Enregistrer
 

@@ -3,8 +3,8 @@ description: Liste de référence des statuts d'échantillon de charge virale, d
 audience: [lab-staff, lab-supervisor, lab-admin]
 module: [vl]
 type: reference
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 
 # Statuts des échantillons
@@ -37,13 +37,13 @@ entre parenthèses.
 | Statut | Attribué par |
 | --- | --- |
 | Échantillon enregistré au centre de santé | L'enregistrement d'une demande dans une structure sanitaire |
-| Échantillon enregistré au laboratoire d'analyse | L'enregistrement d'une demande au laboratoire, l'activation d'un manifeste, ou l'envoi au retest |
+| Échantillon enregistré au laboratoire d'analyse | L'enregistrement d'une demande au laboratoire, l'activation d'un manifeste, l'envoi au retest, ou l'effacement du résultat ou du rejet sur le formulaire de demande ou de résultat lorsque l'échantillon a une date de réception au laboratoire |
 | Échantillon envoyé à un autre laboratoire | Aucun écran de charge virale ne l'attribue. Il sert aux références TB et Tests personnalisés |
 | En attente d'approbation | L'enregistrement d'un résultat, ou sa correction sur le formulaire de résultat |
 | Accepté | L'approbation d'un résultat dans **Gérer le statut des résultats** ou sur l'écran **Résultats importés**, l'approbation automatique des résultats transmis par l'outil d'interface si le laboratoire est configuré ainsi, l'approbation automatique des résultats reçus par l'API lorsque cette option est activée, ou la récupération d'un résultat sur la page **Échantillons en échec/en attente** |
-| Rejeté | L'enregistrement d'un rejet sur le formulaire de résultat, l'application de **Rejeté** dans **Gérer le statut des résultats**, ou le choix de **Rejected** sur l'écran **Résultats importés** |
-| Échec/Invalidité | L'enregistrement d'un résultat qui correspond à un échec, le choix de **Failed** sur l'écran **Résultats importés**, ou l'application de **Accepté** à un résultat qui correspond à un échec |
-| En attente | Aucun écran de charge virale ne l'attribue. Choisir **Hold** sur l'écran **Résultats importés** met de côté le résultat de cette ligne et laisse le statut de l'échantillon inchangé |
+| Rejeté | L'enregistrement d'un rejet sur le formulaire de résultat, la sélection de **Rejeter** sur un échantillon sans résultat dans **Afficher les demandes de test** ou **Saisir le résultat manuellement**, l'application de **Rejeté** dans **Gérer le statut des résultats**, ou le choix de **Rejeté** sur l'écran **Résultats importés** |
+| Échec/Invalidité | L'enregistrement d'un résultat qui correspond à un échec, le choix de **Échec** sur l'écran **Résultats importés**, ou l'application de **Accepté** à un résultat qui correspond à un échec |
+| En attente | Aucun écran de charge virale ne l'attribue. Choisir **En attente** sur l'écran **Résultats importés** met de côté le résultat de cette ligne et laisse le statut de l'échantillon inchangé |
 | Échantillon redemandé | Aucun flux actuel. Retester un échantillon le ramène à Échantillon enregistré au laboratoire d'analyse. La case **Échantillon redemandé** du formulaire de demande enregistre un indicateur distinct, pas ce statut |
 | Perdu | L'application de **Perdu** dans **Gérer le statut des résultats** |
 | Expiré | La mise à jour nocturne des statuts. Un échantillon encore En attente, Échantillon redemandé, Échantillon enregistré au centre de santé ou Échantillon enregistré au laboratoire d'analyse expire dès qu'il dépasse **Jours d'expiration de l'échantillon** sous **ADMIN → Paramètres → Configuration générale**. L'âge se compte depuis la date de prélèvement, ou depuis la date de la demande si aucune date de prélèvement n'est enregistrée. La valeur par défaut est de 365 jours |

@@ -3,8 +3,8 @@ description: Explains the path a viral load sample takes in InteLIS, from collec
 audience: [lab-staff, lab-supervisor, requesting-facility]
 module: [vl]
 type: explanation
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # How a viral load sample moves through InteLIS
 

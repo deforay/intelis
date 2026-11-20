@@ -1,10 +1,10 @@
 ---
-description: Enregistrer le congélateur, le coffret, la boîte et la position des échantillons de charge virale, un par un ou par import, et retrouver un échantillon stocké.
+description: Enregistrer le congélateur, le portoir, la boîte et la position des échantillons de charge virale, un par un ou par import, et retrouver un échantillon stocké.
 audience: [lab-staff, lab-supervisor]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Enregistrer le stockage d'un échantillon
 
@@ -20,7 +20,7 @@ conservés en vue d'un retest, d'un test de confirmation ou d'une revue qualité
 ## Avant de commencer
 
 - Des échantillons enregistrés dans InteLIS
-- Le congélateur, le coffret, la boîte et la position de chaque tube
+- Le congélateur, le portoir, la boîte et la position de chaque tube
 - La permission de consulter les demandes de test
 - Le congélateur configuré sous **ADMIN → Paramètres → Stockage en
   laboratoire**. S'il manque, demander à l'administrateur de l'ajouter.
@@ -39,7 +39,9 @@ toujours celle où il se trouve.
     1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Afficher les
        demandes de test**.
     2. Sélectionner **Stockage des échantillons** en haut à droite de la liste.
-    3. Choisir le laboratoire dans **Nom du laboratoire**.
+    3. Choisir le laboratoire dans **Nom du laboratoire**. Sur l'InteLIS propre
+       à un laboratoire (LIS), ce champ est masqué et déjà réglé sur le
+       laboratoire.
     4. Filtrer les échantillons à stocker, avec **Date de prélèvement de
        l'échantillon**, **Date de réception de l'échantillon au laboratoire** ou **Nom de la
        structure**.
@@ -60,8 +62,8 @@ toujours celle où il se trouve.
         | Volume (ml) | Le volume stocké. Obligatoire, et supérieur à zéro |
         | Laboratoire | Le laboratoire qui détient le congélateur. Obligatoire |
         | Congélateur | Le congélateur. Obligatoire |
-        | Coffret | Le coffret dans le congélateur. Obligatoire |
-        | Boîte | La boîte dans le coffret. Obligatoire |
+        | Portoir | Le portoir dans le congélateur. Obligatoire |
+        | Boîte | La boîte dans le portoir. Obligatoire |
         | Position | La position dans la boîte. Obligatoire |
         | Commentaires | Tout ce qui aide à retrouver ou interpréter l'échantillon. Facultatif |
 
@@ -85,11 +87,12 @@ toujours celle où il se trouve.
         4. La ligne affiche le congélateur, le **Portoir**, la **Boîte** et la
            **Position** saisis à l'étape 6, avec le statut `Added`.
 
-        ??? info "La colonne Stockage actuel reste vide"
+        ??? info "La page Stockage des échantillons affiche aussi la position"
 
-            Sur la page Stockage des échantillons, **Stockage actuel** n'affiche
-            pas la position enregistrée dans la version actuelle. Vérifier les
-            positions dans Rapports sur les congélateurs et le stockage.
+            Après **Obtenir des échantillons**, l'échantillon a une ligne par
+            enregistrement de stockage. **Stockage actuel** affiche le
+            congélateur, le portoir, la boîte, la position et le volume de cet
+            enregistrement.
 
 === "Une boîte entière"
 
@@ -117,7 +120,7 @@ toujours celle où il se trouve.
         | Sample Code | Déjà rempli. Obligatoire |
         | Patient ID | Déjà rempli |
         | Location/Freezer Code | Le code du congélateur, tel que configuré sous Stockage en laboratoire. Obligatoire |
-        | Rack | Le coffret. Obligatoire |
+        | Rack | Le portoir. Obligatoire |
         | Box | La boîte. Obligatoire |
         | Position | La position. Obligatoire |
         | Volume (ml) | Le volume. Obligatoire |
@@ -134,9 +137,11 @@ toujours celle où il se trouve.
 
         ??? failure "Si certaines lignes n'ont pas été ajoutées"
 
-            Un échantillon qui a déjà une position sur son formulaire de demande
-            n'est pas modifié. InteLIS liste les lignes qu'il n'a pas pu ajouter
-            et les propose sous forme de tableur à télécharger.
+            Une ligne n'est pas ajoutée lorsqu'une colonne obligatoire est
+            vide, lorsque son **Sample Code** ne correspond à aucun échantillon
+            visible par ce compte, ou lorsque l'échantillon a déjà une position
+            sur son formulaire de demande. InteLIS liste les lignes qu'il n'a
+            pas pu ajouter et les propose sous forme de tableur à télécharger.
 
     9. Vérifier quelques échantillons avant de remettre la boîte au
        congélateur. Dans **Afficher les demandes de test**, rechercher
@@ -146,26 +151,24 @@ toujours celle où il se trouve.
 
 ## Enregistrer la sortie d'un échantillon
 
-!!! failure "La sortie ne peut pas être enregistrée dans la version actuelle"
+1. Sur la page Stockage des échantillons, sélectionner **Obtenir des
+   échantillons** pour lister l'échantillon.
+2. Sélectionner **Supprimer** sur sa ligne. Ce bouton ne s'affiche que sur le
+   dernier enregistrement de stockage de l'échantillon, tant que le tube est
+   encore dans un congélateur.
+3. Choisir le motif dans la liste qui apparaît. InteLIS retire l'échantillon
+   aussitôt, sans confirmation, et affiche
+   `Sample is removed from this freezer`, en anglais.
 
-    Le bouton **Remove** de la page Stockage des échantillons n'apparaît pas, si
-    bien qu'un échantillon ne peut pas être marqué comme retiré. Renseigner
-    **Date de sortie** puis enregistrer ne le retire pas non plus : cela ajoute
-    un autre enregistrement de stockage et le tube reste affiché comme présent.
-    Signaler les sorties à l'administrateur jusqu'à la correction.
+Choisir **Autre** enregistre le motif `other`. Choisir un motif de la liste
+lorsqu'il convient. L'historique de stockage conserve l'endroit où se trouvait
+le tube et la date de sa sortie.
 
-??? info "Étapes lorsque le bouton Remove sera de nouveau affiché"
+!!! warning "Date de sortie ne retire pas l'échantillon"
 
-    1. Sur la page Stockage des échantillons, sélectionner **Obtenir des
-       échantillons** pour lister l'échantillon.
-    2. Sélectionner **Remove** sur sa ligne. Ce bouton s'affiche en anglais.
-    3. Choisir le motif dans la liste qui apparaît. InteLIS retire
-       l'échantillon aussitôt, sans confirmation, et affiche
-       `Sample is removed from this freezer`, en anglais.
-
-    Choisir **Other** enregistre le motif `other`. Choisir un motif de la liste
-    lorsqu'il convient. L'historique de stockage conserve l'endroit où se
-    trouvait le tube et la date de sa sortie.
+    Renseigner **Date de sortie** puis enregistrer ajoute un autre
+    enregistrement de stockage, et le tube reste affiché comme présent.
+    Utiliser plutôt **Supprimer**.
 
 ## Retrouver un échantillon stocké
 
@@ -175,7 +178,7 @@ toujours celle où il se trouve.
 
     | Onglet | Filtres | Affiche |
     | --- | --- | --- |
-    | Rapport sur les congélateurs et le stockage | **Laboratoire d'analyse**, **Congélateur/Stockage** | Tous les échantillons d'un congélateur, avec coffret, boîte, position et volume |
+    | Rapport sur les congélateurs et le stockage | **Laboratoire d'analyse**, **Congélateur/Stockage** | Tous les échantillons d'un congélateur, avec portoir, boîte, position et volume |
     | Historique du stockage des échantillons | **Laboratoire d'analyse**, **ID de l'échantillon** | Tous les enregistrements de stockage d'un échantillon |
 
 3. Régler les filtres et sélectionner **Rechercher**.

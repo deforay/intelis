@@ -3,8 +3,8 @@ description: Accept, reject, mark lost or cancel viral load samples on the Manag
 audience: [lab-staff, lab-supervisor]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 
 # Review and approve results
@@ -121,6 +121,11 @@ Test Result Management**.
             **Not Approved/Rejected** lists only samples with a result. Set
             **Show Samples that are** to **Available for Cancellation** instead.
             It lists every sample that is not already Expired or Cancelled.
+
+            A lab user can also select **Reject** on the sample's row in
+            **View Test Requests** or **Enter Result Manually**. The **Reject
+            Sample** box asks for the **Rejection Reason**, **Rejected On**,
+            **Rejection Approved By** and **Rejection Approved On**.
 
     3. Filter to the sample, for example by **Batch Code** or **Facility Name**.
     4. Select **Search**.

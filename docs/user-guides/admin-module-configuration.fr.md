@@ -3,8 +3,8 @@ description: Ajouter, retirer et situer les entrées des listes déroulantes des
 audience: [lab-admin, system-admin]
 module: [all]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 
 # Entretenir les listes du formulaire de demande
@@ -37,7 +37,9 @@ Chaque test actif sur l'installation a son propre onglet sur
 
 Les listes qui servent tous les modules se trouvent sous **ADMIN → Listes de
 référence** : Divisions géographiques, Partenaires et Sources de financement.
-Le Stockage en laboratoire se trouve sous **ADMIN → Paramètres**.
+Sur un LIS, le Stockage en laboratoire se trouve sous **ADMIN → Paramètres**.
+Une installation autonome n'affiche aucune entrée de menu Stockage en
+laboratoire.
 
 Un type d'échantillon ajouté sur l'onglet Charge virale du VIH n'atteint pas le
 formulaire EID. L'ajouter sur l'onglet de chaque test qui en a besoin.
@@ -102,7 +104,8 @@ formulaire EID. L'ajouter sur l'onglet de chaque test qui en a besoin.
     ??? info "Le Stockage en laboratoire est tenu par le laboratoire"
 
         Le Stockage en laboratoire est tenu par le laboratoire : sur le LIS, ou
-        sur le STS par un utilisateur de laboratoire d'analyse.
+        sur le STS par un utilisateur de laboratoire d'analyse qui a le rôle
+        Admin intégré.
         **ADMIN → Paramètres → Stockage en laboratoire** relève du
         laboratoire. Y sélectionner **Ajouter un congélateur/stockage
         de laboratoire** pour ajouter un congélateur.

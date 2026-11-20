@@ -3,8 +3,8 @@ description: Bring viral load results into InteLIS from the Interface Tool, an a
 audience: [lab-staff]
 module: [vl, custom-tests]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Capture viral load results
 
@@ -149,7 +149,7 @@ Test Result Management**.
         |---|---|
         | Date Sample Received at Testing Lab | The date the sample reached the lab |
         | Sample Testing Date | The date the analyzer ran the sample |
-        | VL Testing Platform | The analyzer that ran the sample |
+        | VL Testing Platform | The analyzer that ran the sample. Required with a result. Without it, InteLIS does not save the result |
         | Viral Load Result (copies/mL) | The result as printed by the analyzer |
         | Reviewed By, Tested By, Approved By | The staff responsible |
         | Lab Tech. Comments | Any comment the report must carry |

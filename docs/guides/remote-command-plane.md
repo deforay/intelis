@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Run commands on a lab from the STS
 
@@ -69,7 +69,7 @@ For how the plane works and why, see the
     | Field | Shown for | What to enter |
     | --- | --- | --- |
     | Module (optional) | Resend results, Resend requests | A module, or leave **All enabled modules**. |
-    | Resend data from last N days | Resend results, Resend requests | A number of days from 1 to 3650. Leave blank to send only records not yet synced. **Resend requests** ignores this field. |
+    | Resend data from last N days | Resend results, Resend requests | A number of days from 1 to 3650. Leave blank to send only records not yet synced. For **Resend requests**, the lab pulls every request changed in those days again, including requests it already received. |
     | Only these sample statuses (optional) | Resend results | The statuses to send, for example **Rejected**. Leave all unticked to send every status. A lab on an older release cannot use this field until it is updated. |
     | Prepared staging to apply | Apply a prepared upgrade | The staged release to install. |
     | Not before (optional) | Upgrade, Prepare upgrade only, Apply a prepared upgrade | The earliest time the lab may start, by the STS clock. Leave blank to start at the next sync. |

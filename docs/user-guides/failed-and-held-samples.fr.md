@@ -3,8 +3,8 @@ description: Renvoyer au test les échantillons de charge virale en échec, en a
 audience: [lab-staff, lab-supervisor]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 
 # Gérer les échecs et les échantillons en attente
@@ -46,7 +46,7 @@ dont le laboratoire a besoin.
 
     Aucun écran de charge virale d'InteLIS n'attribue En attente à un
     échantillon. Sur l'écran **Résultats importés** qui suit **Importer les
-    résultats d'un fichier**, choisir **Hold** (libellé affiché en anglais) pour une ligne met le
+    résultats d'un fichier**, choisir **En attente** pour une ligne met le
     résultat de cette ligne de côté. Le résultat n'est pas enregistré sur
     l'échantillon, et l'échantillon reste en attente d'un résultat. Un
     échantillon En attente sur cette page portait déjà ce statut avant d'y

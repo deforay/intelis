@@ -3,8 +3,8 @@ description: Record the freezer, rack, box and position of viral load samples, o
 audience: [lab-staff, lab-supervisor]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Record where a sample is stored
 
@@ -37,7 +37,8 @@ is.
     1. Go to **HIV VIRAL LOAD → Request Management → View Test Requests**.
     2. Select **Samples Storage** at the top right of the list.
     3. Choose the lab in **Nom du laboratoire**. This label shows in French in
-       every language.
+       every language. On a lab's own InteLIS (LIS), the field is hidden and
+       already set to the lab.
     4. Filter to the samples being stored, using **Sample Collection Date**,
        **Sample Received at Lab Date** or **Facility Name**.
     5. Select **Get Samples**.
@@ -77,11 +78,11 @@ is.
         4. The row shows the freezer, **Rack**, **Box** and **Position**
            entered in step 6, with the status `Added`.
 
-        ??? info "The Current Storage column stays empty"
+        ??? info "The Samples Storage page shows the position too"
 
-            On the Samples Storage page, **Current Storage** does not show the
-            recorded position in the current version. Check positions in
-            Freezer/Storage Reports instead.
+            After **Get Samples**, the sample has a row for each storage
+            record. **Current Storage** shows the freezer, rack, box, position
+            and volume of that record.
 
 === "A whole box"
 
@@ -122,9 +123,11 @@ is.
 
         ??? failure "If some rows were not added"
 
-            A sample that already has a position on its request form is not
-            changed. InteLIS lists the rows it could not add and offers them as
-            a spreadsheet to download.
+            A row is not added when a required column is empty, when its
+            **Sample Code** matches no sample this account can see, or when the
+            sample already has a position on its request form. InteLIS lists
+            the rows it could not add and offers them as a spreadsheet to
+            download.
 
     9. Check a few samples before returning the box to the freezer. In **View
        Test Requests**, search for the sample and select **Edit**. The
@@ -133,24 +136,20 @@ is.
 
 ## Record a sample leaving storage
 
-!!! failure "Removal cannot be recorded in the current version"
+1. On the Samples Storage page, select **Get Samples** to list the sample.
+2. Select **Remove** on its row. The button shows only on the sample's latest
+   storage record, while the tube is still in a freezer.
+3. Choose the reason from the list that appears. InteLIS removes the sample
+   at once, with no confirmation, and shows
+   `Sample is removed from this freezer`.
 
-    The **Remove** button on the Samples Storage page does not appear, so a
-    sample cannot be marked as removed. Setting **Date out** and saving does
-    not remove it either: it adds another storage record and leaves the tube
-    shown as present. Report removals to the administrator until this is fixed.
+Choosing **Other** records the reason as `other`. Choose a listed reason where
+one fits. The storage history keeps where the tube was and when it left.
 
-??? info "Steps once the Remove button shows again"
+!!! warning "Date out does not remove a sample"
 
-    1. On the Samples Storage page, select **Get Samples** to list the sample.
-    2. Select **Remove** on its row.
-    3. Choose the reason from the list that appears. InteLIS removes the sample
-       at once, with no confirmation, and shows
-       `Sample is removed from this freezer`.
-
-    Choosing **Other** records the reason as `other`. Choose a listed reason
-    where one fits. The storage history keeps where the tube was and when it
-    left.
+    Setting **Date out** and saving adds another storage record and leaves the
+    tube shown as present. Use **Remove** instead.
 
 ## Find a stored sample
 

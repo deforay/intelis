@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Connecter un laboratoire au STS
 
@@ -76,10 +76,10 @@ L'exécuter sur la machine InteLIS du laboratoire, jamais sur le STS lui-même.
 
         ```text
         [OK] STS setup complete!
-        [OK] Token generated: ...
+        [OK] STS token created: ...
         ```
 
-        ??? failure "S'il affiche `Failed to generate token`"
+        ??? failure "S'il affiche `Could not get an STS token`"
 
             Le STS a refusé cette machine. Envoyer le message complet à
             l'administrateur du STS. Une fois le problème corrigé, obtenir un
@@ -124,7 +124,7 @@ L'exécuter sur la machine InteLIS du laboratoire, jamais sur le STS lui-même.
             laboratoire.
 
     4. Vérifier que les dernières lignes contiennent `STS setup complete!` et
-       `Token generated`.
+       `STS token created`.
     5. Lancer une synchronisation. Utiliser la situation **Vérifier la
        connexion**.
 

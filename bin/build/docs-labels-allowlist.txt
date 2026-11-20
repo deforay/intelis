@@ -7,15 +7,16 @@
 
 # The Interface Tool. Its screens live in the vlsm-interfacing repository,
 # and it is English only, so the French pages quote the same labels.
-+ Add Instrument
+Add Instrument
 ASTM (with checksum)
+ASTM (without checksum)
 Backup & Restore
-Enter these in the Interface Tool
 Export Settings
 Import Settings
 Instrument Name/Code
 Save Settings
 Skip Sign-in and Connect at Startup
+Synced to LIS
 TCP Client
 TCP Server
 Test Connection

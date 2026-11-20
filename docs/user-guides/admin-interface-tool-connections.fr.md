@@ -3,8 +3,8 @@ description: Générer un code de connexion à usage unique pour relier, reconne
 audience: [lab-admin, system-admin]
 module: [all]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Connecter l'outil d'interface avec un code de connexion
 

@@ -3,8 +3,8 @@ description: Constituer un manifeste d'envoi d'échantillons sur le STS, l'impri
 audience: [requesting-facility, lab-staff]
 module: [vl]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Envoyer des échantillons à un laboratoire avec un manifeste
 
@@ -96,10 +96,10 @@ manifeste dans le groupe de ce test.
 === "Modifier un manifeste"
 
     1. Aller à **CHARGE VIRALE DU VIH → Gestion des demandes → Manifeste VL**.
-    2. Sélectionner **Edit** sur la ligne du manifeste. Les échantillons
+    2. Sélectionner **Modifier** sur la ligne du manifeste. Les échantillons
        déjà présents sur le manifeste apparaissent dans la liste de droite.
 
-        ??? failure "Si Edit est grisé"
+        ??? failure "Si Modifier est grisé"
 
             Le laboratoire d'analyse a déjà reçu le colis, donc le manifeste ne
             peut plus changer. S'il comporte une erreur, prévenir le laboratoire
@@ -109,8 +109,12 @@ manifeste dans le groupe de ce test.
         modification l'affiche sous **Les échantillons annulés seront retirés
         de ce manifeste**. L'enregistrement le retire.
 
-        Le **Laboratoire d'analyse** ne peut plus être modifié sur cet écran une
-        fois renseigné.
+        Changer le **Laboratoire d'analyse** sur cet écran retire les
+        échantillons actuellement sur le manifeste, après une confirmation.
+        Seuls les échantillons du nouveau laboratoire d'analyse peuvent ensuite
+        être ajoutés. Aucun échantillon ne passe au nouveau laboratoire. Pour
+        envoyer des colis déjà listés à un autre laboratoire, suivre les étapes
+        **Déplacer des manifestes vers un autre laboratoire**.
 
     3. Pour ajouter des échantillons, les passer de la liste de gauche à la
        liste de droite. Pour réduire la liste de gauche, modifier les filtres et
@@ -120,7 +124,7 @@ manifeste dans le groupe de ce test.
        du colis.
     6. Saisir la **Raison du changement de manifeste**. Ce champ est
        obligatoire.
-    7. Sélectionner **Submit**.
+    7. Sélectionner **Envoyer**.
     8. Sélectionner **Imprimer le manifeste PDF** sur la ligne du manifeste.
     9. Remplacer l'ancien manifeste imprimé du colis par le nouveau.
 

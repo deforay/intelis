@@ -4,8 +4,8 @@ audience: [system-admin]
 module: [all]
 type: how-to
 platform: ubuntu
-reviewed: 2026-10-29
-reviewed_against: 5.8.5
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Installer InteLIS sur Ubuntu 24.04 ou ultérieur (Ubuntu LTS uniquement)
 
@@ -87,7 +87,7 @@ données, suivre plutôt
 
 
     4. Attendre la fin du programme d'installation. Il vérifie la nouvelle
-       installation, et sa dernière ligne est `Setup is complete.`
+       installation, puis affiche `Setup is complete.` et l'adresse à ouvrir.
 
         ??? info "S'il demande `Set up backups now?`"
 
@@ -240,7 +240,7 @@ données, suivre plutôt
 
 
     5. Attendre la fin du programme d'installation. Il vérifie la nouvelle
-       installation, et sa dernière ligne est `Setup is complete.`
+       installation, puis affiche `Setup is complete.` et l'adresse à ouvrir.
 
         ??? info "S'il demande `Set up backups now?`"
 

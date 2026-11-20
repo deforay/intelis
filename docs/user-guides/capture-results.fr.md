@@ -3,8 +3,8 @@ description: Faire entrer les résultats de charge virale dans InteLIS par l'out
 audience: [lab-staff]
 module: [vl, custom-tests]
 type: how-to
-reviewed: 2026-09-22
-reviewed_against: 5.7.74
+reviewed: 2026-11-20
+reviewed_against: 5.8.10
 ---
 # Saisir les résultats de charge virale
 
@@ -115,16 +115,16 @@ NOURRISSON (EID) → Gestion des résultats des tests**.
         | Date du test : environ 1 mois après le prélèvement | La date du test est postérieure d'un mois ou plus au prélèvement | Vérifier la date |
         | Date du test : environ 1 an après le prélèvement | La date du test est postérieure d'un an ou plus au prélèvement | Vérifier la date. Un écart d'un an est le plus souvent une faute de frappe |
 
-    10. Régler le **Statut** de chaque ligne : **Accepted**, **Hold**,
-        **Rejected** ou **Failed**. Pour une ligne réglée sur **Rejected**,
+    10. Régler le **Statut** de chaque ligne : **Accepté**, **En attente**,
+        **Rejeté** ou **Échec**. Pour une ligne réglée sur **Rejeté**,
         choisir le **Motif de rejet**.
 
         ??? info "Pour accepter toutes les lignes en une fois"
 
             Sélectionner **Accepter tous les échantillons**. Les lignes dont le
-            résultat indique un échec passent à **Failed**. Les autres lignes
-            sans statut passent à **Accepted** uniquement si le fichier leur a
-            donné un résultat. Les lignes réglées sur **Hold** ou **Rejected**
+            résultat indique un échec passent à **Échec**. Les autres lignes
+            sans statut passent à **Accepté** uniquement si le fichier leur a
+            donné un résultat. Les lignes réglées sur **En attente** ou **Rejeté**
             gardent leur statut, sauf si le résultat indique un échec. InteLIS
             nomme chaque ligne non acceptée faute de résultat lu. Régler ces
             lignes à la main.
@@ -161,7 +161,7 @@ NOURRISSON (EID) → Gestion des résultats des tests**.
         |---|---|
         | Date de réception de l'échantillon au laboratoire d'analyse | La date d'arrivée de l'échantillon au laboratoire |
         | Date de l'analyse de l'échantillon | La date de passage sur l'automate |
-        | Plate-forme de test VL | L'automate utilisé |
+        | Plate-forme de test VL | L'automate utilisé. Obligatoire avec un résultat. Sans elle, InteLIS n'enregistre pas le résultat |
         | Résultat de la charge virale (copies/mL) | Le résultat tel qu'imprimé par l'automate |
         | Révisé par, Examiné par, Approuvé par | Le personnel responsable |
         | Commentaires de Lab Technicien | Tout commentaire que le rapport doit porter |
