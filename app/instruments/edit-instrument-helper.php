@@ -6,6 +6,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\InstrumentsService;
 use App\Registries\ContainerRegistry;
 
 
@@ -96,11 +97,11 @@ try {
                         $pocDev = 'yes';
                     }
                     if (isset($_POST['configMachineId'][$c]) && $_POST['configMachineId'][$c] != '') {
-                        $configMachineData = ['config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => empty($_POST['dateFormat'][$c]) ? null : $_POST['dateFormat'][$c], 'file_name' => empty($_POST['fileName'][$c]) ? null : $_POST['fileName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+                        $configMachineData = ['config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => empty($_POST['dateFormat'][$c]) ? null : $_POST['dateFormat'][$c], 'file_name' => InstrumentsService::knownImportScript($_POST['fileName'][$c] ?? null), 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime()];
                         $db->where('config_machine_id', $_POST['configMachineId'][$c]);
                         $db->update($importMachineTable, $configMachineData);
                     } else {
-                        $configMachineData = ['instrument_id' => $configId, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => empty($_POST['dateFormat'][$c]) ? null : $_POST['dateFormat'][$c], 'file_name' => empty($_POST['fileName'][$c]) ? null : $_POST['fileName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+                        $configMachineData = ['instrument_id' => $configId, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => empty($_POST['dateFormat'][$c]) ? null : $_POST['dateFormat'][$c], 'file_name' => InstrumentsService::knownImportScript($_POST['fileName'][$c] ?? null), 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime()];
                         $db->insert($importMachineTable, $configMachineData);
                     }
                 }

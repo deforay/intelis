@@ -7,6 +7,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\InstrumentsService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -78,7 +79,7 @@ try {
                         'instrument_id' => $data['instrument_id'],
                         'config_machine_name' => $_POST['configMachineName'][$c],
                         'date_format' => empty($_POST['dateFormat'][$c]) ? null : $_POST['dateFormat'][$c],
-                        'file_name' => empty($_POST['fileName'][$c]) ? null : $_POST['fileName'][$c],
+                        'file_name' => InstrumentsService::knownImportScript($_POST['fileName'][$c] ?? null),
                         'poc_device' => $pocDev,
                         'latitude' => $_POST['latitude'][$c],
                         'longitude' => $_POST['longitude'][$c],
