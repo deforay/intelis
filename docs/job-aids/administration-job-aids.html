@@ -194,7 +194,7 @@
     <tr><td>Settings</td><td>General Configuration, Instruments, and Lab Storage on a lab installation</td></tr>
     <tr><td>Reference Lists</td><td>Geographical Divisions, Implementation Partners, Funding Sources</td></tr>
     <tr><td>Test Settings</td><td>The dropdown lists on each module's request form. One tab per test the installation runs</td></tr>
-    <tr><td>Monitoring</td><td>Activity log, audit trail, page usage, API history, sync status, log files</td></tr>
+    <tr><td>Monitoring</td><td>User Activity Log, Audit Trail, Page Usage, API History, API Dashboard, Lab Sync Status, Source of Requests, Test Results Metadata, Log File Viewer</td></tr>
     <tr><td>Reports</td><td>Lab Performance Indicators, Instrument Activity, Sample Referral Network</td></tr>
   </table>
 
@@ -401,6 +401,8 @@
     <tr><td>An option is missing from a dropdown</td><td>It is inactive, or it was added on a different test's tab under Test Settings</td></tr>
     <tr><td>A user sees the wrong menu</td><td>The role's privileges, not the user. Check under Users &amp; Roles &rsaquo; Roles</td></tr>
     <tr><td>A user sees another lab's samples</td><td>On an STS: the role is not a Testing Lab role, or the user is mapped to other facilities. Check the role's Access Type and the user's facilities</td></tr>
+    <tr><td>A lab user on an STS sees only five ADMIN pages</td><td>Expected outside the Admin role: Users, Instruments, User Activity Log, Audit Trail, Log File Viewer. The lists show the user's own lab. Only the Admin role sees every lab</td></tr>
+    <tr><td>That lab user's Users and Instruments lists are empty</td><td>The user has no Testing Lab. Set it on Edit User, then the user signs in again</td></tr>
     <tr><td>Results stopped arriving from the analyzer</td><td>Check Last Seen under Connected Installations, then ADMIN &rsaquo; Reports &rsaquo; Instrument Activity</td></tr>
     <tr><td>A result was questioned</td><td>Monitoring &rsaquo; Audit Trail. It shows which field changed, from what to what, by whom</td></tr>
     <tr><td>A facility behaves oddly in report filters</td><td>Set Show Orphaned Facilities on the Facilities page. Its province or district is missing or wrongly linked</td></tr>

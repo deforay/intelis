@@ -194,7 +194,7 @@
     <tr><td>Paramètres</td><td>Configuration générale, Instruments, et Stockage en laboratoire sur une installation de laboratoire</td></tr>
     <tr><td>Listes de référence</td><td>Divisions géographiques, Partenaires, Sources de financement</td></tr>
     <tr><td>Paramètres des tests</td><td>Les listes déroulantes du formulaire de demande de chaque module. Un onglet par test actif</td></tr>
-    <tr><td>Surveillance</td><td>Journal d'activité, piste d'audit, utilisation des pages, historique de l'API, état de la synchronisation, fichiers journaux</td></tr>
+    <tr><td>Surveillance</td><td>Journal d'activité de l'utilisateur, Piste d'audit, Utilisation des pages, Historique de l'API, Tableau de bord de l'API, État de la synchronisation du laboratoire, Source des demandes, Métadonnées des résultats des tests, Visualisateur de fichiers journaux</td></tr>
     <tr><td>Rapports</td><td>Indicateurs de performance du laboratoire, Activité des instruments, Réseau de référence des échantillons</td></tr>
   </table>
 
@@ -411,6 +411,8 @@
     <tr><td>Une option manque dans une liste déroulante</td><td>Elle est inactive, ou elle a été ajoutée sur l'onglet d'un autre test sous Paramètres des tests</td></tr>
     <tr><td>Un utilisateur voit le mauvais menu</td><td>Les permissions du rôle, pas de l'utilisateur. Vérifier sous Utilisateurs et rôles &rsaquo; Les rôles</td></tr>
     <tr><td>Un utilisateur voit les échantillons d'un autre laboratoire</td><td>Sur un STS : le rôle n'est pas un rôle Laboratoire d'analyse, ou l'utilisateur est rattaché à d'autres structures. Vérifier le Type d'accès du rôle et ses structures</td></tr>
+    <tr><td>Sur un STS, un utilisateur de laboratoire ne voit que cinq pages ADMIN</td><td>Normal hors du rôle Admin : Utilisateurs, Instruments, Journal d'activité de l'utilisateur, Piste d'audit, Visualisateur de fichiers journaux. Les listes montrent son propre laboratoire. Seul le rôle Admin voit tous les laboratoires</td></tr>
+    <tr><td>Ses listes Utilisateurs et Instruments sont vides</td><td>L'utilisateur n'a pas de Laboratoire d'analyse. Le renseigner dans Modifier l'utilisateur, puis l'utilisateur se reconnecte</td></tr>
     <tr><td>Les résultats n'arrivent plus de l'automate</td><td>Vérifier Dernière activité sous Installations connectées, puis Rapports &rsaquo; Activité des instruments</td></tr>
     <tr><td>Un résultat est contesté</td><td>Surveillance &rsaquo; Piste d'audit. Elle indique quel champ a changé, de quoi à quoi, par qui</td></tr>
     <tr><td>Une structure se comporte mal dans les filtres des rapports</td><td>Activer Afficher les structures orphelines sur la page des structures. Sa province ou son district est absent ou mal rattaché</td></tr>
