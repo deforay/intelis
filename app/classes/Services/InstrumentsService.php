@@ -161,6 +161,23 @@ final class InstrumentsService
     }
 
     /**
+     * The posted import script name when it is a bare file name of a script in one of
+     * the IMPORT_FOLDERS; null otherwise, so a path never gets saved as file_name.
+     */
+    public static function knownImportScript(mixed $posted): ?string
+    {
+        if (!is_string($posted) || $posted === '' || basename($posted) !== $posted) {
+            return null;
+        }
+        foreach (self::IMPORT_FOLDERS as $folder) {
+            if (is_file(APPLICATION_PATH . DIRECTORY_SEPARATOR . 'instruments' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . $posted)) {
+                return $posted;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Full path for a new result-import upload, always inside UPLOAD_PATH/imported-results.
      * The name is built from the import script's name, never trusted as a path.
      */
