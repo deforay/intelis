@@ -26,7 +26,7 @@ entre parenthèses.
 | Rejeté (`Rejected`) | L'échantillon n'était pas propre au test. Un motif de rejet est enregistré, et le rejet est diffusé à la structure demandeuse afin qu'un nouveau prélèvement soit effectué |
 | Échec/Invalidité (`Failed/Invalid`) | Le test a eu lieu et n'a pas produit de résultat exploitable |
 | En attente (`Hold`) | Suspendu dans l'attente d'une décision |
-| Échantillon réorganisé (`Sample Reordered`) | Statut hérité, conservé pour que les anciens enregistrements restent lisibles |
+| Échantillon redemandé (`Sample Reordered`) | Statut hérité, conservé pour que les anciens enregistrements restent lisibles |
 | Perdu (`Lost`) | L'échantillon est introuvable et ne sera pas testé |
 | Expiré (`Expired`) | L'échantillon est resté sans résultat plus longtemps que l'installation ne l'autorise |
 | Aucun résultats (`No Result`) | Le test a eu lieu et n'a rapporté aucun résultat |
@@ -44,9 +44,9 @@ entre parenthèses.
 | Rejeté | L'enregistrement d'un rejet sur le formulaire de résultat, l'application de **Rejeté** dans **Gérer le statut des résultats**, ou le choix de **Rejected** sur l'écran **Résultats importés** |
 | Échec/Invalidité | L'enregistrement d'un résultat qui correspond à un échec, le choix de **Failed** sur l'écran **Résultats importés**, ou l'application de **Accepté** à un résultat qui correspond à un échec |
 | En attente | Aucun écran de charge virale ne l'attribue. Choisir **Hold** sur l'écran **Résultats importés** met de côté le résultat de cette ligne et laisse le statut de l'échantillon inchangé |
-| Échantillon réorganisé | Aucun flux actuel. Retester un échantillon le ramène à Échantillon enregistré au laboratoire d'analyse. La case **Échantillon réorganisé** du formulaire de demande enregistre un indicateur distinct, pas ce statut |
+| Échantillon redemandé | Aucun flux actuel. Retester un échantillon le ramène à Échantillon enregistré au laboratoire d'analyse. La case **Échantillon redemandé** du formulaire de demande enregistre un indicateur distinct, pas ce statut |
 | Perdu | L'application de **Perdu** dans **Gérer le statut des résultats** |
-| Expiré | La mise à jour nocturne des statuts. Un échantillon encore En attente, Échantillon réorganisé, Échantillon enregistré au centre de santé ou Échantillon enregistré au laboratoire d'analyse expire dès qu'il dépasse **Jours d'expiration de l'échantillon** sous **ADMIN → Paramètres → Configuration générale**. L'âge se compte depuis la date de prélèvement, ou depuis la date de la demande si aucune date de prélèvement n'est enregistrée. La valeur par défaut est de 365 jours |
+| Expiré | La mise à jour nocturne des statuts. Un échantillon encore En attente, Échantillon redemandé, Échantillon enregistré au centre de santé ou Échantillon enregistré au laboratoire d'analyse expire dès qu'il dépasse **Jours d'expiration de l'échantillon** sous **ADMIN → Paramètres → Configuration générale**. L'âge se compte depuis la date de prélèvement, ou depuis la date de la demande si aucune date de prélèvement n'est enregistrée. La valeur par défaut est de 365 jours |
 | Aucun résultats | La saisie de `no result` comme résultat |
 | Annulée | L'application de **Annulée** dans **Gérer le statut des résultats**, avec la saisie de `CANCEL` pour confirmer |
 

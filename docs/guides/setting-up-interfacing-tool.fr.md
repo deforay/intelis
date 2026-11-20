@@ -50,9 +50,9 @@ L'automate doit être connecté au réseau du laboratoire.
     3. Ouvrir l'outil d'interface depuis le menu des applications.
     4. Se connecter avec le Login ID `admin` et le mot de passe `admin`. La
        première connexion ouvre **Settings**.
-    5. Sous **System**, régler **Auto-connect on startup** sur **Yes**. Avec
-       **No**, l'outil cesse d'écouter après chaque redémarrage, jusqu'à ce que
-       quelqu'un se connecte.
+    5. Sous **System**, régler **Skip Sign-in and Connect at Startup** sur
+       **Yes**. Avec **No**, l'outil cesse d'écouter après chaque redémarrage,
+       jusqu'à ce que quelqu'un se connecte.
     6. Sous **Instruments**, sélectionner **+ Add Instrument** et remplir ces
        champs :
 
@@ -216,7 +216,7 @@ L'automate doit être connecté au réseau du laboratoire.
 
     ### Saisir la base de données dans l'outil
 
-    12. Dans l'outil, ouvrir **Settings**, puis **MySQL**. Saisir les valeurs
+    12. Dans l'outil, ouvrir **Settings**, puis **Database**. Saisir les valeurs
         affichées par la configuration :
 
         | Paramètre affiché | Champ de l'outil |
@@ -356,9 +356,9 @@ L'automate doit être connecté au réseau du laboratoire.
     3. Ouvrir l'outil d'interface depuis le menu des applications.
     4. Se connecter avec le Login ID `admin` et le mot de passe `admin`. La
        première connexion ouvre **Settings**.
-    5. Sous **System**, régler **Auto-connect on startup** sur **Yes**. Avec
-       **No**, l'outil cesse d'écouter après chaque redémarrage, jusqu'à ce que
-       quelqu'un se connecte.
+    5. Sous **System**, régler **Skip Sign-in and Connect at Startup** sur
+       **Yes**. Avec **No**, l'outil cesse d'écouter après chaque redémarrage,
+       jusqu'à ce que quelqu'un se connecte.
     6. Sous **Instruments**, sélectionner **+ Add Instrument** et remplir ces
        champs :
 
@@ -572,7 +572,7 @@ L'automate doit être connecté au réseau du laboratoire.
 
     ### Saisir la base de données dans l'outil
 
-    19. Sur l'ordinateur de l'outil, ouvrir **Settings**, puis **MySQL**.
+    19. Sur l'ordinateur de l'outil, ouvrir **Settings**, puis **Database**.
         Saisir les valeurs affichées par la configuration :
 
         | Paramètre affiché | Champ de l'outil |

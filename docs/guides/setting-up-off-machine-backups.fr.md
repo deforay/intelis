@@ -173,7 +173,7 @@ machine.
             | Choix | À utiliser quand |
             | --- | --- |
             | **Type the lisbackup password** | `lisbackup` existe déjà sur la machine de sauvegarde avec un mot de passe. Pour le créer, voir **Ajouter un utilisateur sur Ubuntu** à l'étape 3. |
-            | **Add it by hand on the backup machine** | Une autre personne administre la machine de sauvegarde. Le script affiche quatre commandes. La première crée le compte `lisbackup` s'il n'existe pas encore. Les envoyer à cette personne. Quand elle les a lancées, choisir **Yes** à **Has it been added? Check now?** (l'accès est-il ajouté, vérifier maintenant). |
+            | **Add it by hand on the backup machine** | Une autre personne administre la machine de sauvegarde. Le script affiche quatre commandes. La première crée le compte `lisbackup` s'il n'existe pas encore. Les envoyer à cette personne. Quand elle les a lancées, choisir **Yes** à **Have you run these commands on the backup machine? Check the access now?** (l'accès est-il ajouté, vérifier maintenant). |
 
         ??? tip "Se connecter à la machine de sauvegarde à la main"
 

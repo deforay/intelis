@@ -48,8 +48,9 @@ be connected to the lab network.
     3. Open the Interface Tool from the applications menu.
     4. Sign in with Login ID `admin` and password `admin`. The first sign-in
        opens **Settings**.
-    5. Under **System**, set **Auto-connect on startup** to **Yes**. With **No**,
-       the tool stops listening after every restart until somebody signs in.
+    5. Under **System**, set **Skip Sign-in and Connect at Startup** to
+       **Yes**. With **No**, the tool stops listening after every restart until
+       somebody signs in.
     6. Under **Instruments**, select **+ Add Instrument** and fill in these fields:
 
         | Field | Value |
@@ -206,7 +207,7 @@ be connected to the lab network.
 
     ### Enter the database in the tool
 
-    12. In the tool, open **Settings**, then **MySQL**. Enter the values setup
+    12. In the tool, open **Settings**, then **Database**. Enter the values setup
         printed:
 
         | Printed setting | Tool field |
@@ -339,8 +340,9 @@ be connected to the lab network.
     3. Open the Interface Tool from the applications menu.
     4. Sign in with Login ID `admin` and password `admin`. The first sign-in
        opens **Settings**.
-    5. Under **System**, set **Auto-connect on startup** to **Yes**. With **No**,
-       the tool stops listening after every restart until somebody signs in.
+    5. Under **System**, set **Skip Sign-in and Connect at Startup** to
+       **Yes**. With **No**, the tool stops listening after every restart until
+       somebody signs in.
     6. Under **Instruments**, select **+ Add Instrument** and fill in these fields:
 
         | Field | Value |
@@ -547,7 +549,7 @@ be connected to the lab network.
 
     ### Enter the database in the tool
 
-    19. On the tool's computer, open **Settings**, then **MySQL**. Enter the
+    19. On the tool's computer, open **Settings**, then **Database**. Enter the
         values setup printed:
 
         | Printed setting | Tool field |

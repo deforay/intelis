@@ -57,8 +57,8 @@ l'impression ni au courriel.
             | Province et District | Une région |
 
     4. Sélectionner **Rechercher**.
-    5. Cocher les résultats à imprimer. Le bouton **Imprimer les résultats
-       sélectionnés PDF** apparaît.
+    5. Cocher les résultats à imprimer. Le bouton **Imprimer le PDF des résultats
+       sélectionnés** apparaît.
 
         ??? info "Pour imprimer un seul résultat"
 

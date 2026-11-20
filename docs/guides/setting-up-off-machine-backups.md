@@ -159,7 +159,7 @@ lab's InteLIS machine. Use a USB drive only when there is no other machine.
             | Choice | Use it when |
             | --- | --- |
             | **Type the lisbackup password** | `lisbackup` already exists on the backup machine with a password. To create it, see **How to add a user on Ubuntu** in step 3. |
-            | **Add it by hand on the backup machine** | Someone else manages the backup machine. The script prints four commands. The first creates the `lisbackup` account if it does not exist yet. Send them to that person. When they have run them, choose **Yes** at **Has it been added? Check now?**. |
+            | **Add it by hand on the backup machine** | Someone else manages the backup machine. The script prints four commands. The first creates the `lisbackup` account if it does not exist yet. Send them to that person. When they have run them, choose **Yes** at **Have you run these commands on the backup machine? Check the access now?**. |
 
         ??? tip "Logging in to the backup machine by hand"
 
