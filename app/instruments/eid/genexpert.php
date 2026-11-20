@@ -15,6 +15,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Services\InstrumentsService;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
@@ -57,12 +58,8 @@ try {
     if (!in_array($extension, $allowedExtensions)) {
         throw new SystemException("Invalid file format.");
     }
-    $fileName = $_POST['fileName'] . "-" . MiscUtility::generateRandomString(12) . "." . $extension;
-
-
-
-
-    $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
+    $resultFile = InstrumentsService::importedResultPath((string) $_POST['fileName'], $extension);
+    $fileName = basename($resultFile);
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!

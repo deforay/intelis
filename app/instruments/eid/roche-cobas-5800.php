@@ -9,6 +9,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
+use App\Services\InstrumentsService;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
@@ -39,11 +40,9 @@ try {
     }
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
-    $fileName = str_replace(" ", "-", $fileName) . "-" . MiscUtility::generateRandomString(12);
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileName = $_POST['fileName'] . "." . $extension;
-
-    $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
+    $resultFile = InstrumentsService::importedResultPath((string) $_POST['fileName'], $extension);
+    $fileName = basename($resultFile);
 
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
