@@ -236,7 +236,7 @@ try {
      }
      $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
           'patientId' => ['vl.patient_art_no', ListingFilterClauseBuilder::CONTAINS],
-          'patientName' => ["CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", ListingFilterClauseBuilder::CONTAINS],
+          'patientName' => [ListingFilterClauseBuilder::fullName('vl.patient_first_name', 'vl.patient_middle_name', 'vl.patient_last_name'), ListingFilterClauseBuilder::CONTAINS],
      ])];
      /* Assign date time filters */
      if (!empty($_POST['sampleCollectionDate'])) {

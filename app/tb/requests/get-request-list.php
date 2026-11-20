@@ -181,7 +181,7 @@ try {
           'srcOfReqModel' => ['vl.source_of_request', ListingFilterClauseBuilder::LIKE],
           'labIdModel' => ['vl.lab_id', ListingFilterClauseBuilder::LIKE],
           'patientId' => ['vl.patient_id', ListingFilterClauseBuilder::CONTAINS],
-          'patientName' => ["CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,''))", ListingFilterClauseBuilder::CONTAINS],
+          'patientName' => [ListingFilterClauseBuilder::fullName('vl.patient_name', 'vl.patient_surname'), ListingFilterClauseBuilder::CONTAINS],
      ])];
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           $sWhere[] = ' vl.funding_source IN ("' . $db->escape(base64_decode((string) $_POST['fundingSource'])) . '")';
