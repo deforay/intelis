@@ -234,9 +234,18 @@ final class VlListingSqlEncodingTest extends TestCase
     }
 
     #[RunInSeparateProcess]
-    public function testApprovalListStillFindsAPartOfABatchCode(): void
+    public function testApprovalListFindsAWholeBatchCode(): void
     {
         self::assertSame(['VL001'], $this->listed('/vl/results/getVlResultsForApproval.php', [
+            'batchCode' => 'B-ONE',
+        ]));
+    }
+
+    #[RunInSeparateProcess]
+    public function testApprovalListDoesNotMatchPartOfABatchCode(): void
+    {
+        // The batch filter is a dropdown of exact codes: B1 must not list B12.
+        self::assertSame([], $this->listed('/vl/results/getVlResultsForApproval.php', [
             'batchCode' => 'B-ON',
         ]));
     }

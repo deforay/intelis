@@ -101,51 +101,20 @@ try {
     $sQuery = "SELECT vl.*,b.batch_code,f.facility_name FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 
-    $start_date = '';
-    $end_date = '';
-    if (!empty($_POST['sampleCollectionDate'])) {
-        $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-
-        if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
-            $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-        }
-        if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
-            $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-        }
-    }
-
-    $tested_start_date = '';
-    $tested_end_date = '';
-    if (!empty($_POST['sampleTestDate'])) {
-        $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
-
-        if (isset($s_t_date[0]) && trim($s_t_date[0]) !== "") {
-            $tested_start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
-        }
-        if (isset($s_t_date[1]) && trim($s_t_date[1]) !== "") {
-            $tested_end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
-        }
-    }
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+    [$tested_start_date, $tested_end_date] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
 
 
     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
-        'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::CONTAINS],
+        'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
         'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
         'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
     ])];
     if (!empty($_POST['sampleCollectionDate'])) {
-        if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-        } else {
-            $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
+        $sWhere[] = " vl.sample_collection_date BETWEEN '" . $db->escape($start_date) . "' AND '" . $db->escape($end_date) . "'";
     }
     if (!empty($_POST['sampleTestDate'])) {
-        if (trim((string) $tested_start_date) === trim((string) $tested_end_date)) {
-            $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $tested_start_date . '"';
-        } else {
-            $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $tested_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $tested_end_date . '"';
-        }
+        $sWhere[] = " vl.sample_tested_datetime BETWEEN '" . $db->escape($tested_start_date) . "' AND '" . $db->escape($tested_end_date) . "'";
     }
     $cancellableFilter = (isset($_POST['statusFilter']) && $_POST['statusFilter'] == 'cancellable');
     if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
