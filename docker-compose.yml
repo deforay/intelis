@@ -4,8 +4,8 @@ services:
       context: .
       target: php-web
       args:
-        UBUNTU_VERSION: ${UBUNTU_VERSION:-24.04}
-        PHP_VERSION: ${PHP_VERSION:-8.4}
+        UBUNTU_VERSION: ${UBUNTU_VERSION:-26.04}
+        PHP_VERSION: ${PHP_VERSION:-8.5}
       # Deliberately not "image: deforay/intelis:latest". Using a published
       # image means dropping the bind mount below, and three things depend on
       # it: the configuration would reset from the dist template on every
@@ -19,8 +19,8 @@ services:
       - .:/var/www/html
       # Dev-only PHP overrides. The mount above is what makes them necessary:
       # the image is built with OPcache pinned to never revalidate.
-      - ./docker/php-apache/dev-php.ini:/etc/php/${PHP_VERSION:-8.4}/apache2/conf.d/zz-dev.ini:ro
-      - ./docker/php-apache/dev-php.ini:/etc/php/${PHP_VERSION:-8.4}/cli/conf.d/zz-dev.ini:ro
+      - ./docker/php-apache/dev-php.ini:/etc/php/${PHP_VERSION:-8.5}/apache2/conf.d/zz-dev.ini:ro
+      - ./docker/php-apache/dev-php.ini:/etc/php/${PHP_VERSION:-8.5}/cli/conf.d/zz-dev.ini:ro
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
       - MYSQL_DATABASE=${MYSQL_DATABASE:-vlsm}

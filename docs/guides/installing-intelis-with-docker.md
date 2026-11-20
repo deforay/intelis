@@ -16,7 +16,8 @@ The machine needs [Docker](https://docs.docker.com/get-docker/) with the
 an internet connection. The lab server steps assume an Ubuntu host.
 
 The container must run **PHP 8.4 (8.4.27 or newer) or PHP 8.5 (8.5.12 or newer)**. PHP 8.2, 8.3, and older
-versions are not supported. The default image uses PHP 8.4.
+versions are not supported. The default image runs Ubuntu 26.04 LTS with
+PHP 8.5.
 
 **Choose the situation that fits, then follow its steps from top to bottom.**
 
@@ -64,8 +65,8 @@ versions are not supported. The default image uses PHP 8.4.
             | --- | --- | --- |
             | `DOMAIN` | `intelis` | The name Apache answers to. Any other address that reaches the server also works. |
             | `APACHE_PORT` | `80` | The port on this machine for the web server. |
-            | `UBUNTU_VERSION` | `24.04` | The Ubuntu release the container image is built on. |
-            | `PHP_VERSION` | `8.4` | The PHP version installed in the container image. Use `8.4` or `8.5`. |
+            | `UBUNTU_VERSION` | `26.04` | The Ubuntu release the container image is built on. |
+            | `PHP_VERSION` | `8.5` | The PHP version installed in the container image. Use `8.5` on Ubuntu 26.04. Use `8.4` or `8.5` on Ubuntu 24.04. |
             | `MYSQL_ROOT_PASSWORD` | `root_password` when empty | The MySQL root password. |
             | `MYSQL_PORT` | `3306` | The port on this machine for MySQL. |
             | `MYSQL_DATABASE` | `vlsm` | The main database name. Leave it as `vlsm`. |
@@ -290,8 +291,8 @@ versions are not supported. The default image uses PHP 8.4.
         | --- | --- | --- |
         | `DOMAIN` | `intelis` | The name Apache answers to. `localhost` also works. |
         | `APACHE_PORT` | `80` | The host port for the web server. |
-        | `UBUNTU_VERSION` | `24.04` | The Ubuntu release the container image is built on. |
-        | `PHP_VERSION` | `8.4` | The PHP version installed in the container image. Use `8.4` or `8.5`. |
+        | `UBUNTU_VERSION` | `26.04` | The Ubuntu release the container image is built on. |
+        | `PHP_VERSION` | `8.5` | The PHP version installed in the container image. Use `8.5` on Ubuntu 26.04. Use `8.4` or `8.5` on Ubuntu 24.04. |
         | `MYSQL_ROOT_PASSWORD` | `root_password` when empty | The MySQL root password. |
         | `MYSQL_PORT` | `3306` | The host port for MySQL. |
         | `MYSQL_DATABASE` | `vlsm` | The main database name. Leave it as `vlsm`. |

@@ -26,8 +26,15 @@ echo "127.0.0.1 ${DOMAIN}" >>/etc/hosts
 #
 # These connections are container-to-container on a private compose network, so
 # TLS is turned off rather than provisioning a CA for a check protecting nothing.
+#
+# Oracle's client also needs --get-server-public-key. With TLS off, MySQL 8.4
+# accepts a caching_sha2_password login only over RSA key exchange until the
+# password is in the server's cache. The cache is empty on a fresh database and
+# after every database restart, so without the key every mysql call here fails
+# with "Authentication requires secure connection". The interfacing database is
+# then never created. mysqladmin ping never logs in, so the wait loop passes.
 if mysqladmin --help 2>/dev/null | grep -q -- '--ssl-mode'; then
-    MYSQL_TLS="--ssl-mode=DISABLED"
+    MYSQL_TLS="--ssl-mode=DISABLED --get-server-public-key"
 elif mysqladmin --help 2>/dev/null | grep -q -- '--skip-ssl'; then
     MYSQL_TLS="--skip-ssl"
 else
