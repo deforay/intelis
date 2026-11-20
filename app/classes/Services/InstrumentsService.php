@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Utilities\FileCacheUtility;
+use App\Utilities\MiscUtility;
 use App\Utilities\SampleCountUtility;
 
 final class InstrumentsService
@@ -156,5 +158,30 @@ final class InstrumentsService
             $list[] = $instrument;
         }
         return $list;
+    }
+
+    /**
+     * Full path for a new result-import upload, always inside UPLOAD_PATH/imported-results.
+     * The name is built from the import script's name, never trusted as a path.
+     */
+    public static function importedResultPath(string $scriptName, string $extension): string
+    {
+        $base = preg_replace('/[^A-Za-z0-9_-]/', '', pathinfo(basename($scriptName), PATHINFO_FILENAME));
+        if ($base === '' || $base === null) {
+            $base = 'import';
+        }
+        $extension = (string) preg_replace('/[^A-Za-z0-9]/', '', $extension);
+
+        $folder = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'imported-results';
+        if (!is_dir($folder)) {
+            MiscUtility::makeDirectory($folder);
+        }
+        $realFolder = realpath($folder);
+
+        $path = $realFolder . DIRECTORY_SEPARATOR . $base . '-' . MiscUtility::generateRandomString(12) . '.' . $extension;
+        if ($realFolder === false || dirname($path) !== $realFolder) {
+            throw new SystemException('Could not build the path for the imported result file');
+        }
+        return $path;
     }
 }
