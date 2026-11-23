@@ -6,7 +6,7 @@
 # script never runs against an older copy than the one it was written for.
 # To raise it everywhere: php bin/dev/bump-shared-fn-version.php
 # bin/build/check-shell-loaders.php fails a push that changes this file without it.
-SHARED_FN_VERSION=4
+SHARED_FN_VERSION=5
 
 # Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
 export LANG="${LANG:-en_US.UTF-8}"
@@ -386,9 +386,10 @@ check_ubuntu_version() {
 }
 
 # Pick the default PHP major.minor for the running OS.
-# Ubuntu 24.04 and older carry (and ondrej's PPA still builds) PHP 8.4, our
-# well-tested baseline. Ubuntu 26.04 dropped PHP 8.4 — its archive/PPA ship
-# PHP 8.5 instead — so on 26.04+ we default to 8.5. The app itself supports
+# Before 26.04 the default is PHP 8.4, our well-tested baseline. On 26.04+ it
+# is PHP 8.5: that is the PHP Ubuntu 26.04 itself ships, and the one new
+# machines are set up on. packages.sury.org builds 8.4 for 26.04 too, so an
+# operator can still pin 8.4 there. The app itself supports
 # PHP 8.4 from 8.4.27 and PHP 8.5 from 8.5.12 (see composer.json and
 # php_security_floor), so both are safe; this only chooses the default
 # when the operator hasn't pinned one with --php.
@@ -402,7 +403,7 @@ default_php_version_for_os() {
         return
     fi
 
-    # 26.04 and newer no longer provide PHP 8.4; use 8.5.
+    # 26.04 and newer default to the PHP 8.5 that Ubuntu itself ships.
     if [[ "$(printf '%s\n' "26.04" "$ubuntu_version" | sort -V | head -n1)" == "26.04" ]]; then
         echo "8.5"
     else
@@ -436,6 +437,57 @@ apache_runs_stale_mod_php() {
     started=$(( $(date +%s) - elapsed ))
     so_ctime="$(stat -c %Z "$so" 2>/dev/null)" || return 1
     [ "$so_ctime" -gt "$started" ]
+}
+
+# apt source for PHP or Apache: use_sury_repo php|apache2.
+#
+# PHP and Apache come from packages.sury.org. The ondrej Launchpad PPAs they
+# used to come from are frozen and get no more updates, so their source files
+# are removed: left in place, apt would keep offering their older builds.
+# Mirrors use_sury_repo in utility-scripts' switch-php. Returns 0 when the
+# sources changed (run apt-get update), 1 when nothing changed, and 2 when the
+# key could not be installed.
+SURY_KEYRING=/usr/share/keyrings/debsuryorg-archive-keyring.gpg
+use_sury_repo() {
+    local component="$1" codename code f changed=1 tmp
+
+    for f in /etc/apt/sources.list.d/ondrej-ubuntu-"${component}"-*; do
+        [ -e "$f" ] || continue
+        rm -f "$f"
+        log_action "Removed frozen apt source $(basename "$f")"
+        changed=0
+    done
+
+    if grep -rqs "packages\.sury\.org/${component}" /etc/apt/sources.list /etc/apt/sources.list.d/; then
+        return "$changed"
+    fi
+
+    codename="$(lsb_release -sc 2>/dev/null)"
+    [ -n "$codename" ] || return "$changed"
+
+    # No build for this release yet: stay on Ubuntu's own packages.
+    code="$(curl -sSLI -o /dev/null --max-time 20 --retry 3 --retry-delay 2 -w '%{http_code}' \
+        "https://packages.sury.org/${component}/dists/${codename}/Release" 2>/dev/null)" || true
+    if [ "$code" = "404" ]; then
+        log_action "packages.sury.org/${component} has no build for ${codename}; using Ubuntu's packages"
+        return "$changed"
+    fi
+
+    if [ ! -s "$SURY_KEYRING" ]; then
+        tmp="$(mktemp --suffix=.deb)" || return 2
+        if ! curl -fsSL --max-time 60 --retry 3 -o "$tmp" https://packages.sury.org/debsuryorg-archive-keyring.deb ||
+            ! dpkg -i "$tmp" >/dev/null; then
+            rm -f "$tmp"
+            log_action "Could not install the packages.sury.org signing key"
+            return 2
+        fi
+        rm -f "$tmp"
+    fi
+
+    echo "deb [signed-by=${SURY_KEYRING}] https://packages.sury.org/${component}/ ${codename} main" \
+        >"/etc/apt/sources.list.d/sury-${component}.list"
+    log_action "Added packages.sury.org/${component} for ${codename}"
+    return 0
 }
 
 # Upstream version of an installed package ("8.4.27" from

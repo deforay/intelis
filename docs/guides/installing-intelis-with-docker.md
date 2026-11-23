@@ -66,7 +66,7 @@ PHP 8.5.
             | `DOMAIN` | `intelis` | The name Apache answers to. Any other address that reaches the server also works. |
             | `APACHE_PORT` | `80` | The port on this machine for the web server. |
             | `UBUNTU_VERSION` | `26.04` | The Ubuntu release the container image is built on. |
-            | `PHP_VERSION` | `8.5` | The PHP version installed in the container image. Use `8.5` on Ubuntu 26.04. Use `8.4` or `8.5` on Ubuntu 24.04. |
+            | `PHP_VERSION` | `8.5` | The PHP version installed in the container image. Use `8.4` or `8.5` on Ubuntu 24.04 or 26.04. |
             | `MYSQL_ROOT_PASSWORD` | `root_password` when empty | The MySQL root password. |
             | `MYSQL_PORT` | `3306` | The port on this machine for MySQL. |
             | `MYSQL_DATABASE` | `vlsm` | The main database name. Leave it as `vlsm`. |
@@ -292,7 +292,7 @@ PHP 8.5.
         | `DOMAIN` | `intelis` | The name Apache answers to. `localhost` also works. |
         | `APACHE_PORT` | `80` | The host port for the web server. |
         | `UBUNTU_VERSION` | `26.04` | The Ubuntu release the container image is built on. |
-        | `PHP_VERSION` | `8.5` | The PHP version installed in the container image. Use `8.5` on Ubuntu 26.04. Use `8.4` or `8.5` on Ubuntu 24.04. |
+        | `PHP_VERSION` | `8.5` | The PHP version installed in the container image. Use `8.4` or `8.5` on Ubuntu 24.04 or 26.04. |
         | `MYSQL_ROOT_PASSWORD` | `root_password` when empty | The MySQL root password. |
         | `MYSQL_PORT` | `3306` | The host port for MySQL. |
         | `MYSQL_DATABASE` | `vlsm` | The main database name. Leave it as `vlsm`. |
