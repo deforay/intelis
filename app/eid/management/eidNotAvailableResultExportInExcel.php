@@ -12,7 +12,7 @@ use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
-if (ExportJobUtility::queueRequested(__FILE__, null, ['resultNotAvailable'])) {
+if (ExportJobUtility::queueRequested(__FILE__, null, ['eidResultNotAvailable'])) {
 	return;
 }
 
@@ -32,7 +32,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $key = (string) $general->getGlobalConfig('key');
 $formId = (int) $general->getGlobalConfig('vl_form');
 
-if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) !== "") {
+if (isset($_SESSION['eidResultNotAvailable']) && trim((string) $_SESSION['eidResultNotAvailable']) !== "") {
 
     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child ID", "Child's Name", "Sample Collection Date", "Sample Received at Testing Lab", "Lab Name", "Sample Status", "Implementing Partner"];
     if ($general->isStandaloneInstance()) {
@@ -48,7 +48,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
     $writer->openToFile($filename);
     $writer->addRow(Row::fromValues($headings));
 
-    $resultSet = $db->rawQueryGenerator($_SESSION['resultNotAvailable']);
+    $resultSet = $db->rawQueryGenerator($_SESSION['eidResultNotAvailable']);
     foreach ($resultSet as $aRow) {
         ExportJobUtility::tick();
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {

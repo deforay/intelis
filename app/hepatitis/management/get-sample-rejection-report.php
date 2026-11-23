@@ -118,14 +118,14 @@ if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
-$_SESSION['rejectedViralLoadResult'] = $sQuery;
+$_SESSION['hepatitisRejectionReport'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 
 [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-$_SESSION['rejectedViralLoadResultCount'] = $resultCount;
+$_SESSION['hepatitisRejectionReportCount'] = $resultCount;
 
 $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 

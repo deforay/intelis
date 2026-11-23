@@ -138,7 +138,7 @@ if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
-$_SESSION['resultNotAvailable'] = $sQuery;
+$_SESSION['tbResultNotAvailable'] = $sQuery;
 
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
@@ -146,7 +146,7 @@ if (isset($sLimit) && isset($sOffset)) {
 
 [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-$_SESSION['resultNotAvailableCount'] = $resultCount;
+$_SESSION['tbResultNotAvailableCount'] = $resultCount;
 
 
 $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];

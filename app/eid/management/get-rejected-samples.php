@@ -63,7 +63,7 @@ if (!empty($_POST['sampleCollectionDate'])) {
     // this report should count. Same rule the VL rejection report applies.
     $sWhere[] = SampleCountUtility::countableWhere('vl');
     $vlQuery = $vlQuery . ' where ' . implode(' AND ', $sWhere) . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
-    $_SESSION['rejectedSamples'] = $vlQuery;
+    $_SESSION['eidRejectedSamples'] = $vlQuery;
     // echo $vlQuery; die;
 
     $tableResult = $db->rawQuery($vlQuery);

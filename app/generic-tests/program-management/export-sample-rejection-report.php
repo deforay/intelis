@@ -9,15 +9,15 @@ use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
-if (ExportJobUtility::queueRequested(__FILE__, null, ['rejectedSamples'])) {
+if (ExportJobUtility::queueRequested(__FILE__, null, ['genericTestsRejectedSamples'])) {
 	return;
 }
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) !== "") {
-     $rResult = $db->rawQuery($_SESSION['rejectedSamples']);
+if (isset($_SESSION['genericTestsRejectedSamples']) && trim((string) $_SESSION['genericTestsRejectedSamples']) !== "") {
+     $rResult = $db->rawQuery($_SESSION['genericTestsRejectedSamples']);
 
      $output = [];
      $headings = ["Lab Name", "Facility Name", "Rejection Reason", "Reason Category", "No. of Samples"];

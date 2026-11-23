@@ -11,7 +11,7 @@ use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
-if (ExportJobUtility::queueRequested(__FILE__, null, ['highViralResult', 'highViralResultCount'])) {
+if (ExportJobUtility::queueRequested(__FILE__, null, ['hepatitisPositiveResult', 'hepatitisPositiveResultCount'])) {
 	return;
 }
 
@@ -29,8 +29,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 $key = (string) $general->getGlobalConfig('key');
 
-if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) !== "") {
-     error_log($_SESSION['highViralResult']);
+if (isset($_SESSION['hepatitisPositiveResult']) && trim((string) $_SESSION['hepatitisPositiveResult']) !== "") {
 
      $output = [];
 
@@ -40,7 +39,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
      }
 
      $vlSampleId = [];
-     $resultSet = $db->rawQueryGenerator($_SESSION['highViralResult']);
+     $resultSet = $db->rawQueryGenerator($_SESSION['hepatitisPositiveResult']);
      foreach ($resultSet as $aRow) {
           ExportJobUtility::tick();
           $row = [];
@@ -81,7 +80,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
      if ($_POST['markAsComplete'] == 'true') {
           $vlId = implode(",", $vlSampleId);
      }
-     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 50000) {
+     if (isset($_SESSION['hepatitisPositiveResultCount']) && $_SESSION['hepatitisPositiveResultCount'] > 50000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-High-Viral-Load-Report' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore
