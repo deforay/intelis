@@ -4,6 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\DataTableUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 
@@ -21,7 +22,7 @@ $sarr = $general->getSystemConfig();
 $key = (string) $general->getGlobalConfig('key');
 
 
-$aColumns = ['patient_first_name', 'patient_code', 'patient_gender', 'patient_phone_number', 'patient_address', 'status'];
+$aColumns = [ListingFilterClauseBuilder::fullName('patient_first_name', 'patient_middle_name', 'patient_last_name'), 'patient_code', 'patient_gender', 'patient_phone_number', 'patient_address', 'status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;

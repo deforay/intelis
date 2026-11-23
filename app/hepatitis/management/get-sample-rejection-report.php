@@ -8,6 +8,7 @@ use App\Utilities\SampleRejectionUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 // Sanitized values from $request object
@@ -26,7 +27,7 @@ $key = (string) $general->getGlobalConfig('key');
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
 
-$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name'];
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', ListingFilterClauseBuilder::fullName('vl.patient_name', 'vl.patient_surname'), "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name'];
 $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name'];
 
 if ($general->isStandaloneInstance()) {

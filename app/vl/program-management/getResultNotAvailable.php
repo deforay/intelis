@@ -11,6 +11,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\SampleCountUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -24,7 +25,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $key = (string) $general->getGlobalConfig('key');
 
-$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', ListingFilterClauseBuilder::fullName('vl.patient_first_name', 'vl.patient_middle_name', 'vl.patient_last_name'), "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
 $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'fd.facility_name', 'ts.status_name', 'r_i_p.i_partner_name'];
 if ($general->isStandaloneInstance()) {
     $aColumns = MiscUtility::removeMatchingElements($aColumns, ['vl.remote_sample_code']);

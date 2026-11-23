@@ -17,7 +17,7 @@ $primaryKey = "vl_sample_id";
 
 
 
-$aColumns = ['vl.vl_sample_id', 'vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name'];
+$aColumns = ['vl.vl_sample_id', 'vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', ListingFilterClauseBuilder::fullName('vl.patient_first_name', 'vl.patient_middle_name', 'vl.patient_last_name'), 'f.facility_name', 'f.facility_code', 's.sample_name'];
 $orderColumns = ['vl.vl_sample_id', 'vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name'];
 
 /* Indexed column (used for fast and accurate table cardinality) */

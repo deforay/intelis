@@ -10,6 +10,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\SampleCountUtility;
 use App\Utilities\SampleRejectionUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 // Sanitized values from $request object
@@ -29,7 +30,7 @@ try {
     $primaryKey = "tb_id";
     $key = (string) $general->getGlobalConfig('key');
 
-    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name'];
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', ListingFilterClauseBuilder::fullName('vl.patient_name', 'vl.patient_surname'), "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name'];
     $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name'];
 
     if ($general->isStandaloneInstance()) {
