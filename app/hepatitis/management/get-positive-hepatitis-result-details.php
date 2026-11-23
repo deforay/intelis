@@ -7,6 +7,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 // Sanitized values from $request object
@@ -26,7 +27,7 @@ $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
 
 $sampleCode = 'sample_code';
-$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_name', 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count'];
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', ListingFilterClauseBuilder::fullName('vl.patient_name', 'vl.patient_surname'), 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count'];
 $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count'];
 if ($general->isSTSInstance()) {
     $sampleCode = 'remote_sample_code';

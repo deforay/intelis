@@ -8,6 +8,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 // Sanitized values from $request object
@@ -29,7 +30,7 @@ try {
     $primaryKey = "covid19_id";
 
     $sampleCode = 'sample_code';
-    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_name', 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result'];
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', ListingFilterClauseBuilder::fullName('vl.patient_name', 'vl.patient_surname'), 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result'];
     $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result'];
     if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';

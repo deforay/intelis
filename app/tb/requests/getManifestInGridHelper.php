@@ -5,6 +5,7 @@
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\ListingFilterClauseBuilder;
 
 /** @var CommonService $general */
 $general = $general ?? ContainerRegistry::get(CommonService::class);
@@ -32,7 +33,7 @@ $manifestGrid = [
                     LEFT JOIN r_tb_sample_type as s ON s.sample_id=vl.specimen_type
                     INNER JOIN r_sample_status as ts ON ts.status_id = TRIM(vl.result_status) AND ts.status_id REGEXP '^[0-9]+$'
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id",
-    'aColumns' => ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name'],
+    'aColumns' => ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'f.facility_name', 'vl.patient_id', ListingFilterClauseBuilder::fullName('vl.patient_name', 'vl.patient_surname'), 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name'],
     'orderColumns' => ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'],
     // TB referrals can arrive under either the package code or the referral code.
     'manifestWhere' => fn(string $code): string => " (vl.sample_package_code = '$code' OR vl.referral_manifest_code = '$code')",

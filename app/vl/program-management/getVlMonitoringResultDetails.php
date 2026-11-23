@@ -29,7 +29,7 @@ $key = (string) $general->getGlobalConfig('key');
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
-$aColumns = ['vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name'];
+$aColumns = ['vl.sample_code', 'b.batch_code', 'vl.patient_art_no', ListingFilterClauseBuilder::fullName('vl.patient_first_name', 'vl.patient_middle_name', 'vl.patient_last_name'), 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name'];
 $orderColumns = ['vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'ts.status_name'];
 
 /* Indexed column (used for fast and accurate table cardinality) */

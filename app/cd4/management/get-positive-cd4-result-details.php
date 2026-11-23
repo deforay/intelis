@@ -7,6 +7,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 // Sanitized values from $request object
@@ -27,7 +28,7 @@ $primaryKey = "cd4_id";
 
 
 $sampleCode = 'sample_code';
-$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_first_name', 'vl.patient_art_no', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.cd4_result', 'ts.status_name'];
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', ListingFilterClauseBuilder::fullName('vl.patient_first_name', 'vl.patient_middle_name', 'vl.patient_last_name'), 'vl.patient_art_no', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.cd4_result', 'ts.status_name'];
 $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.cd4_result', 'ts.status_name'];
 if ($general->isSTSInstance()) {
     $sampleCode = 'remote_sample_code';

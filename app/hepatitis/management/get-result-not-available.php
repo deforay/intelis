@@ -11,6 +11,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 // Sanitized values from $request object
@@ -30,10 +31,10 @@ try {
     $key = (string) $general->getGlobalConfig('key');
 
 
-    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", 'fd.facility_name'];
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', ListingFilterClauseBuilder::fullName('vl.patient_name', 'vl.patient_surname'), "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", 'fd.facility_name'];
     $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'fd.facility_name'];
     if ($general->isStandaloneInstance()) {
-        $aColumns = ['vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", 'fd.facility_name'];
+        $aColumns = ['vl.sample_code', 'f.facility_name', 'vl.patient_id', ListingFilterClauseBuilder::fullName('vl.patient_name', 'vl.patient_surname'), "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", 'fd.facility_name'];
         $orderColumns = ['vl.sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'fd.facility_name'];
     }
 
