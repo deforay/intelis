@@ -904,7 +904,7 @@ check_php_packages() {
 
   candidate="$(apt-cache policy "$pkg" 2>/dev/null | awk '/Candidate:/ {print $2}' || true)"
   if [ -z "$candidate" ] || [ "$candidate" = "(none)" ]; then
-    finding critical ppa \
+    finding critical php_repo \
       "The PHP packages this machine needs are not available to install." \
       "apt has no ${pkg}. An Ubuntu release upgrade switches off the PHP repository. Then there is nothing to install, and every repair looks like it failed. The repair below switches it back on."
   else
@@ -1252,7 +1252,7 @@ case "$PROBE_RESULT" in
     # was corrected passes every check above and still serves source — which is
     # the state a real lab was left in after switch-php had already done its job.
     # The probe is the only thing that can tell the two apart.
-    if ! has_finding handler && ! has_finding ppa; then
+    if ! has_finding handler && ! has_finding php_repo; then
       finding critical stale \
         "Apache is set up correctly but has not picked it up yet." \
         "The configuration on disk is right, but the running server still uses the old one. The repair below restarts it."
@@ -1296,7 +1296,7 @@ render_checks() {
   else row bad "Web server" "stopped"
   fi
 
-  if has_finding ppa || has_finding handler; then row bad "PHP" "the web server cannot run it"
+  if has_finding php_repo || has_finding handler; then row bad "PHP" "the web server cannot run it"
   elif [ "$PROBE_RESULT" = source-served ]; then row bad "PHP" "shown as code instead of run"
   elif has_finding stale; then row bad "PHP" "updated, the web server still runs the old copy"
   elif [ -n "$PROBE_MISSING" ]; then row bad "PHP" "missing ${PROBE_MISSING//,/, }"
@@ -1371,11 +1371,26 @@ fix_start_apache() {
   systemctl is-active --quiet apache2
 }
 
-fix_add_ppa() {
-  command -v add-apt-repository >/dev/null 2>&1 ||
-    spin "Installing the tool that manages repositories..." \
-      apt-get install -y software-properties-common || true
-  spin "Restoring the PHP repository..." add-apt-repository -y ppa:ondrej/php || return 1
+# PHP comes from packages.sury.org. The ondrej PPA it used to come from is
+# frozen, so its source file is removed rather than restored. Self-contained
+# (not use_sury_repo from shared-functions.sh) because the doctor runs without
+# that file when the network is down.
+fix_php_repo() {
+  local keyring=/usr/share/keyrings/debsuryorg-archive-keyring.gpg f tmp codename
+  codename="$(lsb_release -sc 2>/dev/null)" || return 1
+  [ -n "$codename" ] || return 1
+  rm -f /etc/apt/sources.list.d/ondrej-ubuntu-php-*
+  if [ ! -s "$keyring" ]; then
+    tmp="$(mktemp --suffix=.deb)" || return 1
+    spin "Downloading the PHP repository key..." \
+      curl -fsSL --max-time 60 --retry 3 -o "$tmp" https://packages.sury.org/debsuryorg-archive-keyring.deb &&
+      spin "Installing the PHP repository key..." dpkg -i "$tmp"
+    f=$?
+    rm -f "$tmp"
+    [ "$f" -eq 0 ] || return 1
+  fi
+  echo "deb [signed-by=${keyring}] https://packages.sury.org/php/ ${codename} main" \
+    >/etc/apt/sources.list.d/sury-php.list
   spin "Refreshing the package list..." apt-get update -y || return 1
   TARGET_PHP="$(default_php_version)"
   return 0
@@ -1596,7 +1611,7 @@ if [ ${#FINDING_TITLES[@]} -gt 0 ] && ! only_database_finding; then
   has_finding hosts       && { run_fix "Add ${MISSING_NAMES// / and } to /etc/hosts so this computer can open the site by name." fix_hosts || true; }
   has_finding maintenance && { run_fix "Take the site out of update mode." fix_maintenance || true; }
   has_finding stale       && { run_fix "Restart the web server so it picks up its settings." fix_stale || true; }
-  has_finding ppa         && { run_fix "Restore the PHP repository so the packages can be installed." fix_add_ppa || true; }
+  has_finding php_repo    && { run_fix "Restore the PHP repository so the packages can be installed." fix_php_repo || true; }
   has_finding handler     && { run_fix "Make Apache able to run PHP again." fix_php_handler || true; }
   has_finding extensions  && { run_fix "Install and switch on the parts of PHP that are missing, then restart the web server." fix_php_extensions || true; }
   has_finding permissions && { run_fix "Give the web server access to the folders it needs." fix_permissions || true; }

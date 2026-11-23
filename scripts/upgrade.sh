@@ -182,7 +182,7 @@ fi
 
 # Source the shared functions
 source "$SHARED_FN_PATH"
-intelis_require_shared_fn_version 4
+intelis_require_shared_fn_version 5
 
 # Existing is not the same as usable: a copy left truncated by an older version
 # of this script, or one that fails to parse, gets sourced without a murmur.
@@ -1461,9 +1461,15 @@ if [ "$skip_ubuntu_updates" = false ]; then
         -o Dpkg::Options::="--force-confold" \
         upgrade -y
 
-    if ! grep -q "ondrej/apache2" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
-        add-apt-repository ppa:ondrej/apache2 -y
-        apt-get upgrade apache2 -y
+    # Apache comes from packages.sury.org. This also retires the frozen ondrej
+    # PPA, which this step used to add.
+    sury_rc=0
+    use_sury_repo apache2 || sury_rc=$?
+    if [ "$sury_rc" -eq 0 ]; then
+        apt-get update --allow-releaseinfo-change
+        apt-get install --only-upgrade -y apache2
+    elif [ "$sury_rc" -eq 2 ]; then
+        print warning "Could not add packages.sury.org for Apache. Apache stays on its current packages."
     fi
 
     print info "Configuring any partially installed packages..."

@@ -14,9 +14,9 @@
 # The default follows the recommended Ubuntu for a new lab machine: 26.04 LTS
 # with PHP 8.5. UBUNTU_VERSION is overridable at build time:
 #   docker build --build-arg UBUNTU_VERSION=24.04 --build-arg PHP_VERSION=8.4 .
-# 24.04 ships PHP 8.3, so on 24.04 PHP comes from the ondrej/php PPA. 26.04
-# ships PHP 8.5 itself and no longer has 8.4 anywhere. The version is pinned
-# explicitly either way.
+# PHP comes from packages.sury.org on every release, as it does on a lab
+# machine: 24.04 itself ships only PHP 8.3, and 26.04 ships only 8.5, so 8.4
+# there comes from sury too. The version is pinned explicitly either way.
 #
 # PHP 8.5 builds OPcache into PHP itself, so php8.5-opcache does not exist and
 # asking for it stops apt. The package is requested only before 8.5.
@@ -38,8 +38,12 @@ ENV APACHE_RUN_USER=www-data \
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        ca-certificates curl gnupg lsb-release software-properties-common && \
-    add-apt-repository -y ppa:ondrej/php && \
+        ca-certificates curl gnupg lsb-release && \
+    curl -fsSL -o /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb && \
+    dpkg -i /tmp/debsuryorg-archive-keyring.deb && \
+    rm -f /tmp/debsuryorg-archive-keyring.deb && \
+    echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" \
+        > /etc/apt/sources.list.d/sury-php.list && \
     apt-get update && \
     OPCACHE_PACKAGE="" && \
     if dpkg --compare-versions "${PHP_VERSION}" lt 8.5; then OPCACHE_PACKAGE="php${PHP_VERSION}-opcache"; fi && \

@@ -12,12 +12,12 @@ name: Operator paths
 # that could never choose a backup.
 #
 # It never gates anything. A run takes about 20 minutes and depends on GitHub,
-# Launchpad and Packagist answering, so it runs only:
+# packages.sury.org and Packagist answering, so it runs only:
 #
 #   - after a push to master that touches what an operator runs, once that
 #     commit has reached `stable`: the recorder installs from `stable`, as a
 #     lab does, and a run on the push itself would test the code before it
-#   - every Sunday, for what breaks without a commit: the PPA, Ubuntu's
+#   - every Sunday, for what breaks without a commit: the PHP repository, Ubuntu's
 #     packages, how sudo sets up the environment
 #   - by hand, from the Actions tab
 #

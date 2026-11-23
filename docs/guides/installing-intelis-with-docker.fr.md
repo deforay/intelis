@@ -70,7 +70,7 @@ Ubuntu 26.04 LTS avec PHP 8.5.
             | `DOMAIN` | `intelis` | Le nom auquel Apache répond. Toute autre adresse qui atteint le serveur fonctionne aussi. |
             | `APACHE_PORT` | `80` | Le port du serveur web sur cette machine. |
             | `UBUNTU_VERSION` | `26.04` | La version d'Ubuntu sur laquelle l'image du conteneur est construite. |
-            | `PHP_VERSION` | `8.5` | La version de PHP installée dans l'image du conteneur. Utiliser `8.5` sur Ubuntu 26.04. Utiliser `8.4` ou `8.5` sur Ubuntu 24.04. |
+            | `PHP_VERSION` | `8.5` | La version de PHP installée dans l'image du conteneur. Utiliser `8.4` ou `8.5` sur Ubuntu 24.04 ou 26.04. |
             | `MYSQL_ROOT_PASSWORD` | `root_password` si vide | Le mot de passe root MySQL. |
             | `MYSQL_PORT` | `3306` | Le port de MySQL sur cette machine. |
             | `MYSQL_DATABASE` | `vlsm` | Le nom de la base de données principale. Le laisser à `vlsm`. |
@@ -315,7 +315,7 @@ Ubuntu 26.04 LTS avec PHP 8.5.
         | `DOMAIN` | `intelis` | Le nom auquel Apache répond. `localhost` fonctionne aussi. |
         | `APACHE_PORT` | `80` | Le port de l'hôte pour le serveur web. |
         | `UBUNTU_VERSION` | `26.04` | La version d'Ubuntu sur laquelle l'image du conteneur est construite. |
-        | `PHP_VERSION` | `8.5` | La version de PHP installée dans l'image du conteneur. Utiliser `8.5` sur Ubuntu 26.04. Utiliser `8.4` ou `8.5` sur Ubuntu 24.04. |
+        | `PHP_VERSION` | `8.5` | La version de PHP installée dans l'image du conteneur. Utiliser `8.4` ou `8.5` sur Ubuntu 24.04 ou 26.04. |
         | `MYSQL_ROOT_PASSWORD` | `root_password` si vide | Le mot de passe root MySQL. |
         | `MYSQL_PORT` | `3306` | Le port de l'hôte pour MySQL. |
         | `MYSQL_DATABASE` | `vlsm` | Le nom de la base de données principale. Le laisser à `vlsm`. |
