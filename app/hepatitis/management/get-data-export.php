@@ -9,6 +9,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\ListingFilterClauseBuilder;
 
 
 // Sanitized values from $request object
@@ -30,7 +31,7 @@ try {
      $tableName = "form_hepatitis";
      $primaryKey = "hepatitis_id";
 
-     $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'ts.status_name', 'funding_source_name', 'i_partner_name'];
+     $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', ListingFilterClauseBuilder::fullName('vl.patient_name', 'vl.patient_surname'), 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'ts.status_name', 'funding_source_name', 'i_partner_name'];
      $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'ts.status_name', 'funding_source_name', 'i_partner_name'];
      $sampleCode = 'sample_code';
      if ($general->isSTSInstance()) {

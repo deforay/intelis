@@ -8,6 +8,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\ListingFilterClauseBuilder;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -83,7 +84,7 @@ if (trim((string) $id) !== '') {
                     remote_sample_code,
                     fd.facility_name as clinic_name,
                     fd.facility_district,
-                    CONCAT(COALESCE(patient_name,''), COALESCE(patient_surname,'')) as `patient_fullname`,
+                    " . ListingFilterClauseBuilder::fullName('patient_name', 'patient_surname') . " as `patient_fullname`,
                     patient_dob,patient_age,
                     sample_collection_date,
                     patient_gender,patient_id,
