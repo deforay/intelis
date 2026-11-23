@@ -12,7 +12,7 @@ use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
-if (ExportJobUtility::queueRequested(__FILE__, null, ['highViralResult', 'highViralResultCount'])) {
+if (ExportJobUtility::queueRequested(__FILE__, null, ['eidPositiveResult', 'eidPositiveResultCount'])) {
 	return;
 }
 
@@ -29,7 +29,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 
-if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) !== "") {
+if (isset($_SESSION['eidPositiveResult']) && trim((string) $_SESSION['eidPositiveResult']) !== "") {
 
      $output = [];
      $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Child's ID", "Child's Name", "Caretaker phone no.", "Sample Collection Date", "Sample Tested Date", "Lab Name", "Result", "Implementing Partner"];
@@ -42,7 +42,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
 
 
      $vlSampleId = [];
-     $resultSet = $db->rawQuery($_SESSION['highViralResult']);
+     $resultSet = $db->rawQuery($_SESSION['eidPositiveResult']);
      foreach ($resultSet as $aRow) {
           ExportJobUtility::tick();
           $row = [];
@@ -82,7 +82,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $vlId = implode(",", $vlSampleId);
      }
 
-     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 50000) {
+     if (isset($_SESSION['eidPositiveResultCount']) && $_SESSION['eidPositiveResultCount'] > 50000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Data-Quality-report' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore

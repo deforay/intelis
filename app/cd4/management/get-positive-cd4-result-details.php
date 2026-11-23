@@ -125,7 +125,7 @@ if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
-$_SESSION['highViralResult'] = $sQuery;
+$_SESSION['cd4PositiveResult'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
@@ -135,7 +135,7 @@ $rResult = $db->rawQuery($sQuery);
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-$_SESSION['highViralResultCount'] = $iTotal;
+$_SESSION['cd4PositiveResultCount'] = $iTotal;
 
 $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 

@@ -130,7 +130,7 @@ if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
-$_SESSION['resultNotAvailable'] = $sQuery;
+$_SESSION['covid19ResultNotAvailable'] = $sQuery;
 
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
@@ -139,7 +139,7 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-$_SESSION['resultNotAvailableCount'] = $iTotal;
+$_SESSION['covid19ResultNotAvailableCount'] = $iTotal;
 
 
 $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];

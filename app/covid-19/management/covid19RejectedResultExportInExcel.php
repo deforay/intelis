@@ -11,7 +11,7 @@ use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
-if (ExportJobUtility::queueRequested(__FILE__, null, ['rejectedViralLoadResult', 'rejectedViralLoadResultCount'])) {
+if (ExportJobUtility::queueRequested(__FILE__, null, ['covid19RejectionReport', 'covid19RejectionReportCount'])) {
 	return;
 }
 
@@ -28,7 +28,7 @@ $arr = $general->getGlobalConfig();
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['rejectedViralLoadResult']) !== "") {
+if (isset($_SESSION['covid19RejectionReport']) && trim((string) $_SESSION['covid19RejectionReport']) !== "") {
 
      $output = [];
 
@@ -37,7 +37,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
-     $resultSet = $db->rawQuery($_SESSION['rejectedViralLoadResult']);
+     $resultSet = $db->rawQuery($_SESSION['covid19RejectionReport']);
      foreach ($resultSet as $aRow) {
           ExportJobUtility::tick();
           $row = [];
@@ -69,7 +69,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $output[] = $row;
      }
 
-     if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 50000) {
+     if (isset($_SESSION['covid19RejectionReportCount']) && $_SESSION['covid19RejectionReportCount'] > 50000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-COVID19-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore

@@ -116,7 +116,7 @@ if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
-$_SESSION['rejectedViralLoadResult'] = $sQuery;
+$_SESSION['cd4RejectionReport'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
@@ -130,7 +130,7 @@ $output = [
     "aaData" => []
 ];
 
-$_SESSION['rejectedViralLoadResultCount'] = $resultCount;
+$_SESSION['cd4RejectionReportCount'] = $resultCount;
 
 
 foreach ($rResult as $aRow) {

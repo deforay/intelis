@@ -129,7 +129,7 @@ if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = "$sQuery ORDER BY $sOrder";
 }
-$_SESSION['highViralResult'] = $sQuery;
+$_SESSION['hepatitisPositiveResult'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
@@ -137,7 +137,7 @@ if (isset($sLimit) && isset($sOffset)) {
 [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
 
-$_SESSION['highViralResultCount'] = $resultCount;
+$_SESSION['hepatitisPositiveResultCount'] = $resultCount;
 
 $output = [
     "sEcho" => (int) $_POST['sEcho'],

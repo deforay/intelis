@@ -12,7 +12,7 @@ use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
-if (ExportJobUtility::queueRequested(__FILE__, null, ['highViralResult', 'highViralResultCount'])) {
+if (ExportJobUtility::queueRequested(__FILE__, null, ['covid19PositiveResult', 'covid19PositiveResultCount'])) {
 	return;
 }
 
@@ -30,9 +30,8 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 
-if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) !== "") {
-     error_log($_SESSION['highViralResult']);
-     // $rResult = $db->rawQuery($_SESSION['highViralResult']);
+if (isset($_SESSION['covid19PositiveResult']) && trim((string) $_SESSION['covid19PositiveResult']) !== "") {
+     // $rResult = $db->rawQuery($_SESSION['covid19PositiveResult']);
 
      $output = [];
      $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL"];
@@ -48,7 +47,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           }
      }
      $vlSampleId = [];
-     $resultSet = $db->rawQuery($_SESSION['highViralResult']);
+     $resultSet = $db->rawQuery($_SESSION['covid19PositiveResult']);
      foreach ($resultSet as $aRow) {
           ExportJobUtility::tick();
           $row = [];
@@ -85,7 +84,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $vlId = implode(",", $vlSampleId);
      }
 
-     if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 50000) {
+     if (isset($_SESSION['covid19PositiveResultCount']) && $_SESSION['covid19PositiveResultCount'] > 50000) {
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Covid-19-Report' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore

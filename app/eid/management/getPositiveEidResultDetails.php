@@ -141,14 +141,14 @@ try {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
-    $_SESSION['highViralResult'] = $sQuery;
+    $_SESSION['eidPositiveResult'] = $sQuery;
     if (isset($sLimit) && isset($sOffset)) {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
 
     [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-    $_SESSION['highViralResultCount'] = $resultCount;
+    $_SESSION['eidPositiveResultCount'] = $resultCount;
 
     /*
      * Output

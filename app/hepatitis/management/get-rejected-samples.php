@@ -67,7 +67,7 @@ if (!empty($_POST['sampleCollectionDate'])) {
     $sWhere[] = SampleCountUtility::countableWhere('vl');
     $sWhere = $sWhere === [] ? [] : implode(' AND ', $sWhere);
     $vlQuery = $vlQuery . ' where ' . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
-    $_SESSION['rejectedSamples'] = $vlQuery;
+    $_SESSION['hepatitisRejectedSamples'] = $vlQuery;
     $tableResult = $db->rawQuery($vlQuery);
     // A reason id is local to the install that minted it, so a lab's own reason
     // arrives here with no row behind it. Name it rather than leave the cell blank

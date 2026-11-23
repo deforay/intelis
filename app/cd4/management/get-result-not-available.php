@@ -139,7 +139,7 @@ try {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
-    $_SESSION['resultNotAvailable'] = $sQuery;
+    $_SESSION['cd4ResultNotAvailable'] = $sQuery;
 
     if (isset($sLimit) && isset($sOffset)) {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
@@ -148,7 +148,7 @@ try {
     $rResult = $db->rawQuery($sQuery);
     $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
     $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-    $_SESSION['resultNotAvailableCount'] = $iTotal;
+    $_SESSION['cd4ResultNotAvailableCount'] = $iTotal;
 
 
     $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];

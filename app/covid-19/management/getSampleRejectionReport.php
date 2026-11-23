@@ -129,7 +129,7 @@ try {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
-    $_SESSION['rejectedViralLoadResult'] = $sQuery;
+    $_SESSION['covid19RejectionReport'] = $sQuery;
     if (isset($sLimit) && isset($sOffset)) {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
@@ -139,7 +139,7 @@ try {
 
     $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
     $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-    $_SESSION['rejectedViralLoadResultCount'] = $iTotal;
+    $_SESSION['covid19RejectionReportCount'] = $iTotal;
 
     /*
      * Output

@@ -11,7 +11,7 @@ use App\Utilities\ExportJobUtility;
 
 // The page asked for a background export: queue it and answer at once, so the
 // user can move on while bin/export-worker.php runs this same script.
-if (ExportJobUtility::queueRequested(__FILE__, null, ['resultNotAvailable'])) {
+if (ExportJobUtility::queueRequested(__FILE__, null, ['hepatitisResultNotAvailable'])) {
 	return;
 }
 
@@ -30,7 +30,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $key = (string) $general->getGlobalConfig('key');
 
-if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) !== "") {
+if (isset($_SESSION['hepatitisResultNotAvailable']) && trim((string) $_SESSION['hepatitisResultNotAvailable']) !== "") {
 
     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ID", "Patient's Name", "Sample Collection Date", "Sample Received at Testing Lab", "Lab Name", "Sample Status"];
     if ($general->isStandaloneInstance()) {
@@ -43,7 +43,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
     $writer->openToFile($filename);
     $writer->addRow(Row::fromValues($headings));
 
-    $resultSet = $db->rawQueryGenerator($_SESSION['resultNotAvailable']);
+    $resultSet = $db->rawQueryGenerator($_SESSION['hepatitisResultNotAvailable']);
     foreach ($resultSet as $aRow) {
         ExportJobUtility::tick();
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
