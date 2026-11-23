@@ -466,7 +466,7 @@ use_sury_repo() {
     [ -n "$codename" ] || return "$changed"
 
     # No build for this release yet: stay on Ubuntu's own packages.
-    code="$(curl -sSLI -o /dev/null --max-time 20 --retry 3 --retry-delay 2 -w '%{http_code}' \
+    code="$(curl --proto =https -sSLI -o /dev/null --max-time 20 --retry 3 --retry-delay 2 -w '%{http_code}' \
         "https://packages.sury.org/${component}/dists/${codename}/Release" 2>/dev/null)" || true
     if [ "$code" = "404" ]; then
         log_action "packages.sury.org/${component} has no build for ${codename}; using Ubuntu's packages"
@@ -475,7 +475,7 @@ use_sury_repo() {
 
     if [ ! -s "$SURY_KEYRING" ]; then
         tmp="$(mktemp --suffix=.deb)" || return 2
-        if ! curl -fsSL --max-time 60 --retry 3 -o "$tmp" https://packages.sury.org/debsuryorg-archive-keyring.deb ||
+        if ! curl --proto =https -fsSL --max-time 60 --retry 3 -o "$tmp" https://packages.sury.org/debsuryorg-archive-keyring.deb ||
             ! dpkg -i "$tmp" >/dev/null; then
             rm -f "$tmp"
             log_action "Could not install the packages.sury.org signing key"

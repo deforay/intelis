@@ -1383,7 +1383,7 @@ fix_php_repo() {
   if [ ! -s "$keyring" ]; then
     tmp="$(mktemp --suffix=.deb)" || return 1
     spin "Downloading the PHP repository key..." \
-      curl -fsSL --max-time 60 --retry 3 -o "$tmp" https://packages.sury.org/debsuryorg-archive-keyring.deb &&
+      curl --proto =https -fsSL --max-time 60 --retry 3 -o "$tmp" https://packages.sury.org/debsuryorg-archive-keyring.deb &&
       spin "Installing the PHP repository key..." dpkg -i "$tmp"
     f=$?
     rm -f "$tmp"
