@@ -104,23 +104,11 @@ $end_date = '';
 $t_start_date = '';
 $t_end_date = '';
 if (!empty($_POST['sampleCollectionDate'])) {
-     $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
+     [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
 }
 
 if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-     $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) !== "") {
-          $t_start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
-     }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) !== "") {
-          $t_end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
-     }
+     [$t_start_date, $t_end_date] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
 }
 
 $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
@@ -134,19 +122,11 @@ $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
 
 if (!empty($_POST['sampleCollectionDate'])) {
 
-     if (trim((string) $start_date) === trim((string) $end_date)) {
-          $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-     } else {
-          $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-     }
+     $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 
 if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-     if (trim((string) $t_start_date) === trim((string) $t_end_date)) {
-          $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $t_start_date . '"';
-     } else {
-          $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $t_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $t_end_date . '"';
-     }
+     $sWhere[] = ' vl.sample_tested_datetime BETWEEN "' . $t_start_date . '" AND "' . $t_end_date . '"';
 }
 $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
      'sampleType' => ['s.sample_type_id', ListingFilterClauseBuilder::EQUALS],

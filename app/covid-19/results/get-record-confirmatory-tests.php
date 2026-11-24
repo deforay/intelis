@@ -106,19 +106,7 @@ $sQuery = "SELECT vl.*,b.*,ts.*,f.facility_name,
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
           LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
           LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
-$start_date = '';
-$end_date = '';
-$t_start_date = '';
-$t_end_date = '';
-if (!empty($_POST['sampleCollectionDate'])) {
-     $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
-          $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-     }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
-          $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-     }
-}
+[$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
 
 if ($sWhere !== '' && $sWhere !== '0') {
      $sWhere = ' WHERE ' . $sWhere;
@@ -126,11 +114,7 @@ if ($sWhere !== '' && $sWhere !== '0') {
           $sWhere = $sWhere . ' AND b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) === trim((string) $end_date)) {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-          } else {
-               $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+          $sWhere = $sWhere . ' AND vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
      }
 
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
@@ -162,15 +146,11 @@ if ($sWhere !== '' && $sWhere !== '0') {
 
      if (!empty($_POST['sampleCollectionDate'])) {
           if (isset($setWhr)) {
-               if (trim((string) $start_date) === trim((string) $end_date)) {
-                    $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-               } else {
-                    $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-               }
+               $sWhere = $sWhere . ' AND vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
           } else {
                $setWhr = 'where';
                $sWhere = ' WHERE ' . $sWhere;
-               $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+               $sWhere = $sWhere . ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
           }
      }
 

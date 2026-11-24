@@ -125,9 +125,9 @@ try {
                         LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
                         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
      /* Sample collection date filter */
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+     [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
      /* Sample recevied date filter */
-     [$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+     [$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
      /* Sample type filter */
      if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
           $sWhere[] =  ' vl.specimen_type IN (' . $db->inIntList($_POST['sampleType']) . ')';
@@ -150,25 +150,13 @@ try {
      $sTestDate = '';
      $eTestDate = '';
      if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-          $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
-          if (isset($s_t_date[0]) && trim($s_t_date[0]) !== "") {
-               $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
-          }
-          if (isset($s_t_date[1]) && trim($s_t_date[1]) !== "") {
-               $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
-          }
+          [$sTestDate, $eTestDate] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
      }
 
      $sPrintDate = '';
      $ePrintDate = '';
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) !== '') {
-          $s_p_date = explode("to", (string) $_POST['printDate']);
-          if (isset($s_p_date[0]) && trim($s_p_date[0]) !== "") {
-               $sPrintDate = DateUtility::isoDateFormat(trim($s_p_date[0]));
-          }
-          if (isset($s_p_date[1]) && trim($s_p_date[1]) !== "") {
-               $ePrintDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
-          }
+          [$sPrintDate, $ePrintDate] = DateUtility::dayRange($_POST['printDate'] ?? '');
      }
      /* Sex filter */
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) !== '') {
@@ -224,50 +212,24 @@ try {
      }
      /* Assign date time filters */
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) === trim((string) $end_date)) {
-               $sWhere[] =  '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
-          } else {
-               $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+          $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
      }
      if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '' && in_array(SAMPLE_STATUS\ACCEPTED, $statusIds, true)) {
-          if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
-               $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
-          } else {
-               $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          }
+          $sWhere[] = ' vl.sample_tested_datetime BETWEEN "' . $sTestDate . '" AND "' . $eTestDate . '"';
      }
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) !== '') {
-          if (trim((string) $sPrintDate) === trim((string) $eTestDate)) {
-               $sWhere[] =  '  DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
-          } else {
-               $sWhere[] =  '  DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
-          }
+          $sWhere[] = ' vl.result_printed_datetime BETWEEN "' . $sPrintDate . '" AND "' . $ePrintDate . '"';
      }
      if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== '') {
-          if (trim((string) $sSampleReceivedDate) === trim((string) $eSampleReceivedDate)) {
-               $sWhere[] =  '  DATE(vl.sample_received_at_lab_datetime) like "' . $sSampleReceivedDate . '"';
-          } else {
-               $sWhere[] =  '  DATE(vl.sample_received_at_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $eSampleReceivedDate . '"';
-          }
+          $sWhere[] = ' vl.sample_received_at_lab_datetime BETWEEN "' . $sSampleReceivedDate . '" AND "' . $eSampleReceivedDate . '"';
      }
      if (isset($_POST['requestCreatedDatetime']) && trim((string) $_POST['requestCreatedDatetime']) !== '') {
           $sRequestCreatedDatetime = '';
           $eRequestCreatedDatetime = '';
 
-          $date = explode("to", (string) $_POST['requestCreatedDatetime']);
-          if (isset($date[0]) && trim($date[0]) !== "") {
-               $sRequestCreatedDatetime = DateUtility::isoDateFormat(trim($date[0]));
-          }
-          if (isset($date[1]) && trim($date[1]) !== "") {
-               $eRequestCreatedDatetime = DateUtility::isoDateFormat(trim($date[1]));
-          }
+          [$sRequestCreatedDatetime, $eRequestCreatedDatetime] = DateUtility::dayRange($_POST['requestCreatedDatetime'] ?? '');
 
-          if (trim((string) $sRequestCreatedDatetime) === trim((string) $eRequestCreatedDatetime)) {
-               $sWhere[] =  '  DATE(vl.request_created_datetime) like "' . $sRequestCreatedDatetime . '"';
-          } else {
-               $sWhere[] =  '  DATE(vl.request_created_datetime) >= "' . $sRequestCreatedDatetime . '" AND DATE(vl.request_created_datetime) <= "' . $eRequestCreatedDatetime . '"';
-          }
+          $sWhere[] = ' vl.request_created_datetime BETWEEN "' . $sRequestCreatedDatetime . '" AND "' . $eRequestCreatedDatetime . '"';
      }
 
 

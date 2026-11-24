@@ -105,9 +105,9 @@ try {
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-     [$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
-     [$r_start_date, $r_end_date] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
+     [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+     [$t_start_date, $t_end_date] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
+     [$r_start_date, $r_end_date] = DateUtility::dayRange($_POST['sampleReceivedDate'] ?? '');
 
      $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
           'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
@@ -120,27 +120,15 @@ try {
 
      if (!empty($_POST['sampleCollectionDate'])) {
 
-          if (trim((string) $start_date) === trim((string) $end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+          $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
      }
 
      if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-          if (trim((string) $t_start_date) === trim((string) $t_end_date)) {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $t_start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $t_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $t_end_date . '"';
-          }
+          $sWhere[] = ' vl.sample_tested_datetime BETWEEN "' . $t_start_date . '" AND "' . $t_end_date . '"';
      }
 
      if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== '') {
-          if (trim((string) $r_start_date) === trim((string) $r_end_date)) {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $r_start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $r_start_date . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $r_end_date . '"';
-          }
+          $sWhere[] = ' vl.sample_received_at_lab_datetime BETWEEN "' . $r_start_date . '" AND "' . $r_end_date . '"';
      }
 
 
