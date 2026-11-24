@@ -673,8 +673,9 @@ final class ManifestMoveTest extends TestCase
         $tested = self::manifest($db, 'M-tested');
         self::sample($db, $tested, 'M-tested', 't-1', ['result' => '40']);
 
+        // Created in the same second, so the newer manifest id comes first.
         $listed = array_column(self::moves()->listForLab('vl', self::OLD_LAB), 'tested', 'code');
-        self::assertSame(['M-untested' => false, 'M-tested' => true], $listed);
+        self::assertSame(['M-tested' => true, 'M-untested' => false], $listed);
         $found = array_column(self::moves()->findByCodes('vl', ['M-tested']), 'tested', 'code');
         self::assertSame(['M-tested' => true], $found);
     }

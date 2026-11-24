@@ -220,7 +220,7 @@ final class ManifestMoveService
                FROM specimen_manifests AS m
                LEFT JOIN facility_details AS f ON f.facility_id = m.lab_id
               WHERE ' . implode(' AND ', $where) . '
-              ORDER BY m.request_created_datetime DESC
+              ORDER BY m.request_created_datetime DESC, m.manifest_id DESC
               LIMIT 500',
             $params
         );
