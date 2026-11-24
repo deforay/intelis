@@ -156,7 +156,7 @@ try {
     if (!$apply) {
         echo count($plan) . " repair(s) found. Nothing was changed.\n";
         echo "To make them, run: php bin/heal-schema.php --apply\n";
-        exit(0);
+        exit($repair->manual() === [] ? 0 : 1);
     }
     if ($failed > 0) {
         echo $failed . ' of ' . count($plan) . " repair(s) failed. The others were made.\n";
