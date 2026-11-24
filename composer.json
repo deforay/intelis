@@ -129,6 +129,8 @@
             "@php bin/build/qc.php --full"
         ],
         "preflight": "@php bin/preflight.php",
+        "heal-schema": "@php bin/heal-schema.php",
+        "heal-schema:apply": "@php bin/heal-schema.php --apply",
         "duplicate-indexes": "@php bin/duplicate-indexes.php",
         "scan": "@php bin/scan.php",
         "housekeeping": "@php bin/housekeeping.php 30",
@@ -261,6 +263,8 @@
         "check-request-output-escaping": "Check no page prints a request value unescaped, or puts htmlspecialchars output inside an inline handler's JS string",
         "check-di": "Compile the DI container in isolation so a broken service definition fails here instead of in production",
         "preflight": "Check this machine can run and serve the app \u2014 PHP, the web server's own php.ini, config, permissions, schema. Runs without booting the app, so it still reports when nothing else does",
+        "heal-schema": "Preview the tables and columns sql/init.sql declares and this database lacks. Changes nothing",
+        "heal-schema:apply": "Add the tables and columns sql/init.sql declares and this database lacks, so migrations can carry on. Only adds, never drops or changes",
         "duplicate-indexes": "List indexes that are exact copies of another on the same table \u2014 same columns, order, prefix and uniqueness. Reports only; --fix drops the copies",
         "flag-data-issues": "Find records whose own columns contradict each other, for the Needs attention card (counts only, never corrects)",
         "publish": "Publish the current version as a release tag, which is what labs upgrade to",
