@@ -153,7 +153,7 @@ fi
 
 # Source the shared functions
 source "$SHARED_FN_PATH"
-intelis_require_shared_fn_version 5
+intelis_require_shared_fn_version 6
 
 # Existing is not the same as usable — check for a function it must define
 # before prepare_system runs anything as root.
