@@ -69,11 +69,6 @@ final class ManifestPatientNamesTest extends TestCase
 
         $db = LegacyAppHarness::boot(TestRun::database(self::DATABASE), self::TABLES);
         LegacyAppHarness::withSession();
-        // sql/init.sql predates the column; 5.7.80 adds it.
-        $db->rawQuery(
-            "ALTER TABLE `specimen_manifests`
-                ADD COLUMN `show_patient_names` ENUM('yes','no') NULL DEFAULT NULL AFTER `lab_id`"
-        );
         $db->insert('r_sample_status', [
             'status_id' => RECEIVED_AT_CLINIC, 'status_name' => 'Received at Clinic', 'status' => 'active',
         ]);

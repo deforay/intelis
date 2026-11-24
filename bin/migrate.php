@@ -11,6 +11,8 @@
 //   php bin/migrate.php --dry-run        preview statements without executing
 //   php bin/migrate.php --version=4.5.0  replay from a specific version (ignores DB version)
 //   php bin/migrate.php -v 4.5.0        short form of --version
+//
+//   MIGRATE_DB_NAME=<name> migrates that database instead of the configured one.
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -81,8 +83,19 @@ if (!file_exists($logsDir)) {
     $canLog = file_exists($logsDir) && is_writable($logsDir);
 }
 
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
+// MIGRATE_DB_NAME=<name> migrates that database, on the same server and with the
+// same login, instead of the one config.production.php names.
+// bin/dev/regenerate-init-sql.php uses it to migrate a throwaway database.
+$dbOverride = getenv('MIGRATE_DB_NAME');
+if (is_string($dbOverride) && $dbOverride !== '') {
+    $dbConfig = ContainerRegistry::get('applicationConfig')['database'] ?? [];
+    $dbConfig['db'] = $dbOverride;
+    /** @var DatabaseService $db */
+    $db = new DatabaseService($dbConfig);
+} else {
+    /** @var DatabaseService $db */
+    $db = ContainerRegistry::get(DatabaseService::class);
+}
 
 // Check if connection was successful
 if ($db->isConnected() === false) {

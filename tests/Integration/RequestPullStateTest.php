@@ -46,17 +46,13 @@ final class RequestPullStateTest extends TestCase
         if (!getenv('INTELIS_TEST_DB_HOST') || !getenv('INTELIS_TEST_DB_USER')) {
             self::markTestSkipped('Set INTELIS_TEST_DB_HOST and INTELIS_TEST_DB_USER to run integration tests.');
         }
-        $db = LegacyAppHarness::boot(TestRun::database('intelis_request_pull_state_test'), [
-            'track_api_requests', 'system_config', 'global_config',
-        ]);
-        $this->booted = true;
-        $migration = (string) file_get_contents(ROOT_PATH . '/sys/migrations/5.8.4.sql');
+        // sql/init.sql carries request_pull_state and the track_api_requests index 5.8.4 adds.
+        $tables = ['track_api_requests', 'system_config', 'global_config'];
         if ($withTable) {
-            preg_match('/^CREATE TABLE IF NOT EXISTS `request_pull_state` \(.*?^\) ENGINE=[^;]*;/ms', $migration, $sql);
-            $db->rawQuery($sql[0]);
+            $tables[] = 'request_pull_state';
         }
-        preg_match('/^ALTER TABLE `track_api_requests` ADD INDEX[^;]*;/m', $migration, $index);
-        $db->rawQuery($index[0]);
+        $db = LegacyAppHarness::boot(TestRun::database('intelis_request_pull_state_test'), $tables);
+        $this->booted = true;
         return $db;
     }
 

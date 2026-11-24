@@ -63,12 +63,6 @@ final class InterfacingTbImportTest extends TestCase
         $migration = (string) file_get_contents(dirname(__DIR__, 2) . '/sys/migrations/5.7.79.sql');
         preg_match('/^UPDATE `r_tb_results`.*?;$/ms', $migration, $fix);
         LegacyAppHarness::db()->rawQuery($fix[0]);
-        // The pool columns from migration 5.7.90.
-        $pooling = (string) file_get_contents(dirname(__DIR__, 2) . '/sys/migrations/5.7.90.sql');
-        preg_match_all('/^ALTER TABLE `form_tb` .*?;$/m', $pooling, $alters);
-        foreach ($alters[0] as $alter) {
-            LegacyAppHarness::db()->rawQuery($alter);
-        }
         // The role an analyzer's tester is created with.
         LegacyAppHarness::db()->rawQuery(
             "INSERT INTO roles (role_id, role_name, status) VALUES (4, 'Lab Technician', 'active')"

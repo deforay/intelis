@@ -168,7 +168,7 @@ CONTEXT="Before reviewing, read these for the rules this codebase is held to:
 - app/classes/Services/CommonService.php — labScopeWhere, labAdminScopeWhere and
   isCloudLisNonAdmin: the lab-axis read isolation and the cloud-instance admin gate
 - sys/migrations/ — every schema change belongs here and must replay on a fresh install;
-  sql/init.sql is a seed and is never edited to make a schema change
+  sql/init.sql is a seed, never edited by hand: bin/dev/regenerate-init-sql.php rebuilds it
 - docs/remote-command-plane.md — how instances receive and acknowledge remote commands
 - app/system/functions.php — the translation and escaping helpers, and which is correct
   for which output context

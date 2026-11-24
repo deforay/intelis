@@ -380,9 +380,17 @@ final class MigrationRepairsStrandedSchemaTest extends TestCase
         // baseline from the live schema would capture whatever the migration
         // just did and then compare it against itself -- which is exactly how
         // the 2024 shape passed this assertion the first time it was written.
+        //
+        // sql/init.sql is regenerated at the newest version, so it also carries the
+        // columns later migrations add. Those are not this migration's to build.
+        require_once dirname(__DIR__, 2) . '/bin/lib/pending-migrations.php';
+        $later = schema_pending_additions(dirname(__DIR__, 2) . '/sys/migrations', self::MIGRATION)['columns'];
         $expected = [];
         foreach ($tables as $table) {
-            $expected[$table] = $this->columnsDeclaredInInitSql($table);
+            $expected[$table] = array_values(array_filter(
+                $this->columnsDeclaredInInitSql($table),
+                static fn(string $column): bool => !isset($later[$table][strtolower($column)])
+            ));
             $this->assertNotEmpty($expected[$table], "sql/init.sql does not declare `$table`.");
         }
 
