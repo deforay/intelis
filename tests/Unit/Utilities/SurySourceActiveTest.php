@@ -75,6 +75,23 @@ final class SurySourceActiveTest extends TestCase
                 'sources.list.d/sury.sources' => "Types: deb\nURIs: https://x.example/\n"
                     . "Comment:\n https://packages.sury.org/php/\n",
             ]],
+            'a line for the release before the upgrade' => [false, 'php', [
+                'sources.list.d/sury-php.list' => "deb https://packages.sury.org/php/ jammy main\n",
+            ]],
+            'a line for another suite of this release' => [false, 'php', [
+                'sources.list.d/sury-php.list' => "deb https://packages.sury.org/php/ noble-backports main\n",
+            ]],
+            'a deb822 source for another release' => [false, 'php', [
+                'sources.list.d/sury.sources' => "Types: deb\nURIs: https://packages.sury.org/php/\nSuites: jammy\n",
+            ]],
+            'a deb822 release on the line after Suites:' => [true, 'php', [
+                'sources.list.d/sury.sources' => "Types: deb\nURIs: https://packages.sury.org/php/\n"
+                    . "Suites:\n jammy\n noble\n",
+            ]],
+            'a deb822 source of deb-src only' => [false, 'php', [
+                'sources.list.d/sury.sources' => "Types: deb-src\nURIs: https://packages.sury.org/php/\n"
+                    . "Suites: noble\n",
+            ]],
             'the apache2 source asked about php' => [false, 'php', [
                 'sources.list.d/sury-apache2.list' => "deb https://packages.sury.org/apache2/ noble main\n",
             ]],
@@ -102,7 +119,7 @@ final class SurySourceActiveTest extends TestCase
         $this->assertNotEmpty($function, 'scripts/shared-functions.sh has no sury_source_active.');
 
         $command = 'SURY_APT_DIR=' . escapeshellarg($this->dir) . ' bash -c '
-            . escapeshellarg($function . "\nsury_source_active " . $component);
+            . escapeshellarg($function . "\nsury_source_active " . $component . ' noble');
         exec($command, $output, $status);
 
         $this->assertSame($active ? 0 : 1, $status);

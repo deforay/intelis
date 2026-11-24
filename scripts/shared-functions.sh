@@ -6,7 +6,7 @@
 # script never runs against an older copy than the one it was written for.
 # To raise it everywhere: php bin/dev/bump-shared-fn-version.php
 # bin/build/check-shell-loaders.php fails a push that changes this file without it.
-SHARED_FN_VERSION=7
+SHARED_FN_VERSION=8
 
 # Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
 export LANG="${LANG:-en_US.UTF-8}"
@@ -443,49 +443,65 @@ apache_runs_stale_mod_php() {
 #
 # PHP and Apache come from packages.sury.org. The ondrej Launchpad PPAs they
 # used to come from are frozen and get no more updates, so their source files
-# are removed: left in place, apt would keep offering their older builds.
+# are removed once the packages.sury.org source is in place: left in place,
+# apt would keep offering their older builds. Where packages.sury.org has no
+# build for this release, or its key cannot be installed, the PPA stays: it
+# still serves its last builds, and removing it would leave only Ubuntu's own.
 # Mirrors use_sury_repo in utility-scripts' switch-php. Returns 0 when the
 # sources changed (run apt-get update), 1 when nothing changed, and 2 when the
 # key could not be installed.
 SURY_KEYRING=/usr/share/keyrings/debsuryorg-archive-keyring.gpg
 
-# True when apt uses a packages.sury.org/<component> source: sury_source_active php|apache2.
+# True when apt reads an active packages.sury.org/<component> source for
+# <codename>: sury_source_active php|apache2 noble.
 #
-# Only what apt reads counts. do-release-upgrade comments out third-party
-# sources and leaves .distUpgrade and .save copies behind, and a deb822 source
-# can say "Enabled: no". Counting any of those as present would leave the
-# source off after a release upgrade, with PHP or Apache quietly back on
-# Ubuntu's packages. A deb822 stanza is treated as enabled unless it says no.
-# The apt sources directory can be overridden with SURY_APT_DIR, for testing.
+# Only what apt reads counts: sources.list, sources.list.d/*.list (uncommented
+# deb lines) and sources.list.d/*.sources (deb822 stanzas of Types deb, not
+# "Enabled: no", with fields that may continue onto following lines). A release
+# upgrade comments third-party sources out, leaves .save and .distUpgrade
+# copies behind, and keeps the old codename, so none of those count. Missing a
+# deb822 source would add a second one with a different Signed-By, which apt
+# rejects. The apt directory can be overridden with SURY_APT_DIR, for testing.
+# The same function is in utility-scripts' switch-php and lamp-setup.sh, and in
+# ePT's bin/shared-functions.sh.
 sury_source_active() {
-    local component="$1" dir="${SURY_APT_DIR:-/etc/apt}" f
+    local component="$1" codename="$2" dir="${SURY_APT_DIR:-/etc/apt}" f
     local url="packages\\.sury\\.org/${component}([/[:space:]]|$)"
 
     for f in "$dir/sources.list" "$dir"/sources.list.d/*.list; do
         [ -f "$f" ] || continue
-        grep -Eqs "^[[:space:]]*deb[[:space:]].*${url}" "$f" && return 0
+        grep -Eqs "^[[:space:]]*deb[[:space:]].*packages\\.sury\\.org/${component}/?[[:space:]]+${codename}([[:space:]]|$)" "$f" &&
+            return 0
     done
 
     for f in "$dir"/sources.list.d/*.sources; do
         [ -f "$f" ] || continue
-        awk -v url="$url" '
+        awk -v url="$url" -v cn="$codename" '
             BEGIN { RS = "" }
             {
-                enabled = 1; found = 0; field = ""
+                enabled = 1; found = 0; suite = 0; isdeb = 0; field = ""
                 n = split($0, lines, "\n")
                 for (i = 1; i <= n; i++) {
                     line = lines[i]
                     if (line ~ /^[[:space:]]*#/) continue
-                    # A line starting with whitespace continues the field above it,
-                    # so URIs can sit on the lines after "URIs:".
+                    value = line
+                    # A line starting with whitespace continues the field above it.
                     if (line !~ /^[[:space:]]/) {
                         field = tolower(line)
                         sub(/:.*/, "", field)
+                        sub(/^[^:]*:/, "", value)
                         if (tolower(line) ~ /^enabled:[[:space:]]*no[[:space:]]*$/) enabled = 0
                     }
                     if (field == "uris" && line ~ url) found = 1
+                    if (field == "suites" || field == "types") {
+                        m = split(value, words, /[[:space:]]+/)
+                        for (j = 1; j <= m; j++) {
+                            if (field == "suites" && words[j] == cn) suite = 1
+                            if (field == "types" && words[j] == "deb") isdeb = 1
+                        }
+                    }
                 }
-                if (enabled && found) { hit = 1; exit }
+                if (enabled && found && suite && isdeb) { hit = 1; exit }
             }
             END { exit hit ? 0 : 1 }
         ' "$f" && return 0
@@ -497,6 +513,36 @@ sury_source_active() {
 use_sury_repo() {
     local component="$1" codename code f changed=1 tmp
 
+    codename="$(lsb_release -sc 2>/dev/null)"
+    [ -n "$codename" ] || return 1
+
+    if ! sury_source_active "$component" "$codename"; then
+        # No build for this release yet: stay on what is there.
+        code="$(curl --proto =https -sSLI -o /dev/null --max-time 20 --retry 3 --retry-delay 2 -w '%{http_code}' \
+            "https://packages.sury.org/${component}/dists/${codename}/Release" 2>/dev/null)" || true
+        if [ "$code" = "404" ]; then
+            log_action "packages.sury.org/${component} has no build for ${codename}; keeping the current packages"
+            return 1
+        fi
+
+        if [ ! -s "$SURY_KEYRING" ]; then
+            tmp="$(mktemp --suffix=.deb)" || return 2
+            if ! curl --proto =https -fsSL --max-time 60 --retry 3 -o "$tmp" https://packages.sury.org/debsuryorg-archive-keyring.deb ||
+                ! dpkg -i "$tmp" >/dev/null; then
+                rm -f "$tmp"
+                log_action "Could not install the packages.sury.org signing key"
+                return 2
+            fi
+            rm -f "$tmp"
+        fi
+
+        echo "deb [signed-by=${SURY_KEYRING}] https://packages.sury.org/${component}/ ${codename} main" \
+            >"/etc/apt/sources.list.d/sury-${component}.list"
+        log_action "Added packages.sury.org/${component} for ${codename}"
+        changed=0
+    fi
+
+    # packages.sury.org is in place, so the frozen PPA can go.
     for f in /etc/apt/sources.list.d/ondrej-ubuntu-"${component}"-*; do
         [ -e "$f" ] || continue
         rm -f "$f"
@@ -504,36 +550,7 @@ use_sury_repo() {
         changed=0
     done
 
-    if sury_source_active "$component"; then
-        return "$changed"
-    fi
-
-    codename="$(lsb_release -sc 2>/dev/null)"
-    [ -n "$codename" ] || return "$changed"
-
-    # No build for this release yet: stay on Ubuntu's own packages.
-    code="$(curl --proto =https -sSLI -o /dev/null --max-time 20 --retry 3 --retry-delay 2 -w '%{http_code}' \
-        "https://packages.sury.org/${component}/dists/${codename}/Release" 2>/dev/null)" || true
-    if [ "$code" = "404" ]; then
-        log_action "packages.sury.org/${component} has no build for ${codename}; using Ubuntu's packages"
-        return "$changed"
-    fi
-
-    if [ ! -s "$SURY_KEYRING" ]; then
-        tmp="$(mktemp --suffix=.deb)" || return 2
-        if ! curl --proto =https -fsSL --max-time 60 --retry 3 -o "$tmp" https://packages.sury.org/debsuryorg-archive-keyring.deb ||
-            ! dpkg -i "$tmp" >/dev/null; then
-            rm -f "$tmp"
-            log_action "Could not install the packages.sury.org signing key"
-            return 2
-        fi
-        rm -f "$tmp"
-    fi
-
-    echo "deb [signed-by=${SURY_KEYRING}] https://packages.sury.org/${component}/ ${codename} main" \
-        >"/etc/apt/sources.list.d/sury-${component}.list"
-    log_action "Added packages.sury.org/${component} for ${codename}"
-    return 0
+    return "$changed"
 }
 
 # Upstream version of an installed package ("8.4.27" from
