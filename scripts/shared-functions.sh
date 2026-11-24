@@ -6,7 +6,7 @@
 # script never runs against an older copy than the one it was written for.
 # To raise it everywhere: php bin/dev/bump-shared-fn-version.php
 # bin/build/check-shell-loaders.php fails a push that changes this file without it.
-SHARED_FN_VERSION=5
+SHARED_FN_VERSION=6
 
 # Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
 export LANG="${LANG:-en_US.UTF-8}"
@@ -448,6 +448,46 @@ apache_runs_stale_mod_php() {
 # sources changed (run apt-get update), 1 when nothing changed, and 2 when the
 # key could not be installed.
 SURY_KEYRING=/usr/share/keyrings/debsuryorg-archive-keyring.gpg
+
+# True when apt uses a packages.sury.org/<component> source: sury_source_active php|apache2.
+#
+# Only what apt reads counts. do-release-upgrade comments out third-party
+# sources and leaves .distUpgrade and .save copies behind, and a deb822 source
+# can say "Enabled: no". Counting any of those as present would leave the
+# source off after a release upgrade, with PHP or Apache quietly back on
+# Ubuntu's packages. A deb822 stanza is treated as enabled unless it says no.
+# The apt sources directory can be overridden with SURY_APT_DIR, for testing.
+sury_source_active() {
+    local component="$1" dir="${SURY_APT_DIR:-/etc/apt}" f
+    local url="packages\\.sury\\.org/${component}([/[:space:]]|$)"
+
+    for f in "$dir/sources.list" "$dir"/sources.list.d/*.list; do
+        [ -f "$f" ] || continue
+        grep -Eqs "^[[:space:]]*deb[[:space:]].*${url}" "$f" && return 0
+    done
+
+    for f in "$dir"/sources.list.d/*.sources; do
+        [ -f "$f" ] || continue
+        awk -v url="$url" '
+            BEGIN { RS = "" }
+            {
+                enabled = 1; found = 0
+                n = split($0, lines, "\n")
+                for (i = 1; i <= n; i++) {
+                    line = lines[i]
+                    if (line ~ /^[[:space:]]*#/) continue
+                    if (tolower(line) ~ /^enabled:[[:space:]]*no[[:space:]]*$/) enabled = 0
+                    if (tolower(line) ~ /^uris:/ && line ~ url) found = 1
+                }
+                if (enabled && found) { hit = 1; exit }
+            }
+            END { exit hit ? 0 : 1 }
+        ' "$f" && return 0
+    done
+
+    return 1
+}
+
 use_sury_repo() {
     local component="$1" codename code f changed=1 tmp
 
@@ -458,7 +498,7 @@ use_sury_repo() {
         changed=0
     done
 
-    if grep -rqs "packages\.sury\.org/${component}" /etc/apt/sources.list /etc/apt/sources.list.d/; then
+    if sury_source_active "$component"; then
         return "$changed"
     fi
 
