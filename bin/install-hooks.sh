@@ -43,13 +43,22 @@ mkdir -p "$hooks_dir" 2>/dev/null || {
     exit 0
 }
 
+# Every worktree shares this hooks dir, so link into the main clone, which owns it.
+# Linking into the worktree this runs from left every hook pointing at a temporary
+# worktree once it was removed. The links then dangled and git skipped them silently.
+target="$root"
+common="$(cd "$(git rev-parse --git-common-dir 2>/dev/null)" 2>/dev/null && pwd -P)" || common=""
+if [ "$(basename "$common")" = ".git" ] && [ -d "$(dirname "$common")/bin/hooks" ]; then
+    target="$(dirname "$common")"
+fi
+
 names=()
 for src in bin/hooks/*; do
     [ -e "$src" ] || continue
     name="$(basename "$src")"
     names+=("$name")
     chmod +x "$src" 2>/dev/null || true
-    if ln -sf "$root/bin/hooks/$name" "$hooks_dir/$name" 2>/dev/null; then
+    if ln -sf "$target/bin/hooks/$name" "$hooks_dir/$name" 2>/dev/null; then
         echo "✓ installed $name -> $hooks_dir/$name"
     else
         echo "ℹ install-hooks: couldn't link $name — skipping (non-fatal)." >&2
