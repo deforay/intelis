@@ -110,6 +110,15 @@ final class SchemaRepairPlanTest extends TestCase
         $this->assertSame(3, $repair->pendingCount());
     }
 
+    public function testOnlyWhatIsMissingCountsAsPending(): void
+    {
+        $repair = new SchemaRepairPlan(self::$init);
+        $repair->deferPending(schema_pending_additions(self::$root . '/sys/migrations', '5.8.3'));
+
+        $this->assertSame([], $repair->build($this->everyColumn()));
+        $this->assertSame(0, $repair->pendingCount(), 'Nothing is missing, so nothing is waiting on a migration.');
+    }
+
     public function testAMigrationAlreadyRunLeavesNothingPending(): void
     {
         $columns = $this->everyColumn();
@@ -143,26 +152,31 @@ final class SchemaRepairPlanTest extends TestCase
         );
     }
 
-    public function testAnAutoIncrementColumnNeverReplacesAnExistingPrimaryKey(): void
+    public function testAMissingAutoIncrementColumnIsNeverAdded(): void
     {
+        // Adding it numbers the existing rows afresh, so every row that points at
+        // the old ids points at the wrong row.
         $init = "CREATE TABLE `t` (\n  `id` int NOT NULL AUTO_INCREMENT,\n  `code` int NOT NULL,\n"
             . "  PRIMARY KEY (`id`)\n) ENGINE=InnoDB;\n";
+        $repair = new SchemaRepairPlan($init);
 
-        $this->expectException(RuntimeException::class);
-        (new SchemaRepairPlan($init))->build(['t' => ['code'], 'x' => []], ['t' => ['PRIMARY']]);
+        $this->assertSame([], $repair->build(['t' => ['code']]));
+        $this->assertCount(1, $repair->manual());
+        $this->assertStringStartsWith('t.id: an AUTO_INCREMENT key.', $repair->manual()[0]);
     }
 
-    public function testAnAutoIncrementColumnBringsItsKeyWhenTheTableHasNone(): void
+    public function testARetypeUnderTheSameNameIsNotAnAddition(): void
     {
-        $init = "CREATE TABLE `t` (\n  `id` int NOT NULL AUTO_INCREMENT,\n  `code` int NOT NULL,\n"
-            . "  PRIMARY KEY (`id`)\n) ENGINE=InnoDB;\n";
+        // 5.2.6 runs CHANGE `patient_code_key` `patient_code_key` on a column it
+        // needs to be there. A lost patient_code_key is drift at 5.2.5 too.
+        $pending = schema_pending_additions(self::$root . '/sys/migrations', '5.2.5');
+        $this->assertArrayNotHasKey('patient_code_key', $pending['columns']['patients'] ?? []);
 
-        $plan = (new SchemaRepairPlan($init))->build(['t' => ['code']], ['t' => []]);
-
-        $this->assertStringContainsString(
-            'ADD COLUMN `id` int NOT NULL AUTO_INCREMENT, ADD PRIMARY KEY (`id`)',
-            $plan[0]['sql']
-        );
+        $columns = $this->everyColumn();
+        $columns['patients'] = array_values(array_diff($columns['patients'], ['patient_code_key']));
+        $repair = new SchemaRepairPlan(self::$init);
+        $repair->deferPending(schema_pending_additions(self::$root . '/sys/migrations', '5.8.10'));
+        $this->assertStringContainsString('ADD COLUMN `patient_code_key`', $repair->build($columns)[0]['sql']);
     }
 
     public function testAnAlterThatIsNotMysqldumpsKeyToggleIsRefused(): void
@@ -192,7 +206,7 @@ final class SchemaRepairPlanTest extends TestCase
             "ALTER TABLE `t` ADD COLUMN `c1` ENUM('a','b') NULL, ADD `c2` int,"
                 . ' ADD INDEX `idx` (`c1`), ADD PRIMARY KEY (`id`);',
             'ALTER TABLE `t` ADD CONSTRAINT `fk` FOREIGN KEY (`x`) REFERENCES `y` (`id`);',
-            'ALTER TABLE `t` CHANGE `old` `C3` int, RENAME COLUMN `a` TO `c4`;',
+            'ALTER TABLE `t` CHANGE `old` `C3` int, RENAME COLUMN `a` TO `c4`, CHANGE `kept` `KEPT` text;',
             'ALTER TABLE t ADD COLUMN (c5 int, c6 int);',
             '/* block; comment */ RENAME TABLE `a` TO `renamed_table`;',
             'ALTER TABLE `b` RENAME TO `moved_table`;',

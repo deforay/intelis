@@ -75,7 +75,7 @@ final class HealSchemaTest extends TestCase
         $db->query('ALTER TABLE `instruments` DROP COLUMN `instrument_make`, DROP COLUMN `added_on`');
 
         $repair = new SchemaRepairPlan((string) file_get_contents(dirname(__DIR__, 2) . '/sql/init.sql'));
-        $plan = $repair->build($this->columns(), $this->indexes());
+        $plan = $repair->build($this->columns());
         $this->assertCount(3, $plan);
 
         foreach ($plan as $step) {
@@ -90,7 +90,7 @@ final class HealSchemaTest extends TestCase
 
         $this->assertSame($fresh, $this->columns());
         $this->assertSame($freshKeys, $this->foreignKeys());
-        $this->assertSame([], $repair->build($this->columns(), $this->indexes()), 'A second run finds nothing to do.');
+        $this->assertSame([], $repair->build($this->columns()), 'A second run finds nothing to do.');
         $row = $db->query("SELECT `machine_name` FROM `instruments` WHERE `instrument_id` = 'heal-probe'")
             ->fetch_assoc();
         $this->assertSame('Probe', $row['machine_name'] ?? null, 'The rows already there are untouched.');
@@ -108,19 +108,6 @@ final class HealSchemaTest extends TestCase
             $columns[(string) $row['TABLE_NAME']][] = (string) $row['COLUMN_NAME'];
         }
         return $columns;
-    }
-
-    /** @return array<string, list<string>> */
-    private function indexes(): array
-    {
-        $indexes = [];
-        $result = self::$db->query(
-            'SELECT DISTINCT TABLE_NAME, INDEX_NAME FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE()'
-        );
-        foreach ($result->fetch_all(MYSQLI_ASSOC) as $row) {
-            $indexes[(string) $row['TABLE_NAME']][] = (string) $row['INDEX_NAME'];
-        }
-        return $indexes;
     }
 
     /** @return array<string, list<string>> table => "constraint -> referenced table" */

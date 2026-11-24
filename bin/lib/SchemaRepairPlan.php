@@ -34,6 +34,12 @@ final class SchemaRepairPlan
     /** @var array<string, array<string, array{from: ?string, migration: string}>> */
     private array $deferredColumns = [];
 
+    /** @var list<string> Missing columns the plan will not add, with the reason. */
+    private array $manual = [];
+
+    /** @var list<array{name: string, from: ?string, migration: string}> Missing names left for a migration. */
+    private array $skipped = [];
+
     public function __construct(string $sql)
     {
         $parser = new Parser($sql);
@@ -73,11 +79,12 @@ final class SchemaRepairPlan
 
     /**
      * @param array<string, list<string>> $columns Existing tables and their columns.
-     * @param array<string, list<string>> $indexes Existing index names per table, including PRIMARY.
      * @return list<array{table: string, create: bool, sql: string}>
      */
-    public function build(array $columns, array $indexes = []): array
+    public function build(array $columns): array
     {
+        $this->manual = [];
+        $this->skipped = [];
         $existing = [];
         foreach ($columns as $table => $names) {
             $existing[$table] = array_map('strtolower', $names);
@@ -85,7 +92,8 @@ final class SchemaRepairPlan
         $alter = [];
         $create = [];
         foreach ($this->tables as $table => $definition) {
-            if (isset($this->deferredTables[$table])) {
+            if (isset($this->deferredTables[$table]) && !array_key_exists($table, $existing)) {
+                $this->skipped[] = ['name' => $table] + $this->deferredTables[$table];
                 continue;
             }
             $quotedTable = self::quote($table);
@@ -113,15 +121,21 @@ final class SchemaRepairPlan
                 // PHP turns a numeric column name into an integer key.
                 $column = (string) $column;
                 $lower = strtolower($column);
-                if (in_array($lower, $existing[$table], true) || isset($this->deferredColumns[$table][$lower])) {
+                if (in_array($lower, $existing[$table], true)) {
+                    continue;
+                }
+                if (isset($this->deferredColumns[$table][$lower])) {
+                    $this->skipped[] = ['name' => "{$table}.{$column}"] + $this->deferredColumns[$table][$lower];
+                    continue;
+                }
+                if ($field->options?->has('AUTO_INCREMENT')) {
+                    // Adding it would number the existing rows afresh, and every row
+                    // elsewhere that points at the old ids would point at the wrong row.
+                    $this->manual[] = "{$table}.{$column}: an AUTO_INCREMENT key. Adding it would renumber the rows,"
+                        . ' so restore it from a backup or by hand.';
                     continue;
                 }
                 $actions[] = 'ADD COLUMN ' . self::nullableOnExistingRows($field->build());
-                if ($field->options?->has('AUTO_INCREMENT')) {
-                    // MySQL needs an AUTO_INCREMENT column indexed in the same ALTER.
-                    // Never replace an existing primary key to get there.
-                    $actions[] = 'ADD ' . $this->autoIncrementKey($table, $column, $indexes[$table] ?? [])->build();
-                }
             }
             if ($actions !== []) {
                 $alter[] = ['table' => $table, 'create' => false, 'sql' => "ALTER TABLE {$quotedTable} " . implode(', ', $actions)];
@@ -129,6 +143,16 @@ final class SchemaRepairPlan
         }
         // Columns on existing tables come first, so new tables can reference them.
         return array_merge($alter, $create);
+    }
+
+    /**
+     * Missing columns the last build() left out because adding them would damage data.
+     *
+     * @return list<string>
+     */
+    public function manual(): array
+    {
+        return $this->manual;
     }
 
     /**
@@ -207,50 +231,26 @@ final class SchemaRepairPlan
     }
 
     /**
-     * Missing names left for a migration that renames or copies existing data into them.
+     * Missing names the last build() left for a migration that renames or copies
+     * existing data into them.
      *
      * @return list<array{name: string, from: string, migration: string}>
      */
     public function deferred(): array
     {
         $deferred = [];
-        foreach ($this->deferredLines() as $line) {
-            if ($line['from'] !== null) {
-                $deferred[] = ['name' => $line['name'], 'from' => $line['from'], 'migration' => $line['migration']];
+        foreach ($this->skipped as $item) {
+            if ($item['from'] !== null) {
+                $deferred[] = ['name' => $item['name'], 'from' => $item['from'], 'migration' => $item['migration']];
             }
         }
         return $deferred;
     }
 
-    /** How many missing tables and columns the migrations not yet run will add. */
+    /** How many missing tables and columns the last build() left for migrations not yet run. */
     public function pendingCount(): int
     {
-        return count(array_filter($this->deferredLines(), static fn(array $line): bool => $line['from'] === null));
-    }
-
-    /** @return list<array{name: string, from: ?string, migration: string}> */
-    private function deferredLines(): array
-    {
-        $lines = [];
-        foreach ($this->deferredTables as $new => $source) {
-            if (isset($this->tables[$new])) {
-                $lines[] = ['name' => $new] + $source;
-            }
-        }
-        foreach ($this->deferredColumns as $table => $columns) {
-            if (isset($this->deferredTables[$table])) {
-                continue;
-            }
-            foreach ($columns as $new => $source) {
-                foreach (array_keys($this->tables[$table]['columns'] ?? []) as $declared) {
-                    if (strtolower((string) $declared) === $new) {
-                        $lines[] = ['name' => "{$table}.{$declared}"] + $source;
-                        break;
-                    }
-                }
-            }
-        }
-        return $lines;
+        return count(array_filter($this->skipped, static fn(array $item): bool => $item['from'] === null));
     }
 
     /**
@@ -296,22 +296,6 @@ final class SchemaRepairPlan
         } else {
             throw new RuntimeException("Unsupported definition in table {$table}: " . $field->build());
         }
-    }
-
-    /** @param list<string> $existing */
-    private function autoIncrementKey(string $table, string $column, array $existing): CreateDefinition
-    {
-        foreach ($this->tables[$table]['keys'] as $field) {
-            $key = $field->key;
-            if ($key === null || $field->references !== null || ($key->columns[0]['name'] ?? null) !== $column) {
-                continue;
-            }
-            $name = $key->type === 'PRIMARY KEY' ? 'PRIMARY' : $key->name;
-            if ($name !== null && !in_array($name, $existing, true)) {
-                return $field;
-            }
-        }
-        throw new RuntimeException("Cannot add AUTO_INCREMENT column {$table}.{$column} without changing an existing key. Review its indexes first.");
     }
 
     private static function quote(string $identifier): string
