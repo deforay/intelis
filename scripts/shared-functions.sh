@@ -6,7 +6,7 @@
 # script never runs against an older copy than the one it was written for.
 # To raise it everywhere: php bin/dev/bump-shared-fn-version.php
 # bin/build/check-shell-loaders.php fails a push that changes this file without it.
-SHARED_FN_VERSION=9
+SHARED_FN_VERSION=10
 
 # Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
 export LANG="${LANG:-en_US.UTF-8}"
@@ -476,7 +476,9 @@ sury_source_active() {
 
     for f in "$dir"/sources.list.d/*.sources; do
         [ -f "$f" ] || continue
-        awk -v url="$url" -v cn="$codename" '
+        # apt ignores carriage returns, so a file saved with CRLF line endings
+        # still has blank lines between its stanzas. Strip them before awk splits.
+        tr -d '\r' <"$f" | awk -v url="$url" -v cn="$codename" '
             BEGIN { RS = "" }
             {
                 enabled = 1; found = 0; suite = 0; isdeb = 0; field = ""
@@ -504,7 +506,7 @@ sury_source_active() {
                 if (enabled && found && suite && isdeb) { hit = 1; exit }
             }
             END { exit hit ? 0 : 1 }
-        ' "$f" && return 0
+        ' && return 0
     done
 
     return 1
