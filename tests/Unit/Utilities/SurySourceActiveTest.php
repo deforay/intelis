@@ -67,6 +67,14 @@ final class SurySourceActiveTest extends TestCase
             'a disabled deb822 source beside an enabled one' => [false, 'php', [
                 'sources.list.d/sury.sources' => $deb822 . "Enabled: no\n\n" . $other,
             ]],
+            'a deb822 URI on the line after URIs:' => [true, 'php', [
+                'sources.list.d/sury.sources' => "Types: deb\nURIs:\n https://x.example/\n"
+                    . " https://packages.sury.org/php/\nSuites: noble\n",
+            ]],
+            'a URI-looking line under another field' => [false, 'php', [
+                'sources.list.d/sury.sources' => "Types: deb\nURIs: https://x.example/\n"
+                    . "Comment:\n https://packages.sury.org/php/\n",
+            ]],
             'the apache2 source asked about php' => [false, 'php', [
                 'sources.list.d/sury-apache2.list' => "deb https://packages.sury.org/apache2/ noble main\n",
             ]],

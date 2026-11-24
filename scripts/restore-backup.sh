@@ -142,7 +142,7 @@ fi
 
 # shellcheck disable=SC1090
 source "$SHARED_FN_PATH"
-intelis_require_shared_fn_version 6
+intelis_require_shared_fn_version 7
 
 # Present is not the same as usable — a truncated copy sources without error and
 # defines nothing.
