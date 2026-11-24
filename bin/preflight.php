@@ -863,17 +863,38 @@ try {
 
         $missingTables  = [];
         $missingColumns = [];
-        $remedies       = [];
         $renameHints    = [];
+
+        // init.sql is the newest schema, so a database that is behind lacks what
+        // the newer migrations add. That is not drift: intelis migrate adds it,
+        // and the Schema version row above already says to run it. Pasting an
+        // ADD for it first can do harm. 5.8.6 adds instruments.added_on empty and
+        // fills it from updated_datetime; added early with init.sql's default,
+        // every instrument would be dated today and the fill would find nothing.
+        $pending  = ['tables' => [], 'columns' => []];
+        $pendingLib = $root . '/bin/lib/pending-migrations.php';
+        if ($scVersion !== null && is_file($pendingLib)) {
+            require_once $pendingLib;
+            $pending = schema_pending_additions($root . '/sys/migrations', $scVersion);
+        }
+        $pendingCount = 0;
 
         foreach ($expected as $table => $columns) {
             if (!isset($liveTables[$table])) {
+                if (isset($pending['tables'][$table])) {
+                    $pendingCount++;
+                    continue;
+                }
                 $missingTables[] = $table;
                 continue;
             }
 
             foreach ($columns as $column => $definition) {
                 if (isset($liveColumns[$table][strtolower($column)])) {
+                    continue;
+                }
+                if (isset($pending['columns'][$table][strtolower($column)])) {
+                    $pendingCount++;
                     continue;
                 }
                 $missingColumns[] = "{$table}.{$column}";
@@ -899,13 +920,6 @@ try {
                     $renameHints[$table] = $spare;
                 }
 
-                // Empty when the column cannot be added by paste alone (a
-                // missing AUTO_INCREMENT key). It still counts as drift; it just
-                // gets no suggested statement.
-                $remedy = pf_add_column_sql($table, $column, $definition);
-                if ($remedy !== '') {
-                    $remedies[] = $remedy;
-                }
             }
         }
 
@@ -926,24 +940,19 @@ try {
                 'Schema drift',
                 PF_OK,
                 $tableCount . ' table(s) match sql/init.sql'
-                    . ($missingTables === [] ? '' : ', ignoring ' . count($missingTables) . ' absent'),
+                    . ($missingTables === [] ? '' : ', ignoring ' . count($missingTables) . ' absent')
+                    . ($pendingCount === 0 ? '' : ', ' . $pendingCount . ' more come with intelis migrate'),
             );
         } else {
-            // The statements are printed rather than a command named, because
-            // there is no repair command for this yet and the paste is what
-            // actually unblocks a lab mid-upgrade. Capped so a badly drifted
-            // install still produces something a person can read off a screen.
+            // Capped so a badly drifted install still produces something a
+            // person can read off a screen. bin/heal-schema.php lists them all,
+            // and leaves out what a migration renames into place.
             $detail = count($missingColumns) . ' column(s) missing: '
                 . implode(', ', array_slice($missingColumns, 0, 8))
-                . (count($missingColumns) > 8 ? ' +' . (count($missingColumns) - 8) . ' more' : '');
-
-            if ($remedies !== []) {
-                $detail .= "\n  an upgrade will halt on these -- run:\n    "
-                    . implode("\n    ", array_slice($remedies, 0, 20))
-                    . (count($remedies) > 20
-                        ? "\n    (+" . (count($remedies) - 20) . ' more — re-run this check after applying these)'
-                        : '');
-            }
+                . (count($missingColumns) > 8 ? ' +' . (count($missingColumns) - 8) . ' more' : '')
+                . "\n  an upgrade will halt on these"
+                . "\n  see the repair: intelis heal-schema"
+                . "\n  make it:        intelis heal-schema:apply";
 
             if ($renameHints !== []) {
                 $detail .= "\n  check first — these tables also carry columns sql/init.sql does not declare,"
@@ -1018,7 +1027,7 @@ try {
                         . (count($dormant) > 8 ? ' +' . (count($dormant) - 8) . ' more' : '')
                         . "\n  no module's data points at them and the seed does not fill them, so nothing"
                         . "\n  here says this instance ever used them;"
-                        . "\n  lift the CREATE TABLE from sql/init.sql if a migration needs one",
+                        . "\n  if a migration needs one, run: intelis heal-schema:apply",
                 );
             }
 
@@ -1040,8 +1049,8 @@ try {
                     $detail .= "\n    {$table} — " . implode(', ', $said);
                 }
                 $detail .= "\n  the data is still here but the table it is written to is gone, so the pages"
-                    . "\n  that use it fail on \"Table doesn't exist\" — lift the CREATE TABLE for each"
-                    . "\n  from sql/init.sql";
+                    . "\n  that use it fail on \"Table doesn't exist\""
+                    . "\n  run: intelis heal-schema:apply";
 
                 check('Missing tables in use', PF_FAIL, $detail);
             }
@@ -1271,32 +1280,6 @@ function pf_classify_missing_tables(
     return [$needed, $dormant];
 }
 
-/**
- * The ALTER that adds one missing column back.
- *
- * Two departures from what init.sql declares, both for the same reason -- the
- * table already holds rows and the column is being added underneath them:
- *
- *   NOT NULL with no DEFAULT is relaxed to NULL. MySQL would otherwise invent a
- *   value ('' or 0) for every existing row, and those fabricated values then read
- *   as real data. NULL says "not recorded", which is what actually happened.
- *
- *   AUTO_INCREMENT yields no statement at all. That column is the primary key,
- *   adding one to a populated table is not a paste-and-go repair, and a table
- *   missing its own key needs a person looking at it rather than a suggestion.
- */
-function pf_add_column_sql(string $table, string $column, string $definition): string
-{
-    if (stripos($definition, 'AUTO_INCREMENT') !== false) {
-        return '';
-    }
-
-    if (preg_match('/\bNOT\s+NULL\b/i', $definition) === 1 && stripos($definition, 'DEFAULT') === false) {
-        $definition = preg_replace('/\bNOT\s+NULL\b/i', 'NULL', $definition) ?? $definition;
-    }
-
-    return "ALTER TABLE `{$table}` ADD COLUMN `{$column}` {$definition};";
-}
 
 /**
  * The STS URL row. An empty remoteURL is only a finding on an instance that is

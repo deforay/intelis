@@ -148,7 +148,9 @@ Most business logic and UI pages are in legacy include-based modules under `app/
 - `app/api/` versioned API scripts (e.g., `app/api/v1.1/*`)
 - `app/classes/` modern PHP classes (services, utilities, middlewares, registries)
 - `sys/migrations/` versioned schema migrations, applied by `bin/migrate.php`.
-  `sql/init.sql` is the fresh-install seed only.
+  `sql/init.sql` is the fresh-install seed only, rebuilt from the migrations by
+  `bin/dev/regenerate-init-sql.php`. `bin/heal-schema.php` adds back the tables and
+  columns it declares that a database has lost.
 - `sys/cron/` the Crunz task definitions
 
 ## Services, Utilities, and Domain Classes
