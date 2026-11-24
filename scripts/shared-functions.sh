@@ -6,7 +6,7 @@
 # script never runs against an older copy than the one it was written for.
 # To raise it everywhere: php bin/dev/bump-shared-fn-version.php
 # bin/build/check-shell-loaders.php fails a push that changes this file without it.
-SHARED_FN_VERSION=8
+SHARED_FN_VERSION=9
 
 # Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
 export LANG="${LANG:-en_US.UTF-8}"
@@ -510,8 +510,37 @@ sury_source_active() {
     return 1
 }
 
+# Removes the frozen ondrej PPA source for <component>. True when one was there.
+remove_frozen_ppa() {
+    local component="$1" f removed=1
+    for f in /etc/apt/sources.list.d/ondrej-ubuntu-"${component}"-*; do
+        [ -e "$f" ] || continue
+        rm -f "$f"
+        log_action "Removed frozen apt source $(basename "$f")"
+        removed=0
+    done
+    return "$removed"
+}
+
+# Keeps the frozen PPA as the fallback only while it has a build for this
+# release. ondrej/apache2 has none for 26.04, and a source with no build for
+# the release makes every apt-get update fail. True when it removed one.
+remove_frozen_ppa_without_build() {
+    local component="$1" codename="$2" f
+    for f in /etc/apt/sources.list.d/ondrej-ubuntu-"${component}"-*; do
+        [ -e "$f" ] || continue
+        if [ "$(curl --proto =https -sSLI -o /dev/null --max-time 20 --retry 3 --retry-delay 2 -w '%{http_code}' \
+            "https://ppa.launchpadcontent.net/ondrej/${component}/ubuntu/dists/${codename}/Release" 2>/dev/null)" = "404" ]; then
+            remove_frozen_ppa "$component"
+            return
+        fi
+        return 1
+    done
+    return 1
+}
+
 use_sury_repo() {
-    local component="$1" codename code f changed=1 tmp
+    local component="$1" codename code changed=1 tmp
 
     codename="$(lsb_release -sc 2>/dev/null)"
     [ -n "$codename" ] || return 1
@@ -522,6 +551,7 @@ use_sury_repo() {
             "https://packages.sury.org/${component}/dists/${codename}/Release" 2>/dev/null)" || true
         if [ "$code" = "404" ]; then
             log_action "packages.sury.org/${component} has no build for ${codename}; keeping the current packages"
+            remove_frozen_ppa_without_build "$component" "$codename" && return 0
             return 1
         fi
 
@@ -531,6 +561,7 @@ use_sury_repo() {
                 ! dpkg -i "$tmp" >/dev/null; then
                 rm -f "$tmp"
                 log_action "Could not install the packages.sury.org signing key"
+                remove_frozen_ppa_without_build "$component" "$codename" || true
                 return 2
             fi
             rm -f "$tmp"
@@ -543,12 +574,7 @@ use_sury_repo() {
     fi
 
     # packages.sury.org is in place, so the frozen PPA can go.
-    for f in /etc/apt/sources.list.d/ondrej-ubuntu-"${component}"-*; do
-        [ -e "$f" ] || continue
-        rm -f "$f"
-        log_action "Removed frozen apt source $(basename "$f")"
-        changed=0
-    done
+    remove_frozen_ppa "$component" && changed=0
 
     return "$changed"
 }
