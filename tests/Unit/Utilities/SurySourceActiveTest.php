@@ -98,6 +98,9 @@ final class SurySourceActiveTest extends TestCase
             'a CRLF deb822 source with Enabled: no' => [false, 'php', [
                 'sources.list.d/sury.sources' => str_replace("\n", "\r\n", $deb822 . "Enabled: no\n"),
             ]],
+            'a deb822 lookalike host' => [false, 'php', [
+                'sources.list.d/fake.sources' => "Types: deb\nURIs: https://packagesXsuryXorg/php/\nSuites: noble\n",
+            ]],
             'the apache2 source asked about php' => [false, 'php', [
                 'sources.list.d/sury-apache2.list' => "deb https://packages.sury.org/apache2/ noble main\n",
             ]],
