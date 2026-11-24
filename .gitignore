@@ -114,3 +114,6 @@ dump-*
 VERSION.txt
 /bin/dev/casts/.*.log
 /bin/dev/casts/.*.rejected.cast
+
+# Claude Code worktrees (each is its own git checkout)
+.claude/worktrees/

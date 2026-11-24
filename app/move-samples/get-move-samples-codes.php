@@ -60,20 +60,9 @@ if ($labScope = $general->labScopeWhere('vl')) {
 	$query .= " AND $labScope";
 }
 if (isset($scDate) && trim((string) $scDate) !== '') {
-	$s_c_date = explode("to", (string) $scDate);
+	[$start_date, $end_date] = DateUtility::dayRange($scDate);
 
-	if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
-		$start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-	}
-	if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
-		$end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-	}
-
-	if (trim((string) $start_date) === trim((string) $end_date)) {
-		$query = $query . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-	} else {
-		$query = $query . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-	}
+	$query = $query . ' AND vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 
 //$query = $query." ORDER BY f.facility_name ASC";

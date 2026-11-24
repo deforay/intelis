@@ -127,14 +127,10 @@ $sQuery = "SELECT
         INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
         INNER JOIN facility_details as testingLab ON vl.lab_id=testingLab.facility_id ";
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+[$start_date, $end_date] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
 
 if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-  if (trim((string) $start_date) === trim((string) $end_date)) {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
-  } else {
-    $sWhere[] =  ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
-  }
+  $sWhere[] =  ' vl.sample_tested_datetime BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 
 
