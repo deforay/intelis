@@ -68,7 +68,7 @@ $sQuery = "SELECT * FROM form_vl as vl INNER JOIN facility_details as f ON vl.fa
 
 
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
 
 if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
@@ -77,11 +77,7 @@ if ($sWhere !== '' && $sWhere !== '0') {
         $sWhere = $sWhere . ' AND b.batch_code LIKE "%' . $db->escapeLike($_POST['batchCode']) . '%"';
     }
     if (!empty($_POST['sampleCollectionDate'])) {
-        if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-        } else {
-            $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
+        $sWhere = $sWhere . ' AND vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
     }
     if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
         $sWhere = $sWhere . ' AND s.sample_id = "' . $db->escape((string) $_POST['sampleType']) . '"';
@@ -97,18 +93,11 @@ if ($sWhere !== '' && $sWhere !== '0') {
     }
     if (!empty($_POST['sampleCollectionDate'])) {
         if (isset($setWhr)) {
-            if (trim((string) $start_date) === trim((string) $end_date)) {
-                if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-                    $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                } else {
-                    $sWhere = ' WHERE ' . $sWhere;
-                    $sWhere = $sWhere . ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                }
-            }
+            $sWhere = $sWhere . ' AND vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
         } else {
             $setWhr = 'where';
             $sWhere = ' WHERE ' . $sWhere;
-            $sWhere = $sWhere . ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+            $sWhere = $sWhere . ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
         }
     }
     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {

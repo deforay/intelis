@@ -99,14 +99,10 @@ $sQuery = "SELECT vl.sample_code,
                     LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
                     LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing";
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
 
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim((string) $start_date) === trim((string) $end_date)) {
-          $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
-     } else {
-          $sWhere[] = '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-     }
+     $sWhere[] = '  vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
      'facilityName' => ['vl.lab_id', ListingFilterClauseBuilder::EQUALS],

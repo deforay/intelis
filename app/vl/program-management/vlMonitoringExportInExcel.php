@@ -79,16 +79,12 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
 		FROM form_vl as vl JOIN facility_details as f ON vl.facility_id=f.facility_id
         WHERE IFNULL(reason_for_vl_testing, 0)  != 9999";
 
-    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-    [$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+    [$sTestDate, $eTestDate] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
 
     $sWhere = [];
     if (!empty($_POST['sampleCollectionDate'])) {
-        if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-        } else {
-            $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
+        $sWhere[] =  ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
     }
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $sWhere[] = " f.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
@@ -118,11 +114,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
                                 FROM form_vl as vl
                                 JOIN facility_details as f ON vl.facility_id=f.facility_id";
     if (!empty($_POST['sampleCollectionDate'])) {
-        if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-        } else {
-            $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-        }
+        $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
     }
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $sWhere[] = " f.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";
@@ -160,11 +152,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
                                                 AND IFNULL(reason_for_vl_testing, 0)  != 9999';
 
             if (!empty($_POST['sampleCollectionDate'])) {
-                if (trim((string) $start_date) === trim((string) $end_date)) {
-                    $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
-                } else {
-                    $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-                }
+                $sWhere[] =  '  vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
             }
 
             if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
@@ -186,9 +174,6 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
 
     //question three
 
-    $s_c_date = explode(" to ", (string) ($_POST['sampleCollectionDate'] ?? ''));
-    $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    $end_date = DateUtility::isoDateFormat(trim($s_c_date[1] ?? $s_c_date[0]));
     $startMonth = date("Y-m", strtotime((string) $start_date));
     $endMonth = date("Y-m", strtotime((string) $end_date));
     $start = $month = strtotime($startMonth);
@@ -208,18 +193,10 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
                                 AND MONTH(sample_collection_date)='$mnth'
                                 AND YEAR(sample_collection_date)='$year'";
         if (!empty($_POST['sampleCollectionDate'])) {
-            if (trim((string) $start_date) === trim((string) $end_date)) {
-                $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
-            } else {
-                $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-            }
+            $sWhere[] =  '  vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
         }
         if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-            if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
-                $sWhere[] =  '  DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
-            } else {
-                $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-            }
+            $sWhere[] =  '  vl.sample_tested_datetime BETWEEN "' . $sTestDate . '" AND "' . $eTestDate . '"';
         }
         if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
             $sWhere[] = "  f.facility_district LIKE '%" . $db->escapeLike($_POST['district']) . "%' ";

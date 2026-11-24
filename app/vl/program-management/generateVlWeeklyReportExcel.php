@@ -26,13 +26,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $sarr = $general->getSystemConfig();
 
 if (isset($_POST['reportedDate']) && trim((string) $_POST['reportedDate']) !== '') {
-    $s_t_date = explode("to", (string) $_POST['reportedDate']);
-    if (isset($s_t_date[0]) && trim($s_t_date[0]) !== "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
-    }
-    if (isset($s_t_date[1]) && trim($s_t_date[1]) !== "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
-    }
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['reportedDate']);
 }
 
 
@@ -117,11 +111,7 @@ if (!empty($labId)) {
 }
 
 if (isset($_POST['reportedDate']) && trim((string) $_POST['reportedDate']) !== '') {
-    if (trim((string) $start_date) === trim((string) $end_date)) {
-        $sQuery = $sQuery . ' AND DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
-    } else {
-        $sQuery = $sQuery . ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
-    }
+    $sQuery = $sQuery . ' AND vl.sample_tested_datetime BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 
 $sQuery .= ' GROUP BY lab_name, vl.facility_id';

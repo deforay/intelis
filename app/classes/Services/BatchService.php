@@ -25,7 +25,8 @@ final class BatchService
     {
         $batchQuery = 'SELECT IFNULL(MAX(batch_code_key), 0) + 1 AS maxId
                         FROM batch_details as bd
-                        WHERE DATE(bd.request_created_datetime) = CURRENT_DATE';
+                        WHERE bd.request_created_datetime >= CURRENT_DATE
+                            AND bd.request_created_datetime < CURRENT_DATE + INTERVAL 1 DAY';
         $batchResult = $this->db->rawQueryOne($batchQuery);
 
         $batchCode = date('Ymd') . sprintf("%03s", $batchResult['maxId']);
