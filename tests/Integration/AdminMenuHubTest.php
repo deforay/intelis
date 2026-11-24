@@ -226,13 +226,15 @@ final class AdminMenuHubTest extends TestCase
     }
 
     /**
-     * A fresh install starts from init.sql, whose CD4 pages sit under a group
+     * An install made from the 5.7.45 init.sql, whose CD4 pages sit under a group
      * with no link beside an empty #cd4-config group: the reverse of the upgraded
      * menu seeded above. Every settings page must still end up on a hub tab.
+     *
+     * The current init.sql already ships the hub, so that menu is kept as a fixture.
      */
     public function testAFreshInstallMenuPutsEverySettingsPageOnATab(): void
     {
-        $initSql = (string) file_get_contents(ROOT_PATH . '/sql/init.sql');
+        $initSql = (string) file_get_contents(ROOT_PATH . '/tests/Fixtures/sql/s_app_menu-5.7.45.sql');
         self::assertSame(1, preg_match('/^INSERT INTO `s_app_menu` VALUES .*;$/m', $initSql, $seed));
         LegacyAppHarness::db()->rawQuery('DELETE FROM s_app_menu');
         LegacyAppHarness::db()->rawQuery(rtrim($seed[0], ';'));

@@ -85,7 +85,9 @@ against them without running a review.
   style issue.
 - **Schema changes live in `sys/migrations/`.** `sql/init.sql` is a seed for fresh installs
   and is not edited to change the schema; migrations replay on fresh installs too, so they
-  must be re-runnable and must not assume an upgraded database. A new migration means a
+  must be re-runnable and must not assume an upgraded database. `init.sql` is never edited
+  by hand. `php bin/dev/regenerate-init-sql.php` rebuilds it from the migrations, in a
+  throwaway database, and its diff should show only what the migrations changed. A new migration means a
   version bump in `composer.json` and `app/system/version.php`, and `composer update --lock` so the
   lockfile hash stays current.
 - **Request saves touch only the result fields their form shows.** Add/edit request

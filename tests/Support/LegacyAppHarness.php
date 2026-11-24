@@ -199,6 +199,9 @@ final class LegacyAppHarness
      * regenerated now and then, so a column added since is missing from the tables
      * boot() creates; this applies that migration's ADD statements as written.
      *
+     * A column the table already has is skipped, so a test keeps working once
+     * bin/dev/regenerate-init-sql.php brings that column into init.sql.
+     *
      * @param list<string> $tables
      */
     public static function addMigrationColumns(string $version, array $tables): void
@@ -214,6 +217,16 @@ final class LegacyAppHarness
                 throw new RuntimeException("sys/migrations/$version.sql adds no column to $table");
             }
             foreach ($matches[0] as $statement) {
+                if (
+                    preg_match('/ ADD (?:COLUMN )?`([^`]+)`/', $statement, $column) === 1
+                    && self::db()->rawQueryOne(
+                        'SELECT 1 AS found FROM information_schema.COLUMNS
+                          WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?',
+                        [$table, $column[1]]
+                    ) !== null
+                ) {
+                    continue;
+                }
                 self::db()->rawQuery($statement);
             }
         }

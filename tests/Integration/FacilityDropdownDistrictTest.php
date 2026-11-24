@@ -35,9 +35,6 @@ final class FacilityDropdownDistrictTest extends TestCase
         LegacyAppHarness::withSession(['instanceId' => 'test-instance']);
         AppRegistry::set('request', LegacyAppHarness::withPost([]));
 
-        // sql/init.sql still carries the old country-wide unique name index;
-        // migration 5.8.7 drops it, so do the same here.
-        $db->rawQuery('ALTER TABLE facility_details DROP INDEX facility_name, DROP INDEX facility_name_2');
 
         foreach ([1, 2] as $type) {
             $db->rawQuery(

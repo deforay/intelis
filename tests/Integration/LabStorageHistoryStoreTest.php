@@ -56,6 +56,10 @@ final class LabStorageHistoryStoreTest extends TestCase
         ]);
         $this->booted = true;
         LegacyAppHarness::addMigrationColumns('5.7.87', ['s_vlsm_instance']);
+        // sql/init.sql has what 5.7.88 adds. Take it back out, so migrate() below
+        // runs 5.7.88 on the shape it was written for.
+        $db->rawQuery('ALTER TABLE `lab_storage_history` DROP INDEX `uniq_lab_storage_history_lab_row`,'
+            . ' DROP COLUMN `source_lab_id`, DROP COLUMN `lab_history_id`');
         // Freezers belong to facilities; which facility is not what is tested here.
         $db->rawQuery('SET FOREIGN_KEY_CHECKS = 0');
         $db->insert('system_config', ['name' => 'sc_user_type', 'value' => $instanceType]);

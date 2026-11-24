@@ -162,15 +162,10 @@ final class LabMetadataStoreTest extends TestCase
         self::assertSame('New', $rows['i-2']['machine_name']);
     }
 
-    /** 5.7.78: on the STS a machine is known by its instrument and the lab's own id for it. */
-    private static function keyMachinesByInstrument(mixed $db): void
+    /** Before 5.7.78 a machine was known by config_machine_id alone. sql/init.sql has the 5.7.78 key. */
+    private static function keyMachinesByIdAlone(mixed $db): void
     {
-        $migration = (string) file_get_contents(ROOT_PATH . '/sys/migrations/5.7.78.sql');
-        preg_match_all('/^ALTER TABLE `instrument_machines`[^;]*;/ms', $migration, $statements);
-        self::assertNotEmpty($statements[0]);
-        foreach ($statements[0] as $sql) {
-            $db->rawQuery($sql);
-        }
+        $db->rawQuery('ALTER TABLE `instrument_machines` DROP PRIMARY KEY, ADD PRIMARY KEY (`config_machine_id`)');
     }
 
     private static function machine(string $instrumentId, int $id, string $name): array
@@ -195,7 +190,6 @@ final class LabMetadataStoreTest extends TestCase
     public function testTwoLabsWithTheSameMachineIdBothKeepTheirMachine(): void
     {
         $db = $this->boot();
-        self::keyMachinesByInstrument($db);
 
         // Each lab numbers its machines from 1; instrument ids are unique.
         self::store(['instrument_machines' => [self::machine('lab-a-roche', 1, 'Roche A1')]]);
@@ -213,7 +207,6 @@ final class LabMetadataStoreTest extends TestCase
     public function testAMachineIsUpdatedInPlaceAndKeepsTheLabsId(): void
     {
         $db = $this->boot();
-        self::keyMachinesByInstrument($db);
         self::store(['instrument_machines' => [self::machine('i-1', 4, 'Old name')]]);
 
         self::store(['instrument_machines' => [self::machine('i-1', 4, 'New name')]]);
@@ -226,7 +219,6 @@ final class LabMetadataStoreTest extends TestCase
     public function testMachinesMissingFromABatchAreNotRemoved(): void
     {
         $db = $this->boot();
-        self::keyMachinesByInstrument($db);
         self::store(['instrument_machines' => [self::machine('i-1', 1, 'One'), self::machine('i-1', 2, 'Two')]]);
 
         // A lab never deletes a machine: one left out of a batch is still there.
@@ -239,7 +231,6 @@ final class LabMetadataStoreTest extends TestCase
     public function testTheSameMachinesSentAgainChangeNothing(): void
     {
         $db = $this->boot();
-        self::keyMachinesByInstrument($db);
         $batch = ['instrument_machines' => [self::machine('i-1', 1, 'One'), self::machine('i-2', 1, 'Other')]];
 
         // A lab sends all its machines on every run.
@@ -254,7 +245,6 @@ final class LabMetadataStoreTest extends TestCase
     public function testAMachineThatCannotBeMatchedIsSkipped(): void
     {
         $db = $this->boot();
-        self::keyMachinesByInstrument($db);
 
         self::store(['instrument_machines' => [
             ['instrument_id' => 'i-1', 'config_machine_name' => 'No id'],
@@ -272,6 +262,7 @@ final class LabMetadataStoreTest extends TestCase
     {
         $db = $this->boot();
         // Code updated, 5.7.78 not yet applied: the key is still config_machine_id alone.
+        self::keyMachinesByIdAlone($db);
         self::store(['instrument_machines' => [self::machine('lab-a-roche', 1, 'Roche A1')]]);
 
         self::store(['instrument_machines' => [self::machine('lab-b-abbott', 1, 'Abbott B1')]]);
