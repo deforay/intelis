@@ -80,13 +80,9 @@ if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCod
     // batch "B1" also match "B12".
     $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['noResultBatchCode']) . '"';
 }
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['noResultSampleTestDate'] ?? '');
+[$start_date, $end_date] = DateUtility::dayRange($_POST['noResultSampleTestDate'] ?? '');
 if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSampleTestDate']) !== '') {
-    if (trim((string) $start_date) === trim((string) $end_date)) {
-        $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-    } else {
-        $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-    }
+    $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 if (isset($_POST['noResultSampleType']) && $_POST['noResultSampleType'] != '') {
     $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['noResultSampleType'];

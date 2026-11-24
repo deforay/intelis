@@ -80,19 +80,8 @@ try {
     }
 
     if (isset($_POST['positiveTbSampleTestDate']) && trim((string) $_POST['positiveTbSampleTestDate']) !== '') {
-        $s_c_date = explode("to", (string) $_POST['positiveTbSampleTestDate']);
-
-        if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
-            $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-        }
-        if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
-            $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-        }
-        if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
-        } else {
-            $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
-        }
+        [$start_date, $end_date] = DateUtility::dayRange($_POST['positiveTbSampleTestDate'] ?? '');
+        $sWhere[] = ' vl.sample_tested_datetime BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
     }
     if (isset($_POST['positiveTbSampleType']) && $_POST['positiveTbSampleType'] != '') {
         $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['positiveTbSampleType'];

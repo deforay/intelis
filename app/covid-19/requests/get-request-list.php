@@ -130,9 +130,9 @@ try {
           LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-     [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-     [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+     [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+     [$labStartDate, $labEndDate] = DateUtility::dayRange($_POST['sampleReceivedDateAtLab'] ?? '');
+     [$testedStartDate, $testedEndDate] = DateUtility::dayRange($_POST['sampleTestedDate'] ?? '');
      $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
           'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
           'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
@@ -142,27 +142,15 @@ try {
           'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
      ])];
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) === trim((string) $end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+          $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
      }
 
      if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
-          if (trim((string) $labStartDate) === trim((string) $labEndDate)) {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
-          } else {
-               $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
-          }
+          $sWhere[] = ' vl.sample_received_at_lab_datetime BETWEEN "' . $labStartDate . '" AND "' . $labEndDate . '"';
      }
 
      if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
-          if (trim((string) $testedStartDate) === trim((string) $testedEndDate)) {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
-          }
+          $sWhere[] = ' vl.sample_tested_datetime BETWEEN "' . $testedStartDate . '" AND "' . $testedEndDate . '"';
      }
 
 
@@ -199,7 +187,8 @@ try {
      }
      /* Source of request show model conditions */
      if (isset($_POST['dateRangeModel']) && trim((string) $_POST['dateRangeModel']) !== '') {
-          $sWhere[] = ' DATE(vl.sample_collection_date) like "' . DateUtility::isoDateFormat($_POST['dateRangeModel']) . '"';
+          [$srcStartDate, $srcEndDate] = DateUtility::dayRange($_POST['dateRangeModel']);
+          $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $srcStartDate . '" AND "' . $srcEndDate . '"';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
           $sWhere[] = ' ' . SampleRejectionUtility::sqlPredicate('vl') . ' ';

@@ -127,14 +127,7 @@ $end_date = '';
 $t_start_date = '';
 $t_end_date = '';
 if (!empty($_POST['sampleCollectionDate'])) {
-    $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
 }
 
 $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
@@ -144,11 +137,7 @@ $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
     'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
 ])];
 if (!empty($_POST['sampleCollectionDate'])) {
-    if (trim((string) $start_date) === trim((string) $end_date)) {
-        $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
-    } else {
-        $sWhere[] = '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-    }
+    $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 
 if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {

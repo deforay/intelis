@@ -76,13 +76,9 @@ try {
         $sWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['hvlBatchCode']) . '"';
     }
 
-    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['hvlSampleTestDate'] ?? '');
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['hvlSampleTestDate'] ?? '');
     if (isset($_POST['hvlSampleTestDate']) && trim((string) $_POST['hvlSampleTestDate']) !== '') {
-        if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
-        } else {
-            $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
-        }
+        $sWhere[] = ' vl.sample_tested_datetime BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
     }
     if (isset($_POST['hvlSampleType']) && $_POST['hvlSampleType'] != '') {
         $sWhere[] = ' vl.specimen_type = ' . (int) $_POST['hvlSampleType'];

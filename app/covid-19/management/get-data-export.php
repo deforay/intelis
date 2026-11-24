@@ -105,13 +105,13 @@ try {
                     LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
                     LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
      /* Sample collection date filter */
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+     [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
      /* Sample recieved date filter */
-     [$rstart_date, $rend_date] = DateUtility::convertDateRange($_POST['sampleRecievedDate'] ?? '');
+     [$rstart_date, $rend_date] = DateUtility::dayRange($_POST['sampleRecievedDate'] ?? '');
      /* Sample tested date filter */
-     [$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+     [$sTestDate, $eTestDate] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
      /* Sample print date filter */
-     [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
+     [$sPrintDate, $ePrintDate] = DateUtility::dayRange($_POST['printDate'] ?? '');
      if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
           $sWhere[] = ' f.facility_state_id = ' . (int) $_POST['state'] . ' ';
      }
@@ -160,32 +160,16 @@ try {
      }
      /* Date time filtering */
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) === trim((string) $end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+          $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
      }
      if (isset($_POST['sampleRecievedDate']) && trim((string) $_POST['sampleRecievedDate']) !== '') {
-          if (trim((string) $rstart_date) === trim((string) $rend_date)) {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $rstart_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $rstart_date . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $rend_date . '"';
-          }
+          $sWhere[] = ' vl.sample_received_at_lab_datetime BETWEEN "' . $rstart_date . '" AND "' . $rend_date . '"';
      }
      if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-          if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
-          }
+          $sWhere[] = ' vl.sample_tested_datetime BETWEEN "' . $sTestDate . '" AND "' . $eTestDate . '"';
      }
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) !== '') {
-          if (trim((string) $sPrintDate) === trim((string) $eTestDate)) {
-               $sWhere[] = ' DATE(vl.result_printed_datetime) like "' . $sPrintDate . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.result_printed_datetime) >= "' . $sPrintDate . '" AND DATE(vl.result_printed_datetime) <= "' . $ePrintDate . '"';
-          }
+          $sWhere[] = ' vl.result_printed_datetime BETWEEN "' . $sPrintDate . '" AND "' . $ePrintDate . '"';
      }
 
      if (!empty($_SESSION['facilityMap'])) {

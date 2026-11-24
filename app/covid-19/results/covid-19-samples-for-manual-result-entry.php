@@ -137,7 +137,7 @@ try {
           LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
           LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
 
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+     [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
      //$sWhere = ' WHERE ' . $sWhere;
      $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
           'batchCode' => ['b.batch_code', ListingFilterClauseBuilder::EQUALS],
@@ -146,11 +146,7 @@ try {
           'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
      ])];
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) === trim((string) $end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+          $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
      }
 
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {

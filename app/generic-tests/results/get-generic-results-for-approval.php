@@ -101,21 +101,13 @@ $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
      'sampleType' => ['s.sample_type_id', ListingFilterClauseBuilder::EQUALS],
      'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
 ])];
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-[$tested_start_date, $tested_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+[$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+[$tested_start_date, $tested_end_date] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim((string) $start_date) === trim((string) $end_date)) {
-          $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
-     } else {
-          $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-     }
+     $sWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 if (!empty($_POST['sampleTestDate'])) {
-     if (trim((string) $tested_start_date) === trim((string) $tested_end_date)) {
-          $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $tested_start_date . '"';
-     } else {
-          $sWhere[] = '  DATE(vl.sample_tested_datetime) >= "' . $tested_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $tested_end_date . '"';
-     }
+     $sWhere[] = ' vl.sample_tested_datetime BETWEEN "' . $tested_start_date . '" AND "' . $tested_end_date . '"';
 }
 
 $cancellableFilter = (isset($_POST['statusFilter']) && $_POST['statusFilter'] == 'cancellable');

@@ -79,35 +79,23 @@ if ($general->isSTSInstance()) {
 	$sWhere[] = " vl.result_status != " . RECEIVED_AT_CLINIC;
 }
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+[$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+[$labStartDate, $labEndDate] = DateUtility::dayRange($_POST['sampleReceivedDateAtLab'] ?? '');
+[$testedStartDate, $testedEndDate] = DateUtility::dayRange($_POST['sampleTestedDate'] ?? '');
 
 $seWhere = [];
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
 	$seWhere[] = ' b.batch_code = "' . $db->escape((string) $_POST['batchCode']) . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-	if (trim((string) $start_date) === trim((string) $end_date)) {
-		$seWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-	} else {
-		$seWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-	}
+	$seWhere[] = ' vl.sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
-	if (trim((string) $labStartDate) === trim((string) $labEndDate)) {
-		$seWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
-	} else {
-		$seWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
-	}
+	$seWhere[] = ' vl.sample_received_at_lab_datetime BETWEEN "' . $labStartDate . '" AND "' . $labEndDate . '"';
 }
 
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
-	if (trim((string) $testedStartDate) === trim((string) $testedEndDate)) {
-		$seWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
-	} else {
-		$seWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
-	}
+	$seWhere[] = ' vl.sample_tested_datetime BETWEEN "' . $testedStartDate . '" AND "' . $testedEndDate . '"';
 }
 if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
 	$seWhere[] = ' vl.specimen_type = ' . (int) $_POST['sampleType'];
