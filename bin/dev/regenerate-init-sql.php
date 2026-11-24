@@ -63,7 +63,9 @@ $scratch = 'intelis_initsql_' . getmypid();
 $general = ContainerRegistry::get(CommonService::class);
 $appVersion = (string) $general->getAppVersion();
 
-// The clients read the password from a file, so it never shows in the process list.
+// The clients read the login from a file, so the password never shows in the process
+// list. --defaults-file makes it the only option file they read: a ~/.my.cnf or
+// /etc/mysql/my.cnf would otherwise override the host or login set here.
 $defaults = tempnam(sys_get_temp_dir(), 'intelis-my');
 file_put_contents($defaults, "[client]\nhost=$host\nport=$port\nuser=" . ($config['username'] ?? '')
     . "\npassword=\"" . addcslashes((string) ($config['password'] ?? ''), '"\\') . "\"\n");
@@ -74,7 +76,7 @@ $cleanup = static function () use ($scratch, $keep, $defaults): void {
         echo "Kept the throwaway database `$scratch`.\n";
     } else {
         try {
-            run(['mysql', "--defaults-extra-file=$defaults", '-e', "DROP DATABASE IF EXISTS `$scratch`"], null);
+            run(['mysql', "--defaults-file=$defaults", '-e', "DROP DATABASE IF EXISTS `$scratch`"], null);
         } catch (Throwable $e) {
             fwrite(STDERR, "Could not drop `$scratch`: " . $e->getMessage() . "\n");
         }
@@ -89,15 +91,15 @@ try {
     }
 
     echo "1/3 Loading sql/init.sql into `$scratch`\n";
-    run(['mysql', "--defaults-extra-file=$defaults", '-e',
+    run(['mysql', "--defaults-file=$defaults", '-e',
         "CREATE DATABASE `$scratch` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci"], null);
-    run(['mysql', "--defaults-extra-file=$defaults", $scratch], $source);
+    run(['mysql', "--defaults-file=$defaults", $scratch], $source);
 
     echo "2/3 Running the migrations\n";
     run([PHP_BINARY, ROOT_PATH . '/bin/migrate.php', '-q'], null, ['MIGRATE_DB_NAME' => $scratch]);
 
     $version = trim(run([
-        'mysql', "--defaults-extra-file=$defaults", '--batch', '--skip-column-names', $scratch,
+        'mysql', "--defaults-file=$defaults", '--batch', '--skip-column-names', $scratch,
         '-e', "SELECT `value` FROM `system_config` WHERE `name` = 'sc_version'",
     ], null));
     if ($version !== $appVersion) {
@@ -106,16 +108,14 @@ try {
 
     echo "3/3 Writing $output\n";
     $dump = run([
-        'mysqldump', "--defaults-extra-file=$defaults",
+        'mysqldump', "--defaults-file=$defaults",
         '--routines', '--no-tablespaces', '--skip-dump-date', '--set-gtid-purged=OFF',
         '--default-character-set=utf8mb4', $scratch,
     ], null);
-    // The header and the routines comment name the database. Name the real one.
-    $dump = str_replace(
-        ["Database: $scratch", "for database '$scratch'"],
-        ['Database: vlsm', "for database 'vlsm'"],
-        $dump
-    );
+    // The header and the routines comment name the database and the host. Name the
+    // real database, and one host, so the file does not change with who ran this.
+    $dump = (string) preg_replace('/^-- Host: .*$/m', '-- Host: localhost    Database: vlsm', $dump, 1);
+    $dump = str_replace("for database '$scratch'", "for database 'vlsm'", $dump);
     if (str_contains($dump, $scratch)) {
         throw new RuntimeException("The dump still names `$scratch`. Check it with --keep.");
     }
