@@ -6,7 +6,7 @@
 # script never runs against an older copy than the one it was written for.
 # To raise it everywhere: php bin/dev/bump-shared-fn-version.php
 # bin/build/check-shell-loaders.php fails a push that changes this file without it.
-SHARED_FN_VERSION=10
+SHARED_FN_VERSION=11
 
 # Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
 export LANG="${LANG:-en_US.UTF-8}"
@@ -466,7 +466,7 @@ SURY_KEYRING=/usr/share/keyrings/debsuryorg-archive-keyring.gpg
 # ePT's bin/shared-functions.sh.
 sury_source_active() {
     local component="$1" codename="$2" dir="${SURY_APT_DIR:-/etc/apt}" f
-    local url="packages\\.sury\\.org/${component}([/[:space:]]|$)"
+    local url="packages[.]sury[.]org/${component}([/[:space:]]|$)"
 
     for f in "$dir/sources.list" "$dir"/sources.list.d/*.list; do
         [ -f "$f" ] || continue
