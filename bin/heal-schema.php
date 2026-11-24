@@ -135,12 +135,12 @@ try {
             if ($step['create']) {
                 // A new table is empty, so its foreign keys can be created before the
                 // tables they point to, which may come later in the plan.
-                $checks = (int) $pdo->query('SELECT @@SESSION.FOREIGN_KEY_CHECKS')->fetchColumn();
+                $checksWereOn = (int) $pdo->query('SELECT @@SESSION.FOREIGN_KEY_CHECKS')->fetchColumn() === 1;
                 try {
                     $pdo->exec('SET SESSION FOREIGN_KEY_CHECKS = 0');
                     $pdo->exec($step['sql']);
                 } finally {
-                    $pdo->exec('SET SESSION FOREIGN_KEY_CHECKS = ' . $checks);
+                    $pdo->exec($checksWereOn ? 'SET SESSION FOREIGN_KEY_CHECKS = 1' : 'SET SESSION FOREIGN_KEY_CHECKS = 0');
                 }
             } else {
                 $pdo->exec($step['sql']);
