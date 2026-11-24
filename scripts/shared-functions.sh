@@ -6,7 +6,7 @@
 # script never runs against an older copy than the one it was written for.
 # To raise it everywhere: php bin/dev/bump-shared-fn-version.php
 # bin/build/check-shell-loaders.php fails a push that changes this file without it.
-SHARED_FN_VERSION=6
+SHARED_FN_VERSION=7
 
 # Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
 export LANG="${LANG:-en_US.UTF-8}"
@@ -471,13 +471,19 @@ sury_source_active() {
         awk -v url="$url" '
             BEGIN { RS = "" }
             {
-                enabled = 1; found = 0
+                enabled = 1; found = 0; field = ""
                 n = split($0, lines, "\n")
                 for (i = 1; i <= n; i++) {
                     line = lines[i]
                     if (line ~ /^[[:space:]]*#/) continue
-                    if (tolower(line) ~ /^enabled:[[:space:]]*no[[:space:]]*$/) enabled = 0
-                    if (tolower(line) ~ /^uris:/ && line ~ url) found = 1
+                    # A line starting with whitespace continues the field above it,
+                    # so URIs can sit on the lines after "URIs:".
+                    if (line !~ /^[[:space:]]/) {
+                        field = tolower(line)
+                        sub(/:.*/, "", field)
+                        if (tolower(line) ~ /^enabled:[[:space:]]*no[[:space:]]*$/) enabled = 0
+                    }
+                    if (field == "uris" && line ~ url) found = 1
                 }
                 if (enabled && found) { hit = 1; exit }
             }
