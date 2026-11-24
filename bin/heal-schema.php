@@ -38,13 +38,23 @@ if (in_array('--help', $arguments, true)) {
 }
 $apply = in_array('--apply', $arguments, true);
 
-require_once __DIR__ . '/../bootstrap.php';
+// Not the application bootstrap. Booting reads configuration tables, and those may
+// be among what is missing. Only the SQL parser is needed from vendor/.
+$root = dirname(__DIR__);
+require_once $root . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/SchemaRepairPlan.php';
 
-use App\Registries\ContainerRegistry;
-
 try {
-    $config = ContainerRegistry::get('applicationConfig')['database'] ?? [];
+    $environment = getenv('APPLICATION_ENV') ?: 'production';
+    $configFile = $root . "/configs/config.{$environment}.php";
+    if (!is_file($configFile)) {
+        $configFile = $root . '/configs/config.production.php';
+    }
+    $systemConfig = is_file($configFile) ? include $configFile : null;
+    if (!is_array($systemConfig)) {
+        throw new RuntimeException('Cannot read configs/config.production.php.');
+    }
+    $config = $systemConfig['database'] ?? [];
     $pdo = new PDO(
         sprintf(
             'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
@@ -58,7 +68,7 @@ try {
     );
     $schema = (string) $pdo->query('SELECT DATABASE()')->fetchColumn();
 
-    $source = file_get_contents(ROOT_PATH . '/sql/init.sql');
+    $source = file_get_contents($root . '/sql/init.sql');
     if ($source === false) {
         throw new RuntimeException('Cannot read sql/init.sql.');
     }
@@ -70,20 +80,21 @@ try {
     foreach ($statement->fetchAll() as $row) {
         $columns[(string) $row['TABLE_NAME']][] = (string) $row['COLUMN_NAME'];
     }
-    $indexes = [];
-    $statement = $pdo->prepare('SELECT DISTINCT TABLE_NAME, INDEX_NAME FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = ?');
-    $statement->execute([$schema]);
-    foreach ($statement->fetchAll() as $row) {
-        $indexes[(string) $row['TABLE_NAME']][] = (string) $row['INDEX_NAME'];
-    }
 
     // What the migrations not yet run here will add is not drift. migrate.php adds
     // it, often with a backfill that adding it here first would skip.
-    $version = $pdo->query("SELECT `value` FROM `system_config` WHERE `name` = 'sc_version'")->fetchColumn();
+    // A database whose version cannot be read is treated as having run none of
+    // them, so only what no migration adds gets repaired.
+    try {
+        $version = $pdo->query("SELECT `value` FROM `system_config` WHERE `name` = 'sc_version'")->fetchColumn();
+    } catch (PDOException $e) {
+        echo 'Cannot read sc_version (' . $e->getMessage() . "). Repairing only what no migration adds.\n";
+        $version = null;
+    }
     $version = is_string($version) && $version !== '' ? $version : null;
-    $repair->deferPending(schema_pending_additions(ROOT_PATH . '/sys/migrations', $version));
+    $repair->deferPending(schema_pending_additions($root . '/sys/migrations', $version));
 
-    $migrations = glob(ROOT_PATH . '/sys/migrations/*.sql') ?: [];
+    $migrations = glob($root . '/sys/migrations/*.sql') ?: [];
     usort($migrations, static fn(string $a, string $b): int => version_compare(basename($a, '.sql'), basename($b, '.sql')));
     foreach ($migrations as $file) {
         $migration = file_get_contents($file);
@@ -93,7 +104,7 @@ try {
         $repair->deferMigrationTargets($migration, $columns, basename($file, '.sql'));
     }
 
-    $plan = $repair->build($columns, $indexes);
+    $plan = $repair->build($columns);
     echo ($apply ? 'Repairing' : 'Checking') . " database {$schema} against sql/init.sql\n";
     if ($repair->pendingCount() > 0) {
         echo "This database is at " . ($version ?? 'no recorded version') . '. ' . $repair->pendingCount()
@@ -106,9 +117,12 @@ try {
             echo "  This database is past {$item['migration']}. Replay it with: php bin/migrate.php --version={$item['migration']}\n";
         }
     }
+    foreach ($repair->manual() as $message) {
+        echo "Not added: {$message}\n";
+    }
     if ($plan === []) {
         echo "Nothing to add.\n";
-        exit(0);
+        exit($repair->manual() === [] ? 0 : 1);
     }
 
     $failed = 0;
@@ -150,6 +164,10 @@ try {
         exit(1);
     }
     echo count($plan) . " repair(s) made.\n";
+    if ($repair->manual() !== []) {
+        echo "The columns under \"Not added\" above still need a person.\n";
+        exit(1);
+    }
     echo "Now run: php bin/migrate.php\n";
 } catch (Throwable $e) {
     fwrite(STDERR, 'Schema repair failed: ' . $e->getMessage() . "\n");

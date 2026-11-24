@@ -74,10 +74,15 @@ function schema_note_additions(string $statement, string $version, array &$pendi
     foreach (schema_split_top_level($m[2]) as $clause) {
         if (preg_match('/^RENAME\s+(?:TO\s+|AS\s+)?' . $name . '$/i', $clause, $c) === 1) {
             $pending['tables'][$c[1]] ??= $version;
-        } elseif (preg_match('/^RENAME\s+COLUMN\s+' . $name . '\s+TO\s+' . $name . '$/i', $clause, $c) === 1) {
-            $pending['columns'][$table][strtolower($c[2])] ??= $version;
-        } elseif (preg_match('/^CHANGE\s+(?:COLUMN\s+)?' . $name . '\s+' . $name . '\s/i', $clause, $c) === 1) {
-            $pending['columns'][$table][strtolower($c[2])] ??= $version;
+        } elseif (
+            preg_match('/^RENAME\s+COLUMN\s+' . $name . '\s+TO\s+' . $name . '$/i', $clause, $c) === 1
+            || preg_match('/^CHANGE\s+(?:COLUMN\s+)?' . $name . '\s+' . $name . '\s/i', $clause, $c) === 1
+        ) {
+            // CHANGE `x` `x` retypes a column the migration needs to be there
+            // already, so only a new name is an addition.
+            if (strcasecmp($c[1], $c[2]) !== 0) {
+                $pending['columns'][$table][strtolower($c[2])] ??= $version;
+            }
         } elseif (preg_match('/^ADD\s+(?:COLUMN\s+)?\((.+)\)$/is', $clause, $c) === 1) {
             foreach (schema_split_top_level($c[1]) as $definition) {
                 if (preg_match('/^' . $name . '\s/', $definition, $d) === 1) {
