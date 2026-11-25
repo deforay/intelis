@@ -273,6 +273,27 @@ $remoteURL = $general->getRemoteURL();
 
                     // Object response with status
                     if (typeof response === 'object' && response !== null) {
+                        if (response.status === 'not-found' && response.manifestPage && response.manifestPage.url) {
+                            // A manifest of another module (e.g. a TB code on the CD4 page).
+                            // The toast body is HTML, so the pasted code is escaped.
+                            let safeCode = $('<div>').text(manifestCode).html();
+                            let moduleName = $('<div>').text(response.manifestPage.label).html();
+                            let thisModule = $('#manifestCode').data('module-label');
+                            toast.error(
+                                "<?= _jsTranslate('Manifest'); ?>" + ' ' + safeCode + ' ' +
+                                "<?= _jsTranslate('is a manifest for'); ?>" + ' <strong>' + moduleName + '</strong>. ' +
+                                (thisModule
+                                    ? "<?= _jsTranslate('This page only adds samples from'); ?>" + ' ' +
+                                        $('<div>').text(thisModule).html() + ' ' + "<?= _jsTranslate('manifests'); ?>" + '. '
+                                    : '') + '<br>' +
+                                '<a href="' + encodeURI(response.manifestPage.url) + '" style="pointer-events:auto;text-decoration:underline;">' +
+                                "<?= _jsTranslate('Open Add Samples from Manifest for'); ?>" + ' ' + moduleName + '</a>',
+                                '', MANIFEST_ERROR_TOAST_MS
+                            );
+                            $('.activateSample').hide();
+                            $('#sampleId').val('');
+                            return;
+                        }
                         if (response.status === 'not-found') {
                             toast.error("<?= _jsTranslate('No manifest found with code'); ?>" + ' ' + manifestCode, '', MANIFEST_ERROR_TOAST_MS);
                             $('.activateSample').hide();
