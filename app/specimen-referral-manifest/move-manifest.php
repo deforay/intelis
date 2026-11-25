@@ -51,7 +51,7 @@ $statusLabels = [
 ?>
 <div class="content-wrapper">
     <section class="content-header">
-        <h1><em class="fa-solid fa-angles-right"></em> <?= _translate("Move Manifests"); ?></h1>
+        <h1><em class="fa-solid fa-angles-right"></em> <?= _translate("Move Manifests"); ?><?= TestsService::moduleHeadingTag($module); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?= _translate("Home"); ?></a></li>
             <li><a href="/specimen-referral-manifest/view-manifests.php?t=<?= _sanitizeOutput($module); ?>">

@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -404,7 +405,7 @@ foreach ($rejectionTypeResult as $type) {
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>
-			<?= _translate("Imported Results"); ?>
+			<?= _translate("Imported Results"); ?><?= TestsService::moduleHeadingTag($module); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>

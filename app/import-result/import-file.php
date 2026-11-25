@@ -58,8 +58,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-list-check"></em> <?php echo _translate("Import"); ?>
-			<?= strtoupper(htmlspecialchars((string) $type)); ?> <?php echo _translate("Test Results From File"); ?>
+		<h1><em class="fa-solid fa-list-check"></em> <?php echo _translate("Import Test Results From File"); ?><?= TestsService::moduleHeadingTag((string) $type); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>

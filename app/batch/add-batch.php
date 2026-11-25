@@ -122,7 +122,7 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><em class="fa-solid fa-pen-to-square"></em>
-            <?php echo _translate("Create Batch"); ?>
+            <?php echo _translate("Create Batch"); ?><?= TestsService::moduleHeadingTag($testType); ?>
         </h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em>
