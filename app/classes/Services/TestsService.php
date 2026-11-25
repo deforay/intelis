@@ -281,6 +281,27 @@ final class TestsService
         return !empty(self::getTestTypes()[$testType]['isReferrable']);
     }
 
+    /**
+     * The "Add Samples from Manifest" page of a test type, with the module name
+     * as the sidebar shows it, so a lab told "this is a TB manifest" can find the
+     * right menu. Null for a test type without that page.
+     *
+     * @return array{label: string, url: string}|null
+     */
+    public static function getManifestActivationPage(string $testType): ?array
+    {
+        return match ($testType) {
+            'vl' => ['label' => _translate('HIV Viral Load'), 'url' => '/vl/requests/addSamplesFromManifest.php'],
+            'eid' => ['label' => _translate('Early Infant Diagnosis (EID)'), 'url' => '/eid/requests/addSamplesFromManifest.php'],
+            'covid19' => ['label' => _translate('Covid-19'), 'url' => '/covid-19/requests/addSamplesFromManifest.php'],
+            'hepatitis' => ['label' => _translate('Hepatitis'), 'url' => '/hepatitis/requests/add-samples-from-manifest.php'],
+            'tb' => ['label' => _translate('Tuberculosis'), 'url' => '/tb/requests/addSamplesFromManifest.php'],
+            'cd4' => ['label' => _translate('Clusters of Differentiation 4 (CD4)'), 'url' => '/cd4/requests/add-samples-from-manifest.php'],
+            'generic-tests' => ['label' => _translate('Other Lab Tests'), 'url' => '/generic-tests/requests/add-samples-from-manifest.php'],
+            default => null,
+        };
+    }
+
     public static function getTestName(string $testType): string
     {
         return self::getTestTypes()[$testType]['testName'] ?? throw new SystemException("Invalid test type key");

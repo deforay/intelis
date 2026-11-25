@@ -125,6 +125,14 @@ try {
             $payload['status'] = 'wrong-lab';
             $payload['message'] = 'Manifest is registered to a different testing lab.';
             $payload['labName'] = $otherLab['facility_name'] ?? null;
+        } elseif (($otherTestType = $testRequestsService->findManifestTestTypeElsewhere($manifestCode, $testType)) !== null) {
+            // The code is a manifest of ANOTHER test type: typically a TB code pasted
+            // on the CD4 page. Still 'not-found' (older labs keep their message);
+            // newer labs read `manifestTestType` and name the right module.
+            http_response_code(404);
+            $payload['status'] = 'not-found';
+            $payload['message'] = 'Manifest belongs to a different test type.';
+            $payload['manifestTestType'] = $otherTestType;
         } elseif ($isReferralModule) {
             // No manifest row anywhere yet. For referral modules the row may not
             // have synced even though the samples have, so fall through to the hash

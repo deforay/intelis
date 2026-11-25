@@ -33,6 +33,7 @@
  *                         (hepatitis uses a hyphenated helper name and overrides).
  */
 
+use App\Services\TestsService;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
@@ -56,6 +57,9 @@ $general = $general ?? ContainerRegistry::get(CommonService::class);
 $showRemoteColumn = !$general->isStandaloneInstance();
 // Sample ID + (conditional) Remote Sample ID + the per-module columns.
 $columnCount = 1 + ($showRemoteColumn ? 1 : 0) + count($columns);
+// The module whose manifests this page takes, named as the sidebar names it.
+// Labs pasted a TB code on the CD4 page and only learned of it from "not found".
+$moduleLabel = TestsService::getManifestActivationPage((string) $testType)['label'] ?? '';
 ?>
 <style>
 	.select2-selection__choice {
@@ -88,8 +92,16 @@ $columnCount = 1 + ($showRemoteColumn ? 1 : 0) + count($columns);
 								<input type="text" id="manifestCode" name="manifestCode" class="form-control"
 									placeholder="<?php echo _translate('Sample Manifest Code'); ?>"
 									title="<?php echo _translate('Please enter the sample manifest code'); ?>"
-									style="background:#fff;" />
+									style="background:#fff;"
+									data-module-label="<?= htmlspecialchars($moduleLabel); ?>" />
 								<input type="hidden" id="sampleId" name="sampleId" />
+								<?php if ($moduleLabel !== '') { ?>
+									<p class="help-block" style="margin-bottom:0;">
+										<em class="fa-solid fa-circle-info"></em>
+										<?= _translate("Only manifests for this test type can be added here"); ?>:
+										<strong><?= htmlspecialchars($moduleLabel); ?></strong>
+									</p>
+								<?php } ?>
 							</td>
 							<td style="width:10%;">
 								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"

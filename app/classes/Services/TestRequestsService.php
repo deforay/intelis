@@ -938,7 +938,7 @@ final class TestRequestsService
      * (getOwnLabId()) before activation. Mirrors the ownership branch of
      * app/remote/v2/verify-manifest.php, run locally.
      *
-     * @return array{status: string, message?: string, labName?: string}
+     * @return array{status: string, message?: string, labName?: string, manifestTestType?: string}
      */
     private function verifyManifestLocally(string $manifestCode, string $testType): array
     {
@@ -1051,6 +1051,17 @@ final class TestRequestsService
             ];
         }
 
+        if (empty($otherLabManifest)) {
+            $otherTestType = $this->findManifestTestTypeElsewhere($manifestCode, $testType);
+            if ($otherTestType !== null) {
+                return [
+                    'status' => 'not-found',
+                    'message' => 'Manifest belongs to a different test type.',
+                    'manifestTestType' => $otherTestType,
+                ];
+            }
+        }
+
         if (!$isReferralModule) {
             return ['status' => 'not-found', 'message' => 'Manifest not found.'];
         }
@@ -1079,6 +1090,21 @@ final class TestRequestsService
         return !empty($admissible)
             ? ['status' => 'match']
             : ['status' => 'not-found', 'message' => 'Manifest not found for your lab.'];
+    }
+
+    /**
+     * The test type a manifest code is registered under when it is NOT $testType,
+     * or null. Lets "not found" say "this is a TB manifest" when a lab pastes a
+     * code on another module's Add Samples page.
+     */
+    public function findManifestTestTypeElsewhere(string $manifestCode, string $testType): ?string
+    {
+        $row = $this->db->rawQueryOne(
+            "SELECT module FROM specimen_manifests WHERE manifest_code = ? AND module <> ? LIMIT 1",
+            [$manifestCode, $testType]
+        );
+        $module = $row['module'] ?? null;
+        return is_string($module) && $module !== '' ? $module : null;
     }
 
     /**
@@ -1187,6 +1213,10 @@ final class TestRequestsService
                 }
                 if (!empty($decodedResponse['labName'])) {
                     $result['labName'] = (string) $decodedResponse['labName'];
+                }
+                // Newer STS only: the code is a manifest of another test type.
+                if (!empty($decodedResponse['manifestTestType'])) {
+                    $result['manifestTestType'] = (string) $decodedResponse['manifestTestType'];
                 }
             } else {
                 $result['status'] = 'error';

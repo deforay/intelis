@@ -5,6 +5,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
+use App\Services\TestsService;
 use App\Services\TestRequestsService;
 
 /** @var TestRequestsService $testRequestsService */
@@ -19,5 +20,11 @@ $verifyManifest = $testRequestsService->verifyManifestHashWithRemote(
     manifestCode: $_POST['manifestCode'],
     testType: $_POST['testType'],
 );
+
+// A code from another module's manifest: name that module and its page so the
+// toast can send the user there.
+if (!empty($verifyManifest['manifestTestType'])) {
+    $verifyManifest['manifestPage'] = TestsService::getManifestActivationPage($verifyManifest['manifestTestType']);
+}
 
 echo JsonUtility::encodeUtf8Json($verifyManifest);
