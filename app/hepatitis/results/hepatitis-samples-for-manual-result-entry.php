@@ -98,8 +98,8 @@ try {
           'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
      ])];
      if (!empty($_POST['sampleCollectionDate'])) {
-          [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
-          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
+          [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate']);
+          $sWhere[] = " vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
      }
 
 
