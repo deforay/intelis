@@ -51,7 +51,11 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
 
-$userInfo = $usersService->getActiveLabScopedUsers();
+// Tested By: roles that can enter results. Reviewed/Approved By: roles that can
+// approve results; Approved By also needs a signature, as it goes on the PDF.
+$testedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-test-results.php');
+$reviewedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-result-approval.php');
+$approvedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-result-approval.php', true);
 /* To get testing platform names */
 $testPlatformResult = $general->getTestingPlatforms('generic-tests');
 foreach ($testPlatformResult as $row) {
@@ -235,16 +239,19 @@ if ($multiTestResults) {
 	$genericResultUnitOptions = $genericMultiTestConfig['unitOptions'];
 }
 
-// A saved signer may now be outside the lab scope; keep them selectable so the
+// A saved signer may now be outside the lab scope or the role filter; keep them selectable so the
 // dropdown does not render blank and a re-save does not clear the value. The
 // multi-test cards keep their own signers on each generic_test_results row.
-foreach (array_merge([$genericResultInfo], $genericTestInfo) as $signerRow) {
-	foreach (['tested_by', 'result_reviewed_by', 'result_approved_by'] as $field) {
-		$savedUserId = (string) ($signerRow[$field] ?? '');
-		if ($savedUserId !== '' && !isset($userInfo[$savedUserId])) {
-			$userInfo[$savedUserId] = $usersService->getUserName($savedUserId) ?? $savedUserId;
-		}
+$keepSavedSigner = static function (array &$users, $savedUserId) use ($usersService): void {
+	$savedUserId = (string) ($savedUserId ?? '');
+	if ($savedUserId !== '' && !isset($users[$savedUserId])) {
+		$users[$savedUserId] = $usersService->getUserName($savedUserId) ?? $savedUserId;
 	}
+};
+foreach (array_merge([$genericResultInfo], $genericTestInfo) as $signerRow) {
+	$keepSavedSigner($testedByUsers, $signerRow['tested_by'] ?? null);
+	$keepSavedSigner($reviewedByUsers, $signerRow['result_reviewed_by'] ?? null);
+	$keepSavedSigner($approvedByUsers, $signerRow['result_approved_by'] ?? null);
 }
 
 //Funding source list

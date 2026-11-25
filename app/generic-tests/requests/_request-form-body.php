@@ -878,7 +878,7 @@ if ($ownLabId > 0) {
                                                                       class="select2 form-control labels"
                                                                       title="<?php echo _translate('Please choose reviewed by'); ?>"
                                                                       style="width: 100%;">
-                                                                      <?= $general->generateSelectOptions($userInfo, $pfRaw('result_reviewed_by'), '-- Select --'); ?>
+                                                                      <?= $general->generateSelectOptions($reviewedByUsers, $pfRaw('result_reviewed_by'), '-- Select --'); ?>
                                                                  </select>
                                                             </div>
                                                        </div>
@@ -903,7 +903,7 @@ if ($ownLabId > 0) {
                                                                  <select name="testedBy" id="testedBy"
                                                                       class="select2 form-control"
                                                                       title="<?php echo _translate('Please choose approved by'); ?>">
-                                                                      <?= $general->generateSelectOptions($userInfo, $pfRaw('tested_by'), '-- Select --'); ?>
+                                                                      <?= $general->generateSelectOptions($testedByUsers, $pfRaw('tested_by'), '-- Select --'); ?>
                                                                  </select>
                                                             </div>
                                                        </div>
@@ -916,7 +916,7 @@ if ($ownLabId > 0) {
                                                                  <select name="approvedBy" id="approvedBy"
                                                                       class="select2 form-control"
                                                                       title="<?php echo _translate('Please choose approved by'); ?>">
-                                                                      <?= $general->generateSelectOptions($userInfo, $pfRaw('result_approved_by'), '-- Select --'); ?>
+                                                                      <?= $general->generateSelectOptions($approvedByUsers, $pfRaw('result_approved_by'), '-- Select --'); ?>
                                                                  </select>
                                                             </div>
                                                        </div>

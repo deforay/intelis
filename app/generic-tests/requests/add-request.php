@@ -55,7 +55,11 @@ foreach ($testPlatformResult as $row) {
      $testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
 
-$userInfo = $usersService->getActiveLabScopedUsers();
+// Tested By: roles that can enter results. Reviewed/Approved By: roles that can
+// approve results; Approved By also needs a signature, as it goes on the PDF.
+$testedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-test-results.php');
+$reviewedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-result-approval.php');
+$approvedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-result-approval.php', true);
 
 //sample rejection reason
 $condition = "rejection_reason_status ='active'";

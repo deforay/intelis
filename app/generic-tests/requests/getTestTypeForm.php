@@ -475,7 +475,11 @@ if (!empty($_POST['multiTest']) && $general->treatAsLIS()) {
     $usersService = ContainerRegistry::get(UsersService::class);
 
     $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
-    $userInfo = $usersService->getActiveLabScopedUsers();
+    // Tested By: roles that can enter results. Reviewed/Approved By: roles that can
+    // approve results; Approved By also needs a signature, as it goes on the PDF.
+    $testedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-test-results.php');
+    $reviewedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-result-approval.php');
+    $approvedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-result-approval.php', true);
     $rejectionResult = $db->rawQuery("SELECT * FROM r_generic_sample_rejection_reasons WHERE rejection_reason_status = 'active'");
     $rejectionTypeResult = $db->rawQuery("SELECT DISTINCT rejection_type FROM r_generic_sample_rejection_reasons WHERE rejection_reason_status = 'active'");
 

@@ -20,7 +20,8 @@
  * per-test column (lab/tested/reviewed/approved) that is NULL -- i.e. entered
  * before release 5.5.10 -- is backfilled from the parent form_generic.
  *
- * Expects: $general, $testingLabs, $userInfo, $rejectionResult, $rejectionTypeResult,
+ * Expects: $general, $testingLabs, $testedByUsers, $reviewedByUsers,
+ * $approvedByUsers, $rejectionResult, $rejectionTypeResult,
  * $genericTestInfo (rows), $genericResultInfo (parent), $genericMethodOptions,
  * $genericMethodGroups, $genericDefaultGroup, $genericResultUnitOptions.
  */
@@ -71,7 +72,7 @@ if ($gtOwnLabId > 0) {
 }
 
 /** Render one test card. $row may be empty (blank card). */
-$gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAllLabs, $gtOwnLabId, $userInfo, $rejectionResult, $rejectionTypeResult, $gtParent, $gtMethodOptions, $gtMethodGroups, $gtDefaultGroup, $gtUnits, $gtEsc) {
+$gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAllLabs, $gtOwnLabId, $testedByUsers, $reviewedByUsers, $approvedByUsers, $rejectionResult, $rejectionTypeResult, $gtParent, $gtMethodOptions, $gtMethodGroups, $gtDefaultGroup, $gtUnits, $gtEsc) {
 	// Backfill per-test fields from the parent for rows that predate per-test columns.
 	$labId        = $row['lab_id'] ?? null ?: ($gtParent['lab_id'] ?? null);
 	// Constrained (own-lab) mode: blank cards default to the own lab; a saved
@@ -220,7 +221,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAl
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Tested By"); ?></label>
 					<select name="testResult[testedBy][]" id="testedBy<?= $n; ?>" class="form-control select2 isRequired">
-						<?= $general->generateSelectOptions($userInfo, $testedBy, '-- ' . _translate("Select") . ' --'); ?>
+						<?= $general->generateSelectOptions($testedByUsers, $testedBy, '-- ' . _translate("Select") . ' --'); ?>
 					</select>
 				</td>
 				<td style="width:33.33%;">
@@ -232,7 +233,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAl
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Reviewed By"); ?></label>
 					<select name="testResult[reviewedBy][]" id="reviewedBy<?= $n; ?>" class="form-control select2 isRequired">
-						<?= $general->generateSelectOptions($userInfo, $reviewedBy, '-- ' . _translate("Select") . ' --'); ?>
+						<?= $general->generateSelectOptions($reviewedByUsers, $reviewedBy, '-- ' . _translate("Select") . ' --'); ?>
 					</select>
 				</td>
 			</tr>
@@ -246,7 +247,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAl
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Approved By"); ?></label>
 					<select name="testResult[approvedBy][]" id="approvedBy<?= $n; ?>" class="form-control select2 isRequired">
-						<?= $general->generateSelectOptions($userInfo, $approvedBy, '-- ' . _translate("Select") . ' --'); ?>
+						<?= $general->generateSelectOptions($approvedByUsers, $approvedBy, '-- ' . _translate("Select") . ' --'); ?>
 					</select>
 				</td>
 				<td style="width:33.33%;">
