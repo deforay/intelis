@@ -258,13 +258,28 @@ final class UsersService
      * STS lab users have no testing_lab_id, so the Tested/Reviewed/Approved By lists
      * came up empty and results could not be entered.
      *
+     * @param string|null $privilege        when set, only users whose role has this
+     *                                      privilege (privileges.privilege_name)
+     * @param bool        $requireSignature only users with a signature uploaded
+     *
      * @return array<string, string>
      */
-    public function getActiveLabScopedUsers(): array
+    public function getActiveLabScopedUsers(?string $privilege = null, bool $requireSignature = false): array
     {
         $sql = "SELECT DISTINCT u.user_id, u.user_name FROM user_details u";
         $params = [];
         $where = ["u.status = 'active'"];
+
+        if ($privilege !== null && $privilege !== '') {
+            $sql .= " INNER JOIN roles_privileges_map rpm ON rpm.role_id = u.role_id"
+                . " INNER JOIN privileges p ON p.privilege_id = rpm.privilege_id";
+            $where[] = 'p.privilege_name = ?';
+            $params[] = $privilege;
+        }
+
+        if ($requireSignature) {
+            $where[] = "u.user_signature IS NOT NULL AND u.user_signature <> ''";
+        }
 
         $facilityMap = $_SESSION['facilityMap'] ?? null;
         if (!empty($facilityMap)) {
@@ -275,7 +290,7 @@ final class UsersService
             if ($facilityIds !== []) {
                 $sql .= " INNER JOIN user_facility_map map ON map.user_id = u.user_id";
                 $where[] = 'map.facility_id IN (' . implode(',', array_fill(0, count($facilityIds), '?')) . ')';
-                $params = $facilityIds;
+                $params = array_merge($params, $facilityIds);
             }
         }
 

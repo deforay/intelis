@@ -51,7 +51,11 @@ foreach ($rejectionTypeResult as $type) {
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
-$userInfo = $usersService->getActiveLabScopedUsers();
+// Tested By: roles that can enter results. Reviewed/Approved By: roles that can
+// approve results; Approved By also needs a signature, as it goes on the PDF.
+$testedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-test-results.php');
+$reviewedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-result-approval.php');
+$approvedByUsers = $usersService->getActiveLabScopedUsers('/generic-tests/results/generic-result-approval.php', true);
 ?>
 <style>
 	.select2-selection__choice {
@@ -282,7 +286,7 @@ $userInfo = $usersService->getActiveLabScopedUsers();
 												title="<?php echo _translate('Please select approver'); ?>"
 												disabled="disabled">
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
-												<?php foreach ($userInfo as $userId => $userName) { ?>
+												<?php foreach ($approvedByUsers as $userId => $userName) { ?>
 													<option value="<?= htmlspecialchars((string) $userId); ?>">
 														<?= htmlspecialchars((string) $userName); ?>
 													</option>
@@ -301,7 +305,7 @@ $userInfo = $usersService->getActiveLabScopedUsers();
 												title="<?php echo _translate('Please select tester'); ?>"
 												disabled="disabled">
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
-												<?php foreach ($userInfo as $userId => $userName) { ?>
+												<?php foreach ($testedByUsers as $userId => $userName) { ?>
 													<option value="<?= htmlspecialchars((string) $userId); ?>">
 														<?= htmlspecialchars((string) $userName); ?>
 													</option>
@@ -320,7 +324,7 @@ $userInfo = $usersService->getActiveLabScopedUsers();
 												title="<?php echo _translate('Please select reviewer'); ?>"
 												disabled="disabled">
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
-												<?php foreach ($userInfo as $userId => $userName) { ?>
+												<?php foreach ($reviewedByUsers as $userId => $userName) { ?>
 													<option value="<?= htmlspecialchars((string) $userId); ?>">
 														<?= htmlspecialchars((string) $userName); ?>
 													</option>
