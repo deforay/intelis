@@ -141,7 +141,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><?php echo _translate("Edit Batch"); ?></h1>
+		<h1><?php echo _translate("Edit Batch"); ?><?= TestsService::moduleHeadingTag($testType); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
 			<li class="active">Batch</li>

@@ -176,6 +176,20 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		margin-top: 50px;
 	}
 
+	/* Names the module on pages every module shares (batches, manifests, result
+	   import), so a user on the CD4 batch page can see it is not the TB one. */
+	.content-header>h1>small.module-heading-tag {
+		display: inline-block;
+		margin-left: 8px;
+		padding: 3px 9px;
+		border-radius: 3px;
+		background: #3c8dbc;
+		color: #fff;
+		font-size: 14px;
+		font-weight: 600;
+		vertical-align: middle;
+	}
+
 	input.checkNum:invalid {
 		border: 1px solid red;
 	}

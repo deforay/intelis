@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\TestsService;
 use App\Registries\AppRegistry;
 
 $title = _translate("Recommended Corrective Actions");
@@ -26,7 +27,7 @@ $canEdit = !$general->isLISInstance()
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Recommended Corrective Actions"); ?></h1>
+		<h1><em class="fa-solid fa-gears"></em> <?php echo _translate("Recommended Corrective Actions"); ?><?= TestsService::moduleHeadingTag($testType); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
 			<li class="active"><?php echo _translate("Recommended Corrective Actions"); ?></li>

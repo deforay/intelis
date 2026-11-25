@@ -49,7 +49,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> <?= $title; ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?= _translate("Testing Batches"); ?><?= TestsService::moduleHeadingTag($_GET['type']); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
 			<li class="active"><?php echo _translate("Manage Batches"); ?></li>

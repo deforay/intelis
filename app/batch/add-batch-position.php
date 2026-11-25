@@ -84,7 +84,7 @@ $contentData = $batchService->generateContent($samplesResult, $batchInfo, $batch
 </style>
 <div class="content-wrapper">
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> <?= _translate("Add Batch Controls Position"); ?></h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em> <?= _translate("Add Batch Controls Position"); ?><?= TestsService::moduleHeadingTag($_GET['type']); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?= _translate("Home"); ?></a></li>
 			<li class="active"><?= _translate("Batch"); ?></li>

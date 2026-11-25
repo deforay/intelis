@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\TestsService;
 use App\Services\TbService;
 use App\Services\VlService;
 use App\Services\CD4Service;
@@ -129,7 +130,7 @@ if ($module == 'generic-tests') {
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-pen-to-square"></em>
-			<?= _translate("Create Specimen Referral Manifest"); ?>
+			<?= _translate("Create Specimen Referral Manifest"); ?><?= TestsService::moduleHeadingTag($module); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>

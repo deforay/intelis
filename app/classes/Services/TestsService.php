@@ -282,24 +282,57 @@ final class TestsService
     }
 
     /**
-     * The "Add Samples from Manifest" page of a test type, with the module name
-     * as the sidebar shows it, so a lab told "this is a TB manifest" can find the
-     * right menu. Null for a test type without that page.
+     * The module name as the sidebar heading shows it, so a page shared by every
+     * module can say which one it is serving and users can find it in the menu.
+     * Null for an unknown test type.
+     */
+    public static function getMenuLabel(string $testType): ?string
+    {
+        return match ($testType) {
+            'vl' => _translate('HIV Viral Load'),
+            'eid' => _translate('Early Infant Diagnosis (EID)'),
+            'covid19', 'covid-19' => _translate('Covid-19'),
+            'hepatitis' => _translate('Hepatitis'),
+            'tb' => _translate('Tuberculosis'),
+            'cd4' => _translate('Clusters of Differentiation 4 (CD4)'),
+            'generic-tests' => _translate('Other Lab Tests'),
+            default => null,
+        };
+    }
+
+    /**
+     * The "Add Samples from Manifest" page of a test type, with its menu label,
+     * so a lab told "this is a TB manifest" can find the right menu. Null for a
+     * test type without that page.
      *
      * @return array{label: string, url: string}|null
      */
     public static function getManifestActivationPage(string $testType): ?array
     {
-        return match ($testType) {
-            'vl' => ['label' => _translate('HIV Viral Load'), 'url' => '/vl/requests/addSamplesFromManifest.php'],
-            'eid' => ['label' => _translate('Early Infant Diagnosis (EID)'), 'url' => '/eid/requests/addSamplesFromManifest.php'],
-            'covid19' => ['label' => _translate('Covid-19'), 'url' => '/covid-19/requests/addSamplesFromManifest.php'],
-            'hepatitis' => ['label' => _translate('Hepatitis'), 'url' => '/hepatitis/requests/add-samples-from-manifest.php'],
-            'tb' => ['label' => _translate('Tuberculosis'), 'url' => '/tb/requests/addSamplesFromManifest.php'],
-            'cd4' => ['label' => _translate('Clusters of Differentiation 4 (CD4)'), 'url' => '/cd4/requests/add-samples-from-manifest.php'],
-            'generic-tests' => ['label' => _translate('Other Lab Tests'), 'url' => '/generic-tests/requests/add-samples-from-manifest.php'],
+        $url = match ($testType) {
+            'vl' => '/vl/requests/addSamplesFromManifest.php',
+            'eid' => '/eid/requests/addSamplesFromManifest.php',
+            'covid19' => '/covid-19/requests/addSamplesFromManifest.php',
+            'hepatitis' => '/hepatitis/requests/add-samples-from-manifest.php',
+            'tb' => '/tb/requests/addSamplesFromManifest.php',
+            'cd4' => '/cd4/requests/add-samples-from-manifest.php',
+            'generic-tests' => '/generic-tests/requests/add-samples-from-manifest.php',
             default => null,
         };
+        return $url === null ? null : ['label' => (string) self::getMenuLabel($testType), 'url' => $url];
+    }
+
+    /**
+     * The module tag shown after the heading of a page shared by every module
+     * (batches, manifests, result import), escaped and ready to echo inside the
+     * page's <h1>. Empty for an unknown test type.
+     */
+    public static function moduleHeadingTag(?string $testType): string
+    {
+        $label = self::getMenuLabel((string) $testType);
+        return $label === null
+            ? ''
+            : ' <small class="module-heading-tag">' . htmlspecialchars($label, ENT_QUOTES) . '</small>';
     }
 
     public static function getTestName(string $testType): string

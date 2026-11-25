@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -118,7 +119,7 @@ if ($module == 'generic-tests') {
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-pen-to-square"></em>
-			<?= _translate("Edit Specimen Referral Manifest"); ?>
+			<?= _translate("Edit Specimen Referral Manifest"); ?><?= TestsService::moduleHeadingTag($module); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>

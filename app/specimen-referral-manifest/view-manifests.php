@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\UsersService;
 use App\Services\CommonService;
@@ -34,7 +35,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-gears"></em> Specimen Referral Manifest</h1>
+		<h1><em class="fa-solid fa-gears"></em> <?= _translate("Specimen Referral Manifest"); ?><?= TestsService::moduleHeadingTag($_GET['t'] ?? null); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Manage Specimen Referral Manifest</li>
