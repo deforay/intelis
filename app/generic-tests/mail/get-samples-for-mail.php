@@ -28,7 +28,7 @@ $batch = $_POST['batch'];
 $mailSentStatus = $_POST['mailSentStatus'];
 $type = $_POST['type'];
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
 
 $query = "SELECT vl.sample_code,
                 vl.sample_id,
@@ -76,11 +76,7 @@ if (trim((string) $mailSentStatus) !== '') {
 	}
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-	if (trim((string) $start_date) === trim((string) $end_date)) {
-		$query = $query . ' AND DATE(sample_collection_date) = "' . $start_date . '"';
-	} else {
-		$query = $query . ' AND DATE(sample_collection_date) >= "' . $start_date . '" AND DATE(sample_collection_date) <= "' . $end_date . '"';
-	}
+	$query = $query . ' AND sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 $query .= " ORDER BY f.facility_name ASC";
 //echo $query;die;

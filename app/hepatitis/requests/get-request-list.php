@@ -117,18 +117,18 @@ try {
           'srcOfReq' => ['vl.source_of_request', ListingFilterClauseBuilder::LIKE],
      ])];
      if (!empty($_POST['sampleCollectionDate'])) {
-          [$start, $end] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start' AND '$end'";
+          [$start, $end] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+          $sWhere[] = " vl.sample_collection_date BETWEEN '$start' AND '$end'";
      }
 
      if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
-          [$start, $end] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-          $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$start' AND '$end'";
+          [$start, $end] = DateUtility::dayRange($_POST['sampleReceivedDateAtLab'] ?? '');
+          $sWhere[] = " vl.sample_received_at_lab_datetime BETWEEN '$start' AND '$end'";
      }
 
      if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
-          [$start, $end] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
-          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start' AND '$end'";
+          [$start, $end] = DateUtility::dayRange($_POST['sampleTestedDate'] ?? '');
+          $sWhere[] = " vl.sample_tested_datetime BETWEEN '$start' AND '$end'";
      }
 
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) !== '') {
@@ -167,7 +167,8 @@ try {
      ])];
      /* Source of request show model conditions */
      if (isset($_POST['dateRangeModel']) && trim((string) $_POST['dateRangeModel']) !== '') {
-          $sWhere[] = ' DATE(vl.sample_collection_date) like "' . DateUtility::isoDateFormat($_POST['dateRangeModel']) . '"';
+          [$modelStart, $modelEnd] = DateUtility::dayRange($_POST['dateRangeModel']);
+          $sWhere[] = " vl.sample_collection_date BETWEEN '$modelStart' AND '$modelEnd'";
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
           $sWhere[] = ' ' . SampleRejectionUtility::sqlPredicate('vl') . ' ';
