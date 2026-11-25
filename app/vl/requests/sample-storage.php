@@ -57,7 +57,6 @@ $state = $geolocationService->getProvinces("yes");
 
 if (isset($_POST['sampleCollectionDate']) && $_POST['sampleCollectionDate'] != "") {
 	[$startDate, $endDate] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
-	[$labStartDate, $labEndDate] = DateUtility::dayRange($_POST['sampleReceivedDate'] ?? '');
 }
 if (!empty($_POST['sampleCollectionDate'])) {
 	$sWhere[] = " (vl.sample_collection_date BETWEEN '$startDate' AND '$endDate')";
@@ -67,6 +66,7 @@ if (!empty($_POST['sampleCollectionDate'])) {
 	$sWhere[] = " (vl.sample_collection_date BETWEEN '$from' AND '$to')";
 }
 if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== '') {
+	[$labStartDate, $labEndDate] = DateUtility::dayRange($_POST['sampleReceivedDate'] ?? '');
 	$sWhere[] = " (vl.sample_received_at_lab_datetime BETWEEN '$labStartDate' AND '$labEndDate')";
 }
 
