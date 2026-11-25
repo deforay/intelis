@@ -113,7 +113,7 @@ try {
           }
           $sWhere[] = $statusCondition;
      } else {
-          $sWhere[] = " ((vl.result_status = " . ACCEPTED . " AND ((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = '') AND (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = ''))) OR (vl.result_status = " . REJECTED . " AND ((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = '') AND (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = '')))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
+          $sWhere[] = " ((vl.result_status = " . ACCEPTED . " AND ((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = '') AND (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = ''))) OR (vl.result_status = " . REJECTED . " AND ((vl.hcv_vl_count IS NULL OR vl.hcv_vl_count = '') AND (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count = '')))) AND (result_printed_datetime is NULL OR result_printed_datetime = '0000-00-00 00:00:00')";
      }
 
      if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
