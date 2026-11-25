@@ -37,7 +37,7 @@ $batch = $_POST['batch'];
 $mailSentStatus = $_POST['mailSentStatus'];
 $type = $_POST['type'];
 //print_r($_POST);die;
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
 
 $query = "SELECT vl.sample_code,vl.cd4_id,vl.facility_id,f.facility_name,f.facility_code
         FROM form_cd4 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -86,11 +86,7 @@ if (trim((string) $mailSentStatus) !== '') {
   $query = $query . " AND ((vl.result_status = 7 AND vl.cd4_result is NOT NULL AND vl.cd4_result !='') OR (vl.result_status = 4 AND (vl.cd4_result is NULL OR vl.cd4_result = '')))";
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-  if (trim((string) $start_date) === trim((string) $end_date)) {
-    $query = $query . ' AND DATE(sample_collection_date) = "' . $start_date . '"';
-  } else {
-    $query = $query . ' AND DATE(sample_collection_date) >= "' . $start_date . '" AND DATE(sample_collection_date) <= "' . $end_date . '"';
-  }
+  $query = $query . ' AND sample_collection_date BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
 }
 $query .= " ORDER BY f.facility_name ASC LIMIT 2500 ";
 //echo $query;die;

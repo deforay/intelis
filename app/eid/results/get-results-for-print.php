@@ -124,18 +124,18 @@ try {
     }
 
     if (!empty($_POST['sampleCollectionDate'])) {
-        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-        $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
+        [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+        $sWhere[] = " vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
     }
     if (!empty($_POST['sampleTestDate'])) {
-        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
-        $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$start_date' AND '$end_date'";
+        [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
+        $sWhere[] = " vl.sample_tested_datetime BETWEEN '$start_date' AND '$end_date'";
     }
 
 
     if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== '') {
-        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
-        $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$start_date' AND '$end_date'";
+        [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleReceivedDate'] ?? '');
+        $sWhere[] = " vl.sample_received_at_lab_datetime BETWEEN '$start_date' AND '$end_date'";
     }
 
 

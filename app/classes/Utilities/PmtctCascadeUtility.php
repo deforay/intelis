@@ -49,9 +49,9 @@ final class PmtctCascadeUtility
         if (!empty($post['sampleCollectionDate'])) {
             $range = explode("to", (string) $post['sampleCollectionDate']);
             if (count($range) === 2) {
-                $startSql = date('Y-m-d', strtotime(trim($range[0])));
-                $endSql   = date('Y-m-d', strtotime(trim($range[1])));
-                $where[] = "DATE($alias.sample_collection_date) BETWEEN '$startSql' AND '$endSql'";
+                $startSql = date('Y-m-d 00:00:00', strtotime(trim($range[0])));
+                $endSql   = date('Y-m-d 23:59:59', strtotime(trim($range[1])));
+                $where[] = "$alias.sample_collection_date BETWEEN '$startSql' AND '$endSql'";
             }
         }
         if (!empty($post['provinceId']) && ctype_digit((string) $post['provinceId'])) {

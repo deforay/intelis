@@ -351,9 +351,9 @@ final class SampleStatusDetailsService
             if ($range === '') {
                 continue;
             }
-            [$start, $end] = DateUtility::convertDateRange($range);
+            [$start, $end] = DateUtility::dayRange($range);
             if ($start !== '' && $end !== '') {
-                $conditions[] = "DATE($column) BETWEEN ? AND ?";
+                $conditions[] = "$column BETWEEN ? AND ?";
                 $params[] = $start;
                 $params[] = $end;
             }

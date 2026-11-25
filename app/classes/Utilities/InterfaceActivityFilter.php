@@ -50,9 +50,9 @@ final class InterfaceActivityFilter
         }
 
         if (trim((string) ($post['dateRange'] ?? '')) !== '') {
-            [$startDate, $endDate] = DateUtility::convertDateRange((string) $post['dateRange']);
+            [$startDate, $endDate] = DateUtility::dayRange((string) $post['dateRange']);
             if (!empty($startDate) && !empty($endDate)) {
-                $where[] = " DATE(a.occurred_at) BETWEEN '" . $db->escape($startDate) . "'
+                $where[] = " a.occurred_at BETWEEN '" . $db->escape($startDate) . "'
                                 AND '" . $db->escape($endDate) . "' ";
             }
         }

@@ -77,7 +77,7 @@ foreach ($labSyncInfo as $aRow) {
   }
 }
 
-$apiTrack = "SELECT * FROM track_api_requests WHERE response_data IS NOT NULL AND DATE(requested_on) = CURDATE()";
+$apiTrack = "SELECT * FROM track_api_requests WHERE response_data IS NOT NULL AND requested_on >= CURDATE() AND requested_on < CURDATE() + INTERVAL 1 DAY";
 // Counts today's activity_log rows, as it always has: this card ran the old
 // logged-in query, and $apiTrack cannot replace it while response_data is never written.
 $apiTrackResultCount = (int) $db->rawQueryOne(
