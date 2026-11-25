@@ -56,18 +56,18 @@ $sRemoveResult = $db->rawQuery($sRemoveQuery);
 $state = $geolocationService->getProvinces("yes");
 
 if (isset($_POST['sampleCollectionDate']) && $_POST['sampleCollectionDate'] != "") {
-	[$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-	[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
+	[$startDate, $endDate] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+	[$labStartDate, $labEndDate] = DateUtility::dayRange($_POST['sampleReceivedDate'] ?? '');
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-	$sWhere[] = " (DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate')";
+	$sWhere[] = " (vl.sample_collection_date BETWEEN '$startDate' AND '$endDate')";
 } else {
-	$from = date('Y-m-d', strtotime('today - 30 days'));
-	$to = date('Y-m-d');
-	$sWhere[] = " (DATE(vl.sample_collection_date) BETWEEN '$from' AND '$to')";
+	$from = date('Y-m-d 00:00:00', strtotime('today - 30 days'));
+	$to = date('Y-m-d 23:59:59');
+	$sWhere[] = " (vl.sample_collection_date BETWEEN '$from' AND '$to')";
 }
 if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== '') {
-	$sWhere[] = " (DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate')";
+	$sWhere[] = " (vl.sample_received_at_lab_datetime BETWEEN '$labStartDate' AND '$labEndDate')";
 }
 
 $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [

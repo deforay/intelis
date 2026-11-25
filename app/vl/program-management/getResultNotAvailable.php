@@ -76,8 +76,8 @@ if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCod
 }
 
 if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSampleTestDate']) !== '') {
-    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['noResultSampleTestDate'] ?? '');
-    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['noResultSampleTestDate'] ?? '');
+    $sWhere[] = " vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
 }
 if (isset($_POST['noResultSampleType']) && $_POST['noResultSampleType'] != '') {
     $sWhere[] = ' s.sample_id = ' . (int) $_POST['noResultSampleType'];

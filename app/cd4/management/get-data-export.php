@@ -36,7 +36,7 @@ try {
      $tableName = "form_cd4";
      $primaryKey = "cd4_id";
 
-     $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', ListingFilterClauseBuilder::fullName('vl.patient_first_name', 'vl.patient_last_name'), 'f.facility_name', 'l_f.facility_name', 'vl.cd4_result', 'ts.status_name', 'funding_source_name', 'i_partner_name'];
+     $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', ListingFilterClauseBuilder::fullName('vl.patient_first_name', 'vl.patient_middle_name', 'vl.patient_last_name'), 'f.facility_name', 'l_f.facility_name', 'vl.cd4_result', 'ts.status_name', 'funding_source_name', 'i_partner_name'];
      $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'l_f.facility_name', 'vl.cd4_result', 'ts.status_name', 'funding_source_name', 'i_partner_name'];
      $sampleCode = 'sample_code';
      if ($general->isSTSInstance()) {
@@ -153,7 +153,7 @@ try {
      if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
           // CONCAT_WS keeps a space between the name parts, so searching
           // "John Doe" matches; plain CONCAT only matched "JohnDoe".
-          $sWhere[] = " CONCAT_WS(' ', NULLIF(vl.patient_first_name,''), NULLIF(vl.patient_last_name,'')) like '%" . $db->escapeLike($_POST['patientName']) . "%'";
+          $sWhere[] = " " . ListingFilterClauseBuilder::fullName('vl.patient_first_name', 'vl.patient_middle_name', 'vl.patient_last_name') . " like '%" . $db->escapeLike($_POST['patientName']) . "%'";
      }
 
      if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {

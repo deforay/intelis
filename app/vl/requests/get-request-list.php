@@ -251,7 +251,8 @@ try {
      }
      /* Source of request show model conditions */
      if (isset($_POST['dateRangeModel']) && trim((string) $_POST['dateRangeModel']) !== '') {
-          $sWhere[] = ' DATE(vl.sample_collection_date) = "' . DateUtility::isoDateFormat($_POST['dateRangeModel']) . '"';
+          [$modelStart, $modelEnd] = DateUtility::dayRange($_POST['dateRangeModel']);
+          $sWhere[] = " vl.sample_collection_date BETWEEN '$modelStart' AND '$modelEnd'";
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == REJECTED) {
           $sWhere[] = ' ' . SampleRejectionUtility::sqlPredicate('vl') . ' ';

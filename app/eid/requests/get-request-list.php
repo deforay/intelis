@@ -140,18 +140,18 @@ try {
           $sWhere[] = ' vl.sample_package_code = "' . $db->escape((string) $_POST['manifestCode']) . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
+          [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+          $sWhere[] = " vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
      }
 
      if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
-          [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-          $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
+          [$labStartDate, $labEndDate] = DateUtility::dayRange($_POST['sampleReceivedDateAtLab'] ?? '');
+          $sWhere[] = " vl.sample_received_at_lab_datetime BETWEEN '$labStartDate' AND '$labEndDate'";
      }
 
      if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
-          [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
-          $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
+          [$testedStartDate, $testedEndDate] = DateUtility::dayRange($_POST['sampleTestedDate'] ?? '');
+          $sWhere[] = " vl.sample_tested_datetime BETWEEN '$testedStartDate' AND '$testedEndDate'";
      }
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           $sWhere[] = ' f.facility_id IN (' . $db->inIntList($_POST['facilityName']) . ')';
@@ -199,7 +199,8 @@ try {
      }
      /* Source of request show model conditions */
      if (isset($_POST['dateRangeModel']) && trim((string) $_POST['dateRangeModel']) !== '') {
-          $sWhere[] = ' DATE(vl.sample_collection_date) like "' . DateUtility::isoDateFormat($_POST['dateRangeModel']) . '"';
+          [$modelStart, $modelEnd] = DateUtility::dayRange($_POST['dateRangeModel']);
+          $sWhere[] = " vl.sample_collection_date BETWEEN '$modelStart' AND '$modelEnd'";
      }
      if (isset($_POST['srcOfReqModel']) && trim((string) $_POST['srcOfReqModel']) !== '') {
           $sWhere[] = ' vl.source_of_request like "' . $db->escape((string) $_POST['srcOfReqModel']) . '" ';

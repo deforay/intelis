@@ -1076,8 +1076,8 @@ final class LabPerformanceIndicatorsService
         if (!$this->hasRange($f)) {
             return "($column IS NOT NULL)";
         }
-        return "($column IS NOT NULL AND DATE($column) BETWEEN '" . $this->db->escape($f['startDate']) . "'
-                    AND '" . $this->db->escape($f['endDate']) . "')";
+        return "($column IS NOT NULL AND $column BETWEEN '" . $this->db->escape($f['startDate'] . ' 00:00:00') . "'
+                    AND '" . $this->db->escape($f['endDate'] . ' 23:59:59') . "')";
     }
 
     private function periodExpr(array $f, string $basis): string

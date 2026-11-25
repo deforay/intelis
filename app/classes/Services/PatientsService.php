@@ -187,7 +187,7 @@ final class PatientsService
             DATE_FORMAT(DATE(request_created_datetime), '%d-%b-%Y') AS request_created_datetime,
             DATE_FORMAT(DATE(sample_collection_date), '%d-%b-%Y') AS sample_collection_date,
             (SELECT COUNT(unique_id) FROM `$tableName` WHERE `$patientIdColumn` LIKE ?) AS no_of_req_time,
-            (SELECT COUNT(unique_id) FROM `$tableName` WHERE `$patientIdColumn` LIKE ? AND DATE(sample_tested_datetime) > '1970-01-01') AS no_of_tested_time
+            (SELECT COUNT(unique_id) FROM `$tableName` WHERE `$patientIdColumn` LIKE ? AND sample_tested_datetime >= '1970-01-02') AS no_of_tested_time
         FROM `$tableName`
         WHERE `$patientIdColumn` LIKE ?
         ORDER BY DATE(request_created_datetime) DESC

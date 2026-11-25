@@ -80,15 +80,11 @@ $end_date = '';
 $cWhere = [];
 
 if (isset($_POST['userDate']) && trim((string) $_POST['userDate']) !== '') {
-    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['userDate'] ?? '');
+    [$start_date, $end_date] = DateUtility::dayRange($_POST['userDate'] ?? '');
 }
 
 if (isset($_POST['userDate']) && trim((string) $_POST['userDate']) !== '') {
-    if (trim((string) $start_date) === trim((string) $end_date)) {
-        $cWhere[] = " DATE(ul.login_attempted_datetime) = '$start_date'";
-    } else {
-        $cWhere[] = " DATE(ul.login_attempted_datetime) BETWEEN '$start_date' AND '$end_date'";
-    }
+    $cWhere[] = " ul.login_attempted_datetime BETWEEN '$start_date' AND '$end_date'";
 }
 // print_r($cWhere);die;
 

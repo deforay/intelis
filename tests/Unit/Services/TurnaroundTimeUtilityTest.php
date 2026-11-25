@@ -71,7 +71,7 @@ final class TurnaroundTimeUtilityTest extends TestCase
             'DATE(sample.sample_tested_datetime) >= DATE(sample.sample_collection_date)',
             $conditions
         );
-        $this->assertStringContainsString('DATE(sample.sample_tested_datetime) <= CURDATE()', $conditions);
+        $this->assertStringContainsString('sample.sample_tested_datetime < CURDATE() + INTERVAL 1 DAY', $conditions);
         $this->assertStringNotContainsString('<= NOW()', $conditions);
     }
 
@@ -80,7 +80,7 @@ final class TurnaroundTimeUtilityTest extends TestCase
         // The detail exports still alias the form table as vl.
         $conditions = implode(' AND ', TurnaroundTimeUtility::plausibleDateConditions('vl'));
 
-        $this->assertStringContainsString('DATE(vl.sample_tested_datetime) <= CURDATE()', $conditions);
+        $this->assertStringContainsString('vl.sample_tested_datetime < CURDATE() + INTERVAL 1 DAY', $conditions);
     }
 
     public function testResultColumnIsConfigurablePerModule(): void

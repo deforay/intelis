@@ -22,8 +22,8 @@ try {
         'cType' => ['vl.control_type', ListingFilterClauseBuilder::EQUALS],
     ]);
     if (!empty($_POST['sampleTestDate'])) {
-        [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
-        $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$startDate' AND '$endDate' ";
+        [$startDate, $endDate] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
+        $sWhere[] = " vl.sample_tested_datetime BETWEEN '$startDate' AND '$endDate' ";
     }
 
     $whereConditions = '';

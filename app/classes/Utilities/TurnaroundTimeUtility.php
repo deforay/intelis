@@ -68,7 +68,7 @@ final class TurnaroundTimeUtility
     public static function plausibleDateConditions(string $alias = 'sample'): array
     {
         return [
-            "DATE($alias.sample_tested_datetime) <= CURDATE()",
+            "$alias.sample_tested_datetime < CURDATE() + INTERVAL 1 DAY",
             "($alias.sample_collection_date IS NULL"
                 . " OR DATE($alias.sample_tested_datetime) >= DATE($alias.sample_collection_date))",
         ];

@@ -240,25 +240,25 @@ try {
      ])];
      /* Assign date time filters */
      if (!empty($_POST['sampleCollectionDate'])) {
-          [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-          $sWhere[] =  " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date' ";
+          [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+          $sWhere[] =  " vl.sample_collection_date BETWEEN '$start_date' AND '$end_date' ";
      }
      if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
-          [$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
-          $sWhere[] =  " DATE(vl.sample_tested_datetime) BETWEEN '$sTestDate' AND '$eTestDate' ";
+          [$sTestDate, $eTestDate] = DateUtility::dayRange($_POST['sampleTestDate'] ?? '');
+          $sWhere[] =  " vl.sample_tested_datetime BETWEEN '$sTestDate' AND '$eTestDate' ";
      }
 
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) !== '') {
-          [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
-          $sWhere[] =  "  DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";
+          [$sPrintDate, $ePrintDate] = DateUtility::dayRange($_POST['printDate'] ?? '');
+          $sWhere[] =  "  vl.result_printed_datetime BETWEEN '$sPrintDate' AND '$ePrintDate'";
      }
      if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== '') {
-          [$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
-          $sWhere[] =  "  DATE(vl.sample_received_at_lab_datetime) BETWEEN '$sSampleReceivedDate' AND '$eSampleReceivedDate'";
+          [$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::dayRange($_POST['sampleReceivedDate'] ?? '');
+          $sWhere[] =  "  vl.sample_received_at_lab_datetime BETWEEN '$sSampleReceivedDate' AND '$eSampleReceivedDate'";
      }
      if (isset($_POST['requestCreatedDatetime']) && trim((string) $_POST['requestCreatedDatetime']) !== '') {
-          [$sRequestCreatedDatetime, $eRequestCreatedDatetime] = DateUtility::convertDateRange($_POST['requestCreatedDatetime'] ?? '');
-          $sWhere[] =  "  DATE(vl.request_created_datetime) BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime'";
+          [$sRequestCreatedDatetime, $eRequestCreatedDatetime] = DateUtility::dayRange($_POST['requestCreatedDatetime'] ?? '');
+          $sWhere[] =  "  vl.request_created_datetime BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime'";
      }
 
      if (!empty($_SESSION['facilityMap'])) {

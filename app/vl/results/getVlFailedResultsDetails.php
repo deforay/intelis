@@ -121,13 +121,8 @@ try {
     ];
 
     if (!empty($_POST['sampleCollectionDate'])) {
-        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-
-        if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere[] = " DATE(vl.sample_collection_date) like '$start_date'";
-        } else {
-            $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
-        }
+        [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+        $sWhere[] = " vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
     }
     $sWhere = [...$sWhere, ...ListingFilterClauseBuilder::clauses($db, $_POST, [
         'sampleType' => ['s.sample_id', ListingFilterClauseBuilder::EQUALS],
