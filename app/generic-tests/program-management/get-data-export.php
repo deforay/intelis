@@ -127,7 +127,7 @@ try {
      /* Sample collection date filter */
      [$start_date, $end_date] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
      /* Sample recevied date filter */
-     [$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::dayRange($_POST['sampleCollectionDate'] ?? '');
+     [$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::dayRange($_POST['sampleReceivedDate'] ?? '');
      /* Sample type filter */
      if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
           $sWhere[] =  ' vl.specimen_type IN (' . $db->inIntList($_POST['sampleType']) . ')';
