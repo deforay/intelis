@@ -115,7 +115,7 @@ try {
           'manifestCode' => ['vl.sample_package_code', ListingFilterClauseBuilder::EQUALS],
           'sampleType' => ['s.sample_id', ListingFilterClauseBuilder::EQUALS],
           'facilityName' => ['f.facility_id', ListingFilterClauseBuilder::INT_LIST],
-          'vlLab' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
+          'labId' => ['vl.lab_id', ListingFilterClauseBuilder::INT_LIST],
      ])];
 
 
