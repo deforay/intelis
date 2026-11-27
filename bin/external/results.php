@@ -149,7 +149,7 @@ try {
             "lastViralLoadTestDate" => DateUtility::humanReadableDateFormat($row["last_viral_load_date"] ?? null),
             "conservationTemperature" => "",
             "durationOfConservation" => $row["treatment_duration"],
-            "dateOfCompletionOfViralLoad" => DateUtility::humanReadableDateFormat($row["last_viral_load_result"] ?? null),
+            "dateOfCompletionOfViralLoad" => DateUtility::humanReadableDateFormat($row["sample_tested_datetime"] ?? null),
             "viralLoadNo" => $row["vl_test_number"],
             "patientPhoneNumber" => $row["patient_mobile_number"],
             "receiveSms" => $row["consent_to_receive_sms"],
@@ -173,7 +173,7 @@ try {
             "sampleReceivedDate" => DateUtility::humanReadableDateFormat($row["sample_received_at_lab_datetime"] ?? null, true, $dateFormat),
             "sampleTestingDateAtLab" => DateUtility::humanReadableDateFormat($row["sample_tested_datetime"] ?? null, true, $dateFormat),
             "sampleDispatchedOn" => DateUtility::humanReadableDateFormat($row["sample_dispatched_datetime"] ?? null, true, $dateFormat),
-            "resultDispatchedOn" => DateUtility::humanReadableDateFormat($row["test_requested_on"] ?? null, true, $dateFormat),
+            "resultDispatchedOn" => DateUtility::humanReadableDateFormat($row["result_dispatched_datetime"] ?? null, true, $dateFormat),
             "isSampleRejected" => $row["is_sample_rejected"],
             "rejectionReason" => $row["reason_for_sample_rejection"] ?? null,
             "rejectionDate" => DateUtility::humanReadableDateFormat($row["rejection_on"] ?? null),
@@ -202,7 +202,9 @@ try {
         //$payload = JsonUtility::encodeUtf8Json($payload);
         $apiResponse = $apiService->post(url: EXTERNAL_RESULTS_RECEIVER_URL, payload: $payload, gzip: false, returnWithStatusCode: true);
 
-        if (!empty($apiResponse['httpStatusCode']) && $apiResponse['httpStatusCode'] === 200) {
+        // Receivers may answer 200, 201 or 202; any 2xx means the result was accepted.
+        $httpStatusCode = (int) ($apiResponse['httpStatusCode'] ?? 0);
+        if ($httpStatusCode >= 200 && $httpStatusCode < 300) {
             $resultsSentSuccesfully[] = $row['unique_id'];
         }
         if ($cliMode) {
