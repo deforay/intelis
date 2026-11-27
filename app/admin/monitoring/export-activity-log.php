@@ -41,7 +41,8 @@ try {
 
     /** @var ActivityLogFeedService $feedService */
     $feedService = ContainerRegistry::get(ActivityLogFeedService::class);
-    $feed = $feedService->feed($_POST, 1, ActivityLogFeedService::EXPORT_LIMIT);
+    $filters = $_POST;
+    $filters['maxLogId'] = $feedService->newestLogId();
 
     // Spreadsheet apps run a cell that starts with = + - @ as a formula, and
     // entries hold text users typed, such as facility names.
@@ -60,54 +61,65 @@ try {
         'User', 'Email', 'Role', 'Context', 'IP address', 'Browser', 'Channel', 'Page', 'Session hash', 'Request ID',
     ])));
 
-    foreach ($feed['items'] as $item) {
-        $changes = [];
-        foreach ($item['changes'] as $change) {
-            if (isset($change['added']) || isset($change['removed'])) {
-                $parts = [];
-                if (!empty($change['added'])) {
-                    $parts[] = '+ ' . implode(', ', $change['added']);
+    $exported = 0;
+    for ($page = 1;; $page++) {
+        $items = $feedService->feed($filters, $page, ActivityLogFeedService::EXPORT_PAGE_SIZE)['items'];
+        if ($items === []) {
+            break;
+        }
+        foreach ($items as $item) {
+            $changes = [];
+            foreach ($item['changes'] as $change) {
+                if (isset($change['added']) || isset($change['removed'])) {
+                    $parts = [];
+                    if (!empty($change['added'])) {
+                        $parts[] = '+ ' . implode(', ', $change['added']);
+                    }
+                    if (!empty($change['removed'])) {
+                        $parts[] = '- ' . implode(', ', $change['removed']);
+                    }
+                    $changes[] = $change['label'] . ': ' . implode('; ', $parts);
+                    continue;
                 }
-                if (!empty($change['removed'])) {
-                    $parts[] = '- ' . implode(', ', $change['removed']);
-                }
-                $changes[] = $change['label'] . ': ' . implode('; ', $parts);
-                continue;
+                $changes[] = $change['label'] . ': ' . $empty((string) $change['from']) . ' → ' . $empty((string) $change['to']);
             }
-            $changes[] = $change['label'] . ': ' . $empty((string) $change['from']) . ' → ' . $empty((string) $change['to']);
-        }
-        $details = array_map(static fn(array $fact): string => $fact['label'] . ': ' . $fact['value'], $item['facts']);
-        if (!empty($item['list']['rows'])) {
-            $details[] = $item['list']['title'] . ': ' . implode('; ', $item['list']['rows']);
-        }
+            $details = array_map(static fn(array $fact): string => $fact['label'] . ': ' . $fact['value'], $item['facts']);
+            if (!empty($item['list']['rows'])) {
+                $details[] = $item['list']['title'] . ': ' . implode('; ', $item['list']['rows']);
+            }
 
-        $writer->addRow(Row::fromValues(array_map($cell, [
-            $item['timestamp'],
-            $item['action'],
-            $item['important'] ? _translate('Yes') : '',
-            $item['reason'],
-            $item['entityTypeLabel'],
-            $item['entityLabel'],
-            implode("\n", $changes),
-            implode("\n", $details),
-            $item['userName'],
-            $item['userEmail'],
-            $item['userRole'],
-            $item['context'],
-            $item['ipAddress'],
-            $item['userAgent'],
-            $item['channel'],
-            $item['route'],
-            $item['sessionHash'],
-            $item['requestId'],
-        ])));
-        ExportJobUtility::tick();
+            $writer->addRow(Row::fromValues(array_map($cell, [
+                $item['timestamp'],
+                $item['action'],
+                $item['important'] ? _translate('Yes') : '',
+                $item['reason'],
+                $item['entityTypeLabel'],
+                $item['entityLabel'],
+                implode("\n", $changes),
+                implode("\n", $details),
+                $item['userName'],
+                $item['userEmail'],
+                $item['userRole'],
+                $item['context'],
+                $item['ipAddress'],
+                $item['userAgent'],
+                $item['channel'],
+                $item['route'],
+                $item['sessionHash'],
+                $item['requestId'],
+            ])));
+            ExportJobUtility::tick();
+            $exported++;
+        }
+        if (count($items) < ActivityLogFeedService::EXPORT_PAGE_SIZE) {
+            break;
+        }
     }
     $writer->close();
 
     ContainerRegistry::get(CommonService::class)->activityLog(
         'activity-log-export',
-        sprintf('Exported the user activity log (%d entries)', count($feed['items'])),
+        sprintf('Exported the user activity log (%d entries)', $exported),
         'activity-log'
     );
 

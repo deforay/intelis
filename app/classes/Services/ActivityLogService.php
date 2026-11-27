@@ -84,9 +84,9 @@ final class ActivityLogService
     private function write(string $eventType, string $action, ?string $resource, array $extra, ?string $userId): void
     {
         $changes = is_array($extra['changes'] ?? null) ? array_values($extra['changes']) : [];
-        if (array_key_exists('changes', $extra) && $changes === []) {
-            $action .= ' (no changes)';
-        }
+        // A save that changed nothing is still an entry. The page says so in
+        // the reader's language, so the statement stays as written.
+        $unchanged = array_key_exists('changes', $extra) && $changes === [];
 
         $request = self::currentRequest();
         $data = [
@@ -111,7 +111,7 @@ final class ActivityLogService
                 'entity_type' => self::nonEmpty($entity['type'] ?? null, 32),
                 'entity_id' => self::nonEmpty($entity['id'] ?? null, 64),
                 'entity_label' => self::nonEmpty($entity['label'] ?? null, 255),
-                'details' => self::details($extra, $changes, $reason),
+                'details' => self::details($extra, $changes, $reason, $unchanged),
                 'important' => $important ? 1 : 0,
                 'request_id' => self::requestId(),
                 'route' => self::route($request),
@@ -397,9 +397,9 @@ final class ActivityLogService
      * @param array<string, mixed> $extra
      * @param list<array<string, mixed>> $changes
      */
-    private static function details(array $extra, array $changes, string $reason): ?string
+    private static function details(array $extra, array $changes, string $reason, bool $unchanged): ?string
     {
-        $details = [];
+        $details = $unchanged ? ['unchanged' => true] : [];
         if ($changes !== []) {
             $details['changes'] = $changes;
         }

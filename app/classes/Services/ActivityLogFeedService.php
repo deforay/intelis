@@ -16,8 +16,8 @@ use App\Utilities\DateUtility;
  */
 final readonly class ActivityLogFeedService
 {
-    /** Most entries one export returns. */
-    public const int EXPORT_LIMIT = 50000;
+    /** Entries read per page while exporting. */
+    public const int EXPORT_PAGE_SIZE = 5000;
 
     /** Event types that make up the Logins view. */
     private const array LOGIN_EVENTS = ['login', 'log-out', 'login-fail', 'logout'];
@@ -50,17 +50,24 @@ final readonly class ActivityLogFeedService
     {
     }
 
+    /** The newest entry's id, so an export can read up to it and no further. */
+    public function newestLogId(): int
+    {
+        return (int) ($this->db->rawQueryOne('SELECT MAX(log_id) AS id FROM activity_log')['id'] ?? 0);
+    }
+
     /**
      * One page of entries, newest first.
      *
      * @param array<string, mixed> $filters source, dateRange, type, createdBy,
-     *        sessionHash, search, entityType, entityId, important, requestId
+     *        sessionHash, search, entityType, entityId, important, requestId,
+     *        maxLogId (no entry newer than this id)
      * @return array{page: int, pageSize: int, total: int, totalPages: int, items: list<array<string, mixed>>}
      */
     public function feed(array $filters, int $page = 1, int $pageSize = 25): array
     {
         $page = max(1, $page);
-        $pageSize = ($pageSize < 1 || $pageSize > self::EXPORT_LIMIT) ? 25 : $pageSize;
+        $pageSize = ($pageSize < 1 || $pageSize > self::EXPORT_PAGE_SIZE) ? 25 : $pageSize;
         $structured = $this->hasStructuredColumns();
         [$whereSql, $params] = $this->where($filters, $structured);
 
@@ -133,6 +140,12 @@ final readonly class ActivityLogFeedService
         if ($text('type') !== '') {
             $where[] = 'a.event_type = ?';
             $params[] = $text('type');
+        }
+        // The export pages through the entries up to the newest one it saw
+        // first, so an entry written meanwhile cannot shift its pages.
+        if ((int) ($filters['maxLogId'] ?? 0) > 0) {
+            $where[] = 'a.log_id <= ?';
+            $params[] = (int) $filters['maxLogId'];
         }
         if ($text('sessionHash') !== '') {
             $where[] = 'a.session_hash = ?';
@@ -222,7 +235,8 @@ final readonly class ActivityLogFeedService
 
         return [
             'logId' => (int) ($row['log_id'] ?? 0),
-            'action' => (string) ($row['action'] ?? ''),
+            'action' => (string) ($row['action'] ?? '')
+                . (empty($details['unchanged']) ? '' : ' (' . self::translate('no changes') . ')'),
             'actionType' => ActivityLogUtility::activityActionType($eventType),
             'userName' => $name !== '' ? $name : self::translate('System'),
             'userRole' => (string) ($row['role_name'] ?? ''),

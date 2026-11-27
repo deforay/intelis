@@ -45,7 +45,8 @@ try {
 			    'eid-result',
 			    'r_eid_results',
 			    'result_id',
-			    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+			    // The key is the lower-cased name, so a rename changes it.
+			    $data['result_id'],
 			    'result',
 			    $activityBefore, [], ['result', 'status']
 			);

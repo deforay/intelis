@@ -133,9 +133,82 @@ final class ActivityLogTest extends TestCase
         self::log()->record('user-update', 'Updated user Sam', 'user', ['changes' => []]);
 
         $entry = self::lastEntry();
-        $this->assertSame('Updated user Sam (no changes)', $entry['action']);
+        // Stored as written and worded for the reader, so it can be translated.
+        $this->assertSame('Updated user Sam', $entry['action']);
         $this->assertSame(0, (int) $entry['important']);
-        $this->assertNull($entry['details']);
+        $this->assertSame('Updated user Sam (no changes)', self::feed()['items'][0]['action']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheFeedReadsNoFurtherThanTheNewestEntryAnExportStartedAt(): void
+    {
+        $this->boot();
+        self::withRequest('/users/editUserHelper.php');
+        self::log()->record('user-update', 'Updated user Sam', 'user');
+        $newest = ContainerRegistry::get(ActivityLogFeedService::class)->newestLogId();
+        self::log()->record('user-update', 'Updated user Ann', 'user');
+
+        $actions = array_column(self::feed(['maxLogId' => $newest])['items'], 'action');
+        $this->assertSame(['Updated user Sam'], $actions);
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheExportHoldsEveryMatchingEntryBeyondOnePage(): void
+    {
+        $this->boot();
+        $db = LegacyAppHarness::db();
+        $rows = ActivityLogFeedService::EXPORT_PAGE_SIZE + 3;
+        $db->rawQuery('SET SESSION cte_max_recursion_depth = 10000');
+        $db->rawQuery(
+            "INSERT INTO activity_log (event_type, action, user_id, date_time)
+             WITH RECURSIVE n (i) AS (SELECT 1 UNION ALL SELECT i + 1 FROM n WHERE i < ?)
+             SELECT 'user-update', CONCAT('Entry ', i), 'u-1', '2026-11-27 08:00:00' FROM n",
+            [$rows]
+        );
+
+        $before = glob(TEMP_PATH . '/InteLIS-User-Activity-Log-*.csv') ?: [];
+        $request = LegacyAppHarness::withPost([], '/admin/monitoring/export-activity-log.php')
+            ->withHeader('X-Requested-With', 'XMLHttpRequest');
+        self::handler()->handle($request);
+        $files = array_values(array_diff(glob(TEMP_PATH . '/InteLIS-User-Activity-Log-*.csv') ?: [], $before));
+
+        $this->assertCount(1, $files);
+        $lines = array_filter(
+            explode("\n", (string) file_get_contents($files[0])),
+            static fn(string $l): bool => str_contains($l, 'Entry ')
+        );
+        unlink($files[0]);
+        $this->assertCount($rows, $lines);
+    }
+
+    #[RunInSeparateProcess]
+    public function testARenamedEidResultIsReadBackUnderItsNewKey(): void
+    {
+        $this->boot();
+        LegacyAppHarness::boot(TestRun::database(self::DATABASE), [
+            'roles', 'user_details', 'activity_log', 'system_config', 'global_config', 'r_eid_results',
+        ]);
+        LegacyAppHarness::addMigrationColumns('5.9.1', ['activity_log']);
+        LegacyAppHarness::withSession(['userId' => 'u-1', 'userName' => 'Jane Admin', 'roleId' => 1]);
+        LegacyAppHarness::db()->rawQuery(
+            "INSERT INTO r_eid_results (result_id, result, status) VALUES ('positive', 'Positive', 'active')"
+        );
+
+        $request = LegacyAppHarness::withPost([
+            'resultName' => 'Detected',
+            'resultStatus' => 'active',
+            'resultId' => base64_encode('positive'),
+        ], '/eid/reference/save-eid-results-helper.php');
+        try {
+            self::handler()->handle($request);
+        } catch (\Throwable) {
+            // The helper redirects; the entry is written before that.
+        }
+
+        $entry = self::lastEntry();
+        $this->assertSame(['eid-result', 'detected'], [$entry['entity_type'], $entry['entity_id']]);
+        $changes = json_decode((string) $entry['details'], true)['changes'];
+        $this->assertEqualsCanonicalizing(['result'], array_column($changes, 'field'));
     }
 
     #[RunInSeparateProcess]
