@@ -12,6 +12,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\SampleCountUtility;
 use App\Utilities\DataTableUtility;
@@ -27,6 +28,10 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 try {
 
     /** @var CommonService $general */
@@ -211,7 +216,7 @@ try {
         $row[] = $aRow['last_modified_datetime'];
         $row[] = $aRow['status_name'];
         if ($editRequest) {
-            $actions = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim(base64_encode((string) $aRow['vl_sample_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
+            $actions = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim($sampleAccess->encode($aRow['vl_sample_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
 
             // Offer "Accept" only for rows currently flagged failed that carry a
             // recoverable result (i.e. the result text is not itself a failure).

@@ -10,6 +10,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\DataTableUtility;
 use App\Utilities\ListingFilterClauseBuilder;
@@ -24,6 +25,9 @@ try {
 
     /** @var FacilitiesService $facilitiesService */
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+    /** @var SampleAccessService $sampleAccess */
+    $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
 
     $gconfig = $general->getGlobalConfig();
@@ -210,7 +214,7 @@ try {
         $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
         $row[] = ($aRow['status_name']);
         if ($editRequest) {
-            $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim(base64_encode((string) $aRow['sample_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
+            $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim($sampleAccess->encode($aRow['sample_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
         }
 
         $output['aaData'][] = $row;
