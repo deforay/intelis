@@ -315,6 +315,25 @@ final class UsersService
         return $users;
     }
 
+    /**
+     * A copy of $users that also holds $savedUserId, for one dropdown showing a
+     * saved value. A signer saved earlier may no longer pass the role, signature
+     * or lab filter; without this the dropdown renders blank and a re-save clears
+     * the value. Apply it per field, never to a shared list: the kept user must
+     * not become selectable on other records or cards.
+     *
+     * @param array<string, string> $users
+     * @return array<string, string>
+     */
+    public function withSavedUser(array $users, $savedUserId): array
+    {
+        $savedUserId = (string) ($savedUserId ?? '');
+        if ($savedUserId !== '' && !isset($users[$savedUserId])) {
+            $users[$savedUserId] = $this->getUserName($savedUserId) ?? $savedUserId;
+        }
+        return $users;
+    }
+
     public function getUserName($userId)
     {
         if (empty($userId) || $userId == '') {
