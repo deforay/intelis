@@ -308,7 +308,7 @@ final class Cd4ListingSqlEncodingTest extends TestCase
     public function testPrintListKeepsOnlyTheNumbersOfATestingLabList(): void
     {
         self::assertSame([], $this->listed(self::PRINT_RESULTS, [
-            'vlLab' => '0) OR (1=1', 'vlPrint' => 'not-print',
+            'labId' => '0) OR (1=1', 'vlPrint' => 'not-print',
         ]));
     }
 
@@ -316,7 +316,7 @@ final class Cd4ListingSqlEncodingTest extends TestCase
     public function testPrintListStillFiltersByTestingLab(): void
     {
         self::assertSame(['CD4001', 'CD4002'], $this->listed(self::PRINT_RESULTS, [
-            'vlLab' => (string) self::LAB_ID, 'vlPrint' => 'not-print',
+            'labId' => (string) self::LAB_ID, 'vlPrint' => 'not-print',
         ]));
     }
 
