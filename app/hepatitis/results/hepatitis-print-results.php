@@ -1037,7 +1037,7 @@ $state = $geolocationService->getProvinces("yes");
                 });
                 aoData.push({
                     "name": "labId",
-                    "value": $("#prinLabId").val()
+                    "value": $("#printLabId").val()
                 });
                 aoData.push({
                     "name": "vlPrint",
