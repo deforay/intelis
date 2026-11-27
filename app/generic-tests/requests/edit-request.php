@@ -239,20 +239,9 @@ if ($multiTestResults) {
 	$genericResultUnitOptions = $genericMultiTestConfig['unitOptions'];
 }
 
-// A saved signer may now be outside the lab scope or the role filter; keep them selectable so the
-// dropdown does not render blank and a re-save does not clear the value. The
-// multi-test cards keep their own signers on each generic_test_results row.
-$keepSavedSigner = static function (array &$users, $savedUserId) use ($usersService): void {
-	$savedUserId = (string) ($savedUserId ?? '');
-	if ($savedUserId !== '' && !isset($users[$savedUserId])) {
-		$users[$savedUserId] = $usersService->getUserName($savedUserId) ?? $savedUserId;
-	}
-};
-foreach (array_merge([$genericResultInfo], $genericTestInfo) as $signerRow) {
-	$keepSavedSigner($testedByUsers, $signerRow['tested_by'] ?? null);
-	$keepSavedSigner($reviewedByUsers, $signerRow['result_reviewed_by'] ?? null);
-	$keepSavedSigner($approvedByUsers, $signerRow['result_approved_by'] ?? null);
-}
+// A saved signer who no longer qualifies stays selectable only on the field it
+// was saved in: see UsersService::withSavedUser() in _request-form-body.php and
+// _test-section.php. The shared lists here hold currently eligible users only.
 
 //Funding source list
 $fundingSourceList = $general->getFundingSources();

@@ -20,8 +20,8 @@
  * per-test column (lab/tested/reviewed/approved) that is NULL -- i.e. entered
  * before release 5.5.10 -- is backfilled from the parent form_generic.
  *
- * Expects: $general, $testingLabs, $testedByUsers, $reviewedByUsers,
- * $approvedByUsers, $rejectionResult, $rejectionTypeResult,
+ * Expects: $general, $usersService, $testingLabs, $testedByUsers, $reviewedByUsers,
+ * $approvedByUsers (currently eligible users only), $rejectionResult, $rejectionTypeResult,
  * $genericTestInfo (rows), $genericResultInfo (parent), $genericMethodOptions,
  * $genericMethodGroups, $genericDefaultGroup, $genericResultUnitOptions.
  */
@@ -72,7 +72,7 @@ if ($gtOwnLabId > 0) {
 }
 
 /** Render one test card. $row may be empty (blank card). */
-$gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAllLabs, $gtOwnLabId, $testedByUsers, $reviewedByUsers, $approvedByUsers, $rejectionResult, $rejectionTypeResult, $gtParent, $gtMethodOptions, $gtMethodGroups, $gtDefaultGroup, $gtUnits, $gtEsc) {
+$gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAllLabs, $gtOwnLabId, $testedByUsers, $reviewedByUsers, $approvedByUsers, $usersService, $rejectionResult, $rejectionTypeResult, $gtParent, $gtMethodOptions, $gtMethodGroups, $gtDefaultGroup, $gtUnits, $gtEsc) {
 	// Backfill per-test fields from the parent for rows that predate per-test columns.
 	$labId        = $row['lab_id'] ?? null ?: ($gtParent['lab_id'] ?? null);
 	// Constrained (own-lab) mode: blank cards default to the own lab; a saved
@@ -221,7 +221,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAl
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Tested By"); ?></label>
 					<select name="testResult[testedBy][]" id="testedBy<?= $n; ?>" class="form-control select2 isRequired">
-						<?= $general->generateSelectOptions($testedByUsers, $testedBy, '-- ' . _translate("Select") . ' --'); ?>
+						<?= $general->generateSelectOptions($usersService->withSavedUser($testedByUsers, $testedBy), $testedBy, '-- ' . _translate("Select") . ' --'); ?>
 					</select>
 				</td>
 				<td style="width:33.33%;">
@@ -233,7 +233,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAl
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Reviewed By"); ?></label>
 					<select name="testResult[reviewedBy][]" id="reviewedBy<?= $n; ?>" class="form-control select2 isRequired">
-						<?= $general->generateSelectOptions($reviewedByUsers, $reviewedBy, '-- ' . _translate("Select") . ' --'); ?>
+						<?= $general->generateSelectOptions($usersService->withSavedUser($reviewedByUsers, $reviewedBy), $reviewedBy, '-- ' . _translate("Select") . ' --'); ?>
 					</select>
 				</td>
 			</tr>
@@ -247,7 +247,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAl
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Approved By"); ?></label>
 					<select name="testResult[approvedBy][]" id="approvedBy<?= $n; ?>" class="form-control select2 isRequired">
-						<?= $general->generateSelectOptions($approvedByUsers, $approvedBy, '-- ' . _translate("Select") . ' --'); ?>
+						<?= $general->generateSelectOptions($usersService->withSavedUser($approvedByUsers, $approvedBy), $approvedBy, '-- ' . _translate("Select") . ' --'); ?>
 					</select>
 				</td>
 				<td style="width:33.33%;">
@@ -431,6 +431,13 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAl
 	var gtMethodGroups = <?= json_encode($gtMethodGroups, JSON_UNESCAPED_UNICODE) ?: '{}'; ?>;
 	var gtDefaultGroup = <?= json_encode($gtDefaultGroup, JSON_UNESCAPED_UNICODE) ?: '{"result_type":"qualitative","results":[]}'; ?>;
 	var gtUnits = <?= json_encode($gtUnits, JSON_UNESCAPED_UNICODE) ?: '[]'; ?>;
+	// Signer options for a new card: currently eligible users only. A cloned card
+	// would otherwise inherit a former signer kept selectable on the first card.
+	var gtSignerOptions = <?= json_encode([
+		'testedBy' => $general->generateSelectOptions($testedByUsers, null, '-- ' . _translate("Select") . ' --'),
+		'reviewedBy' => $general->generateSelectOptions($reviewedByUsers, null, '-- ' . _translate("Select") . ' --'),
+		'approvedBy' => $general->generateSelectOptions($approvedByUsers, null, '-- ' . _translate("Select") . ' --'),
+	], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?: '{}'; ?>;
 	var gtI18n = {
 		unit: "<?= _jsTranslate("Unit"); ?>",
 		selectResult: "<?= _jsTranslate("Select test result"); ?>",
@@ -569,6 +576,9 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAl
 		$clone.find('[id]').each(function () { this.id = this.id.replace(/\d+$/, '') + gtTestCount; });
 		$clone.find('input[type="text"], input[type="number"], textarea').val('');
 		$clone.find('input[type="hidden"][name="testResult[testId][]"]').val('');
+		$.each(gtSignerOptions, function (field, html) {
+			$clone.find('select[name="testResult[' + field + '][]"]').html(html);
+		});
 		$clone.find('select').prop('selectedIndex', 0);
 		// Constrained (own-lab) mode: a new card's Testing Lab defaults to the own lab.
 		if (gtOwnLabId > 0) {
