@@ -240,7 +240,7 @@ $i = 1;
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-sharp fa-solid fa-gears"></em> <?php echo htmlspecialchars((string) $formHeading); ?></h1>
+		<h1><em class="fa-sharp fa-solid fa-gears"></em> <?php echo htmlspecialchars((string) $formHeading); ?><?= $historyLink ?? ''; ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
 			<li class="active"><?php echo htmlspecialchars((string) $formHeading); ?></li>

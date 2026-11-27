@@ -1,7 +1,6 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Repositories\Reference\ReferenceDataRepository;
@@ -19,8 +18,6 @@ $reasonCode = (string) _rawInput("rejectionReasonCode", "");
 /** @var ReferenceDataRepository $referenceData */
 $referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 try {
 	if ($reasonName !== "") {
@@ -35,7 +32,6 @@ try {
 			]
 		);
 		$_SESSION['alertMsg'] = _translate("Covid-19 Sample Rejection Reasons details added successfully");
-		$general->activityLog('add-Sample Rejection Reasons', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons ' . $reasonName, 'reference-covid19-Sample Rejection Reasons');
 	}
 	header("Location:covid19-sample-rejection-reasons.php");
 } catch (Throwable $e) {

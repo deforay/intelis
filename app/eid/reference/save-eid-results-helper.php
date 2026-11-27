@@ -1,7 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -12,10 +12,14 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_eid_results";
 $primaryKey = "result_id";
+
+// Read before the save, so the activity log lists what changed.
+/** @var ActivityLogService $activityLog */
+$activityLog = ContainerRegistry::get(ActivityLogService::class);
+$activityId = (string) base64_decode((string) ($_POST['resultId'] ?? ''));
+$activityBefore = $activityLog->row('r_eid_results', 'result_id', $activityId);
 
 try {
 	if (isset($_POST['resultName']) && trim((string) $_POST['resultName']) !== "") {
@@ -35,7 +39,16 @@ try {
 
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("EID Results details saved successfully");
-			$general->activityLog('EID Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'eid-reference');
+			$activityLog->recordRowSave(
+			    'eid-result-save',
+			    ($activityBefore === null ? 'Added ' : 'Updated ') . 'EID result ' . $_POST['resultName'],
+			    'eid-result',
+			    'r_eid_results',
+			    'result_id',
+			    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+			    'result',
+			    $activityBefore, [], ['result', 'status']
+			);
 		}
 	}
 	header("Location:eid-results.php");

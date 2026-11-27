@@ -447,6 +447,153 @@ foreach ($actions as $list) {
 		border-color: #4299e1;
 		color: #fff;
 	}
+
+	.reset-btn.is-on {
+		background: #fff5f0;
+		border-color: #dd6b20;
+		color: #c05621;
+	}
+
+	.audit-toolbar .push-right {
+		margin-left: auto;
+	}
+
+	.audit-scope {
+		display: none;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin: 12px 16px 0;
+	}
+
+	.audit-scope.is-on {
+		display: flex;
+	}
+
+	.scope-pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 5px 10px;
+		border-radius: 6px;
+		background: #ebf8ff;
+		border: 1px solid #bee3f8;
+		color: #2c5282;
+		font-size: 13px;
+	}
+
+	.scope-pill button {
+		border: 0;
+		background: none;
+		color: #2c5282;
+		font-size: 16px;
+		line-height: 1;
+		cursor: pointer;
+		padding: 0;
+	}
+
+	.audit-item.is-important {
+		border-left: 3px solid #dd6b20;
+	}
+
+	.audit-flag {
+		display: inline-block;
+		margin-top: 4px;
+		padding: 1px 8px;
+		border-radius: 4px;
+		background: #fff5f0;
+		color: #c05621;
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	.audit-entity {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 1px 8px;
+		border-radius: 999px;
+		background: #ebf8ff;
+		color: #2b6cb0;
+		font-size: 11px;
+		font-weight: 500;
+		cursor: pointer;
+	}
+
+	.audit-entity:hover {
+		background: #bee3f8;
+	}
+
+	.audit-changes {
+		margin-top: 5px;
+		font-size: 12px;
+		color: #4a5568;
+		line-height: 1.6;
+	}
+
+	.audit-changes .chg-label {
+		font-weight: 600;
+	}
+
+	.chg-from {
+		color: #c53030;
+		text-decoration: line-through;
+		word-break: break-word;
+	}
+
+	.chg-to {
+		color: #276749;
+		word-break: break-word;
+	}
+
+	.chg-none {
+		color: #a0aec0;
+		font-style: italic;
+	}
+
+	.am-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 12.5px;
+		margin-top: 4px;
+	}
+
+	.am-table th,
+	.am-table td {
+		border: 1px solid #edf2f7;
+		padding: 6px 8px;
+		text-align: left;
+		vertical-align: top;
+		word-break: break-word;
+	}
+
+	.am-table th {
+		background: #f7fafc;
+		font-size: 11px;
+		color: #718096;
+		font-weight: 600;
+	}
+
+	.am-reason {
+		margin-top: 10px;
+		padding: 8px 12px;
+		border-radius: 6px;
+		background: #fff5f0;
+		border: 1px solid #fbd38d;
+		color: #c05621;
+		font-size: 13px;
+	}
+
+	.am-list {
+		max-height: 220px;
+		overflow: auto;
+		margin: 4px 0 0;
+		padding-left: 18px;
+		font-size: 12.5px;
+	}
+
+	.audit-modal {
+		width: 720px;
+	}
 </style>
 <div class="content-wrapper">
 	<section class="content-header">
@@ -494,12 +641,20 @@ foreach ($actions as $list) {
 							<label for="sessionHash"><?php echo _translate("Session"); ?></label>
 							<input type="search" id="sessionHash" placeholder="<?php echo _translate('Session hash'); ?>" autocomplete="off" />
 						</div>
+						<button type="button" class="reset-btn" id="importantBtn" aria-pressed="false" title="<?= _htmlTranslate('Show only changes that can alter results or what a user can access'); ?>">
+							<span class="fa-solid fa-flag"></span> <?= _translate("Important only"); ?>
+						</button>
 						<button type="button" class="reset-btn" id="resetBtn"><?php echo _translate("Reset"); ?></button>
+						<button type="button" class="reset-btn push-right" id="exportBtn" title="<?= _htmlTranslate('Download the entries that match the current filters'); ?>">
+							<span class="fa-solid fa-download"></span> <?= _translate("Export"); ?>
+						</button>
 					</div>
+
+					<div class="audit-scope" id="auditScope"></div>
 
 					<div class="audit-search">
 						<span class="fa-solid fa-magnifying-glass"></span>
-						<input type="search" id="searchBox" placeholder="<?php echo _translate('Search activity — name, code, or keyword…'); ?>" autocomplete="off" />
+						<input type="search" id="searchBox" placeholder="<?= _htmlTranslate('Search actions, names, codes or changed values'); ?>" autocomplete="off" />
 					</div>
 
 					<div class="audit-summary" id="auditSummary"></div>
@@ -535,11 +690,17 @@ foreach ($actions as $list) {
 			<div><div class="am-label"><?php echo _translate("Session Hash"); ?></div><div class="am-value mono" id="amSession"></div></div>
 			<div><div class="am-label"><?php echo _translate("Browser"); ?></div><div class="am-value" id="amBrowser"></div></div>
 			<div><div class="am-label"><?php echo _translate("OS"); ?></div><div class="am-value" id="amOs"></div></div>
+			<div><div class="am-label"><?php echo _translate("Channel"); ?></div><div class="am-value" id="amChannel"></div></div>
+			<div><div class="am-label"><?php echo _translate("Page"); ?></div><div class="am-value mono" id="amRoute"></div></div>
 		</div>
+		<div id="amReason"></div>
 		<div class="am-section-label"><?php echo _translate("Action"); ?></div>
 		<div class="am-statement" id="amAction"></div>
+		<div id="amDetails"></div>
 		<div class="am-actions">
-			<button type="button" class="am-btn primary" id="amFilterSession"><?php echo _translate("Filter by this session"); ?></button>
+			<button type="button" class="am-btn primary" id="amHistory"><span class="fa-solid fa-clock-rotate-left"></span> <?= _translate("History of this item"); ?></button>
+			<button type="button" class="am-btn" id="amSameRequest" title="<?= _htmlTranslate('Other entries written by the same save'); ?>"><?= _translate("Same save"); ?></button>
+			<button type="button" class="am-btn" id="amFilterSession"><?= _translate("Same session"); ?></button>
 			<button type="button" class="am-btn" id="amDismiss"><?php echo _translate("Close"); ?></button>
 		</div>
 	</div>
@@ -549,14 +710,58 @@ foreach ($actions as $list) {
 <script type="text/javascript" src="<?= _asset('/assets/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <script type="text/javascript">
 	var feedUrl = "/admin/monitoring/get-activity-log.php";
+	var exportUrl = "/admin/monitoring/export-activity-log.php";
 	var actionIcons = {
 		create: 'fa-plus', delete: 'fa-trash', update: 'fa-pen', import: 'fa-file-import',
 		download: 'fa-download', message: 'fa-envelope', login: 'fa-right-to-bracket',
 		logout: 'fa-right-from-bracket', 'login-fail': 'fa-triangle-exclamation', other: 'fa-bolt'
 	};
-	var state = { page: 1, pageSize: 25, source: 'all', dateRange: '', type: '', createdBy: '', sessionHash: '', search: '' };
+	var T = {
+		entries: "<?= _jsTranslate('entries'); ?>",
+		important: "<?= _jsTranslate('Important'); ?>",
+		historyOf: "<?= _jsTranslate('History of'); ?>",
+		showHistory: "<?= _jsTranslate('Show the history of this item'); ?>",
+		sameSave: "<?= _jsTranslate('Entries from the same save'); ?>",
+		session: "<?= _jsTranslate('Session'); ?>",
+		clear: "<?= _jsTranslate('Show all entries'); ?>",
+		more: "<?= _jsTranslate('more'); ?>",
+		empty: "<?= _jsTranslate('empty'); ?>",
+		added: "<?= _jsTranslate('Added'); ?>",
+		removed: "<?= _jsTranslate('Removed'); ?>",
+		field: "<?= _jsTranslate('Field'); ?>",
+		before: "<?= _jsTranslate('Before'); ?>",
+		after: "<?= _jsTranslate('After'); ?>",
+		changes: "<?= _jsTranslate('Changes'); ?>",
+		details: "<?= _jsTranslate('Details'); ?>",
+		noChanges: "<?= _jsTranslate('No activity matches the current filters.'); ?>",
+		failed: "<?= _jsTranslate('Failed to load activity. Please retry.'); ?>",
+		loading: "<?= _jsTranslate('Loading…'); ?>",
+		showing: "<?= _jsTranslate('Showing'); ?>",
+		of: "<?= _jsTranslate('of'); ?>",
+		exportLabel: "<?= _jsTranslate('User Activity Log'); ?>",
+		filterSession: "<?= _jsTranslate('Click to filter by this session'); ?>",
+		channels: {
+			web: "<?= _jsTranslate('Web'); ?>",
+			api: "<?= _jsTranslate('API'); ?>",
+			cli: "<?= _jsTranslate('Scheduled task'); ?>"
+		}
+	};
+	// Filters kept in the address bar, so a filtered view can be bookmarked or
+	// shared, and the History links on other pages can open one item's history.
+	var FILTER_KEYS = ['source', 'dateRange', 'type', 'createdBy', 'sessionHash', 'search',
+		'important', 'entityType', 'entityId', 'entityLabel', 'requestId'];
+	var INLINE_CHANGES = 3;
+
+	function emptyState() {
+		return {
+			page: 1, pageSize: 25, source: 'all', dateRange: '', type: '', createdBy: '', sessionHash: '',
+			search: '', important: '', entityType: '', entityId: '', entityLabel: '', requestId: ''
+		};
+	}
+	var state = emptyState();
 	var currentItems = [];
 	var fetchSeq = 0;
+	var panelItem = null;
 	var searchDebounce, sessionDebounce;
 	var $feed, $summary, $pager, $pageInfo, $prev, $next, $modal;
 
@@ -587,28 +792,62 @@ foreach ($actions as $list) {
 
 	function deviceLabel(item) {
 		var p = parseBrowserOS(item.userAgent || '');
-		if (p.browser && p.os) return p.browser + ' on ' + p.os;
+		if (p.browser && p.os) return p.browser + ' / ' + p.os;
 		return p.browser || p.os || '';
+	}
+
+	function valueHtml(v, cls) {
+		return v === '' || v == null
+			? '<span class="chg-none">' + escapeHtml(T.empty) + '</span>'
+			: '<span class="' + cls + '">' + escapeHtml(v) + '</span>';
+	}
+
+	// One change as "Label: old → new", or "Label: + added − removed" for a list.
+	function changeHtml(c) {
+		var html = '<span class="chg-label">' + escapeHtml(c.label) + ':</span> ';
+		if (c.added || c.removed) {
+			var parts = [];
+			if (c.added && c.added.length) parts.push('<span class="chg-to">+ ' + escapeHtml(c.added.join(', ')) + '</span>');
+			if (c.removed && c.removed.length) parts.push('<span class="chg-from">− ' + escapeHtml(c.removed.join(', ')) + '</span>');
+			return html + parts.join(' ');
+		}
+		return html + valueHtml(c.from, 'chg-from') + ' → ' + valueHtml(c.to, 'chg-to');
 	}
 
 	function renderItem(item, idx) {
 		var iconClass = actionIcons[item.actionType] || actionIcons.other;
 		var roleHtml = item.userRole ? '<span class="audit-role">' + escapeHtml(item.userRole) + '</span>' : '';
 		var ctxHtml = item.context ? '<span class="audit-context">' + escapeHtml(item.context) + '</span>' : '';
-		var ipHtml = item.ipAddress ? '<span class="audit-ip" title="IP address">' + escapeHtml(item.ipAddress) + '</span>' : '';
+		var entityHtml = (item.entityType && item.entityId)
+			? '<span class="audit-entity" data-idx="' + idx + '" title="' + escapeHtml(T.showHistory) + '"><em class="fa-solid fa-clock-rotate-left"></em>'
+				+ escapeHtml(item.entityTypeLabel) + (item.entityLabel ? ': ' + escapeHtml(item.entityLabel) : '') + '</span>'
+			: '';
+		var ipHtml = item.ipAddress ? '<span class="audit-ip" title="IP">' + escapeHtml(item.ipAddress) + '</span>' : '';
 		var dev = deviceLabel(item);
 		var uaHtml = dev ? '<span class="audit-ua" title="' + escapeHtml(item.userAgent || dev) + '">' + escapeHtml(dev) + '</span>' : '';
 		var sessHtml = item.sessionHash
-			? '<span class="session-pill" data-session="' + escapeHtml(item.sessionHash) + '" title="Click to filter by this session"><em class="fa-solid fa-fingerprint"></em>' + escapeHtml(item.sessionHash.substring(0, 8)) + '</span>'
+			? '<span class="session-pill" data-session="' + escapeHtml(item.sessionHash) + '" title="' + escapeHtml(T.filterSession) + '"><em class="fa-solid fa-fingerprint"></em>' + escapeHtml(item.sessionHash.substring(0, 8)) + '</span>'
 			: '';
+		var flagHtml = item.important
+			? '<div class="audit-flag"><em class="fa-solid fa-flag"></em> ' + escapeHtml(item.reason || T.important) + '</div>'
+			: '';
+		var changesHtml = '';
+		if (item.changes && item.changes.length) {
+			changesHtml = '<div class="audit-changes">' + item.changes.slice(0, INLINE_CHANGES).map(changeHtml).join('<br>');
+			if (item.changes.length > INLINE_CHANGES) {
+				changesHtml += '<br><span class="chg-none">+' + (item.changes.length - INLINE_CHANGES) + ' ' + escapeHtml(T.more) + '</span>';
+			}
+			changesHtml += '</div>';
+		}
 		return '' +
-			'<div class="audit-item" data-idx="' + idx + '">' +
+			'<div class="audit-item' + (item.important ? ' is-important' : '') + '" data-idx="' + idx + '">' +
 			'<div class="audit-icon ' + escapeHtml(item.actionType) + '"><em class="fa-solid ' + iconClass + '"></em></div>' +
 			'<div class="audit-body">' +
 			'<div class="audit-action">' + escapeHtml(item.action) + '</div>' +
+			flagHtml + changesHtml +
 			'<div class="audit-meta">' +
 			'<span class="audit-user" title="' + escapeHtml(item.userEmail) + '"><span class="audit-avatar">' + escapeHtml(item.userInitials) + '</span><span class="audit-user-name">' + escapeHtml(item.userName) + '</span></span>' +
-			roleHtml + ctxHtml + ipHtml + uaHtml + sessHtml +
+			roleHtml + entityHtml + ctxHtml + ipHtml + uaHtml + sessHtml +
 			'</div></div>' +
 			'<div class="audit-time">' + escapeHtml(item.time) + '</div>' +
 			'</div>';
@@ -617,14 +856,14 @@ foreach ($actions as $list) {
 	function renderFeed(payload) {
 		currentItems = payload.items || [];
 		if (currentItems.length === 0) {
-			$feed.html('<div class="audit-empty"><?php echo _translate("No activity matches the current filters."); ?></div>');
-			$summary.html('<strong>0</strong> <?php echo _translate("entries"); ?>');
+			$feed.html('<div class="audit-empty">' + escapeHtml(T.noChanges) + '</div>');
+			$summary.html('<strong>0</strong> ' + escapeHtml(T.entries));
 			$pager.hide();
 			return;
 		}
-		currentItems.forEach(function (it, i) { it.__idx = i; });
 		var groups = [], current = null;
-		currentItems.forEach(function (it) {
+		currentItems.forEach(function (it, i) {
+			it.__idx = i;
 			if (!current || current.key !== it.dateKey) {
 				current = { key: it.dateKey, label: it.dateLabel, items: [] };
 				groups.push(current);
@@ -641,34 +880,131 @@ foreach ($actions as $list) {
 
 		var start = (payload.page - 1) * payload.pageSize + 1;
 		var end = Math.min(start + currentItems.length - 1, payload.total);
-		$summary.html('<strong>' + payload.total.toLocaleString() + '</strong> <?php echo _translate("entries"); ?>');
-		$pageInfo.html('<?php echo _translate("Showing"); ?> <strong>' + start + '</strong>–<strong>' + end + '</strong> <?php echo _translate("of"); ?> <strong>' + payload.total.toLocaleString() + '</strong>');
+		$summary.html('<strong>' + payload.total.toLocaleString() + '</strong> ' + escapeHtml(T.entries));
+		$pageInfo.html(escapeHtml(T.showing) + ' <strong>' + start + '</strong>–<strong>' + end + '</strong> ' + escapeHtml(T.of) + ' <strong>' + payload.total.toLocaleString() + '</strong>');
 		$prev.prop('disabled', payload.page <= 1);
 		$next.prop('disabled', payload.page >= payload.totalPages);
 		$pager.show();
 	}
 
+	function filterParams() {
+		var out = {};
+		FILTER_KEYS.forEach(function (k) {
+			if (state[k] !== '' && !(k === 'source' && state[k] === 'all')) out[k] = state[k];
+		});
+		return out;
+	}
+
+	function syncUrl() {
+		if (!window.history || !window.history.replaceState) return;
+		var qs = $.param(filterParams());
+		window.history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : ''));
+	}
+
+	function readUrl() {
+		var params = new URLSearchParams(window.location.search);
+		FILTER_KEYS.forEach(function (k) {
+			var v = params.get(k);
+			if (v !== null) state[k] = String(v).substring(0, 255);
+		});
+		if (['all', 'actions', 'logins'].indexOf(state.source) === -1) state.source = 'all';
+		if (state.important !== '1') state.important = '';
+	}
+
+	// The controls show what state holds: on load from the address bar, and after Reset.
+	function syncControls() {
+		$('#dateRange').val(state.dateRange);
+		$('#sessionHash').val(state.sessionHash);
+		$('#searchBox').val(state.search);
+		$('#typeOfAction').val(state.type).trigger('change.select2');
+		$('#userName').val(state.createdBy).trigger('change.select2');
+		$('#auditSource .src-btn').removeClass('is-active').filter('[data-source="' + state.source + '"]').addClass('is-active');
+		$('#importantBtn').toggleClass('is-on', state.important === '1').attr('aria-pressed', state.important === '1' ? 'true' : 'false');
+	}
+
+	function renderScope() {
+		var pills = [];
+		if (state.entityType && state.entityId) {
+			pills.push('<span class="scope-pill"><em class="fa-solid fa-clock-rotate-left"></em> ' + escapeHtml(T.historyOf) + ' <strong>'
+				+ escapeHtml(state.entityLabel || state.entityId) + '</strong><button type="button" data-clear="entity" title="' + escapeHtml(T.clear) + '">&times;</button></span>');
+		}
+		if (state.requestId) {
+			pills.push('<span class="scope-pill">' + escapeHtml(T.sameSave) + ' <code>' + escapeHtml(state.requestId.substring(0, 8))
+				+ '</code><button type="button" data-clear="requestId" title="' + escapeHtml(T.clear) + '">&times;</button></span>');
+		}
+		$('#auditScope').html(pills.join('')).toggleClass('is-on', pills.length > 0);
+	}
+
 	function fetchFeed() {
 		var seq = ++fetchSeq;
-		$feed.html('<div class="audit-loading"><em class="fa-solid fa-circle-notch fa-spin"></em> <?php echo _translate("Loading…"); ?></div>');
+		syncUrl();
+		renderScope();
+		$feed.html('<div class="audit-loading"><em class="fa-solid fa-circle-notch fa-spin"></em> ' + escapeHtml(T.loading) + '</div>');
 		$.ajax({
 			url: feedUrl, type: 'POST', dataType: 'json',
-			data: {
-				page: state.page, pageSize: state.pageSize, source: state.source,
-				dateRange: state.dateRange, type: state.type, createdBy: state.createdBy,
-				sessionHash: state.sessionHash, search: state.search
-			}
+			data: $.extend({ page: state.page, pageSize: state.pageSize }, filterParams())
 		}).done(function (payload) {
 			if (seq !== fetchSeq) return;
 			renderFeed(payload);
 		}).fail(function () {
 			if (seq !== fetchSeq) return;
-			$feed.html('<div class="audit-empty"><?php echo _jsTranslate("Failed to load activity. Please retry."); ?></div>');
+			$feed.html('<div class="audit-empty">' + escapeHtml(T.failed) + '</div>');
 			$pager.hide();
 		});
 	}
 
+	// Narrow the feed to one thing (an item's history, one save, one session),
+	// keeping the date range and source the user already chose.
+	function focusOn(changes) {
+		$.extend(state, { sessionHash: '', requestId: '', entityType: '', entityId: '', entityLabel: '', search: '', type: '', createdBy: '', important: '' }, changes);
+		state.page = 1;
+		syncControls();
+		closeDetailModal();
+		fetchFeed();
+	}
+
+	function showHistory(item) {
+		focusOn({
+			entityType: item.entityType, entityId: item.entityId,
+			entityLabel: (item.entityTypeLabel ? item.entityTypeLabel + ': ' : '') + (item.entityLabel || item.entityId)
+		});
+	}
+
+	function detailsHtml(item) {
+		var html = '';
+		if (item.changes && item.changes.length) {
+			html += '<div class="am-section-label">' + escapeHtml(T.changes) + '</div><table class="am-table"><thead><tr><th>'
+				+ escapeHtml(T.field) + '</th><th>' + escapeHtml(T.before) + '</th><th>' + escapeHtml(T.after) + '</th></tr></thead><tbody>';
+			item.changes.forEach(function (c) {
+				var before, after;
+				if (c.added || c.removed) {
+					before = (c.removed && c.removed.length) ? '<span class="chg-from">' + escapeHtml(T.removed) + ': ' + escapeHtml(c.removed.join(', ')) + '</span>' : '';
+					after = (c.added && c.added.length) ? '<span class="chg-to">' + escapeHtml(T.added) + ': ' + escapeHtml(c.added.join(', ')) + '</span>' : '';
+				} else {
+					before = valueHtml(c.from, '');
+					after = valueHtml(c.to, '');
+				}
+				html += '<tr><td>' + escapeHtml(c.label) + '</td><td>' + before + '</td><td>' + after + '</td></tr>';
+			});
+			html += '</tbody></table>';
+		}
+		if (item.facts && item.facts.length) {
+			html += '<div class="am-section-label">' + escapeHtml(T.details) + '</div><table class="am-table"><tbody>';
+			item.facts.forEach(function (f) {
+				html += '<tr><th>' + escapeHtml(f.label) + '</th><td>' + escapeHtml(f.value) + '</td></tr>';
+			});
+			html += '</tbody></table>';
+		}
+		if (item.list && item.list.rows && item.list.rows.length) {
+			html += '<div class="am-section-label">' + escapeHtml(item.list.title) + ' (' + item.list.total + ')</div><ul class="am-list">';
+			item.list.rows.forEach(function (r) { html += '<li>' + escapeHtml(r) + '</li>'; });
+			html += '</ul>';
+		}
+		return html;
+	}
+
 	function openDetailModal(item) {
+		panelItem = item;
 		$('#amTitle').text(item.action || '');
 		$('#amTime').text((item.dateLabel || '') + ' • ' + (item.time || ''));
 		$('#amUser').text(item.userName || '—');
@@ -677,12 +1013,19 @@ foreach ($actions as $list) {
 		$('#amContext').text(item.context || '—');
 		$('#amIp').text(item.ipAddress || '—');
 		$('#amSession').text(item.sessionHash || '—');
+		$('#amChannel').text(T.channels[item.channel] || item.channel || '—');
+		$('#amRoute').text(item.route || '—');
 		$('#amAction').text(item.action || '');
 		var p = parseBrowserOS(item.userAgent || '');
 		$('#amBrowser').text(p.browser || '—').attr('title', item.userAgent || '');
 		$('#amOs').text(p.os || '—');
-		if (item.sessionHash) { $('#amFilterSession').data('session', item.sessionHash).show(); }
-		else { $('#amFilterSession').hide(); }
+		$('#amReason').html(item.important
+			? '<div class="am-reason"><em class="fa-solid fa-flag"></em> ' + escapeHtml(item.reason || T.important) + '</div>'
+			: '');
+		$('#amDetails').html(detailsHtml(item));
+		$('#amHistory').toggle(!!(item.entityType && item.entityId));
+		$('#amSameRequest').toggle(!!item.requestId);
+		$('#amFilterSession').toggle(!!item.sessionHash);
 		$modal.addClass('is-open').attr('aria-hidden', 'false');
 	}
 
@@ -732,18 +1075,32 @@ foreach ($actions as $list) {
 		$('#auditSource').on('click', '.src-btn', function () {
 			var src = $(this).data('source');
 			if (src === state.source) return;
-			$('#auditSource .src-btn').removeClass('is-active');
-			$(this).addClass('is-active');
-			state.source = src; state.page = 1; fetchFeed();
+			state.source = src; state.page = 1;
+			syncControls(); fetchFeed();
+		});
+
+		$('#importantBtn').on('click', function () {
+			state.important = state.important === '1' ? '' : '1';
+			state.page = 1;
+			syncControls(); fetchFeed();
+		});
+
+		$('#exportBtn').on('click', function () {
+			IntelisExport.start(exportUrl, filterParams(), T.exportLabel);
 		});
 
 		$('#resetBtn').on('click', function () {
-			$('#dateRange').val(''); $('#sessionHash').val(''); $('#searchBox').val('');
-			$('#typeOfAction').val('').trigger('change.select2');
-			$('#userName').val('').trigger('change.select2');
-			$('#auditSource .src-btn').removeClass('is-active').filter('[data-source="all"]').addClass('is-active');
-			state = { page: 1, pageSize: 25, source: 'all', dateRange: '', type: '', createdBy: '', sessionHash: '', search: '' };
-			fetchFeed();
+			state = emptyState();
+			syncControls(); fetchFeed();
+		});
+
+		$('#auditScope').on('click', 'button[data-clear]', function () {
+			if ($(this).data('clear') === 'entity') {
+				state.entityType = ''; state.entityId = ''; state.entityLabel = '';
+			} else {
+				state.requestId = '';
+			}
+			state.page = 1; fetchFeed();
 		});
 
 		$prev.on('click', function () { if (state.page > 1) { state.page -= 1; fetchFeed(); } });
@@ -751,8 +1108,12 @@ foreach ($actions as $list) {
 
 		$feed.on('click', '.session-pill', function (e) {
 			e.stopPropagation();
-			var sh = $(this).data('session');
-			$('#sessionHash').val(sh); state.sessionHash = sh; state.page = 1; fetchFeed();
+			focusOn({ sessionHash: String($(this).data('session')) });
+		});
+		$feed.on('click', '.audit-entity', function (e) {
+			e.stopPropagation();
+			var item = currentItems[parseInt($(this).data('idx'), 10)];
+			if (item) showHistory(item);
 		});
 		$feed.on('click', '.audit-item', function () {
 			var idx = parseInt($(this).data('idx'), 10);
@@ -762,19 +1123,13 @@ foreach ($actions as $list) {
 		$('#amClose, #amDismiss').on('click', closeDetailModal);
 		$modal.on('click', function (e) { if (e.target === this) closeDetailModal(); });
 		$(document).on('keydown', function (e) { if (e.key === 'Escape' && $modal.hasClass('is-open')) closeDetailModal(); });
-		$('#amFilterSession').on('click', function () {
-			var sh = $(this).data('session') || '';
-			if (!sh) return;
-			$('#sessionHash').val(sh); state.sessionHash = sh; state.page = 1; closeDetailModal(); fetchFeed();
-		});
+		$('#amHistory').on('click', function () { if (panelItem) showHistory(panelItem); });
+		$('#amSameRequest').on('click', function () { if (panelItem) focusOn({ requestId: panelItem.requestId, dateRange: '' }); });
+		$('#amFilterSession').on('click', function () { if (panelItem) focusOn({ sessionHash: panelItem.sessionHash }); });
 
-		// Page Usage links here with a session to follow.
-		var presetSession = new URLSearchParams(window.location.search).get('sessionHash') || '';
-		if (/^[0-9a-f]{1,64}$/.test(presetSession)) {
-			$('#sessionHash').val(presetSession);
-			state.sessionHash = presetSession;
-		}
-
+		// Page Usage and the History links on other pages open this page with filters.
+		readUrl();
+		syncControls();
 		fetchFeed();
 	});
 </script>

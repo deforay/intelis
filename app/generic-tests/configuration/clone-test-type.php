@@ -24,7 +24,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
+// An integer, because it is written into the map queries below.
+$id = (isset($_GET['id'])) ? (int) base64_decode((string) $_GET['id']) : 0;
 
 $tQuery = "SELECT * from r_test_types WHERE test_type_id=?";
 $testTypeInfo = $db->rawQueryOne($tQuery, [$id]);

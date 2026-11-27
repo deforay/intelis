@@ -3,7 +3,7 @@
 use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -17,8 +17,6 @@ $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 
 try {
@@ -169,7 +167,17 @@ try {
 			}
 
 			$_SESSION['alertMsg'] = _translate("Geographical Divisions details saved successfully");
-			$general->activityLog('Geographical Divisions details', $_SESSION['userName'] . ' saved geographical division - ' . $_POST['geoName'], 'common-reference');
+			$geoBefore = $existingDivision ?? null;
+			ContainerRegistry::get(ActivityLogService::class)->recordRowSave(
+				'geo-division-save',
+				($geoBefore === null ? 'Added' : 'Updated') . ' geographical division ' . $_POST['geoName'],
+				'geo-division',
+				'geographical_divisions',
+				'geo_id',
+				(int) $geoId,
+				'geo_name',
+				$geoBefore
+			);
 		}
 	}
 	header("Location:geographical-divisions-details.php");

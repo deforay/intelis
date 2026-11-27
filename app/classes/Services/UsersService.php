@@ -778,4 +778,95 @@ final class UsersService
         $result = $this->db->rawQueryOne($query, [$userId, $pageId]);
         return $result ? $result['preferences'] : null;
     }
+
+    /** Readable labels for the fields activitySnapshot() returns. */
+    private const array ACTIVITY_LABELS = [
+        'user_name' => 'Name',
+        'login_id' => 'Login ID',
+        'email' => 'Email',
+        'phone_number' => 'Phone number',
+        'role' => 'Role',
+        'status' => 'Status',
+        'testing_lab' => 'Testing lab',
+        'facilities' => 'Facilities',
+        'app_access' => 'Mobile app access',
+        'interface_user_name' => 'Interface user name',
+        'user_signature' => 'Signature',
+        'force_password_reset' => 'Must change password',
+        'password' => 'Password',
+        'api_token' => 'API token',
+        'user_locale' => 'Language',
+    ];
+
+    /** Fields whose change alters what a user can see or do. */
+    private const array ACCESS_FIELDS = ['role', 'status', 'testing_lab', 'facilities', 'app_access'];
+
+    /**
+     * A user as the activity log compares it: role, lab and facilities by name,
+     * and the password and API token only as values that changed or not (the
+     * log hides them by name).
+     *
+     * @return array<string, mixed>|null
+     */
+    public function activitySnapshot(string $userId): ?array
+    {
+        // The log must never stop the save it records: an unreadable record
+        // is logged without its changes.
+        try {
+            return $this->readActivitySnapshot($userId);
+        } catch (\Throwable $e) {
+            \App\Utilities\LoggerUtility::logWarning('Activity log snapshot not read: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /** @return array<string, mixed>|null */
+    private function readActivitySnapshot(string $userId): ?array
+    {
+        $row = $this->db->rawQueryOne(
+            "SELECT ud.user_name, ud.login_id, ud.email, ud.phone_number, ud.status, ud.app_access,
+                    ud.interface_user_name, ud.user_signature, ud.force_password_reset, ud.password,
+                    ud.api_token, ud.user_locale, r.role_name AS role, f.facility_name AS testing_lab
+               FROM user_details AS ud
+               LEFT JOIN roles AS r ON r.role_id = ud.role_id
+               LEFT JOIN facility_details AS f ON f.facility_id = ud.testing_lab_id
+              WHERE ud.user_id = ?",
+            [$userId]
+        );
+        if ($row === null) {
+            return null;
+        }
+        $interfaceNames = json_decode((string) $row['interface_user_name'], true);
+        $row['interface_user_name'] = is_array($interfaceNames) ? array_values($interfaceNames) : (string) $row['interface_user_name'];
+        $row['force_password_reset'] = (int) $row['force_password_reset'] === 1 ? 'yes' : 'no';
+        $row['facilities'] = array_column($this->db->rawQuery(
+            "SELECT f.facility_name
+               FROM user_facility_map AS m
+               JOIN facility_details AS f ON f.facility_id = m.facility_id
+              WHERE m.user_id = ?
+              ORDER BY f.facility_name",
+            [$userId]
+        ) ?: [], 'facility_name');
+        return $row;
+    }
+
+    /**
+     * What to pass CommonService::activityLog() for a save of one user: the
+     * user, the fields that changed since $before (null for a new user), and
+     * the flag for changes to what the user can access.
+     *
+     * @param array<string, mixed>|null $before from activitySnapshot(), taken before the save
+     * @return array<string, mixed>
+     */
+    public function activityDetails(string $userId, ?array $before): array
+    {
+        $after = $this->activitySnapshot($userId);
+        return [
+            'entity' => ['type' => 'user', 'id' => $userId, 'label' => $after['user_name'] ?? ($before['user_name'] ?? $userId)],
+            'changes' => ActivityLogService::changes($before, $after, self::ACTIVITY_LABELS),
+            // A new user is not flagged: the entry already lists every field.
+            'importantFields' => $before === null ? [] : self::ACCESS_FIELDS,
+            'reason' => 'Changes what the user can access',
+        ];
+    }
 }

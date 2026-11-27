@@ -342,7 +342,9 @@ final class PreflightSchemaReferencesTest extends TestCase
             'recordLoginAttempt'     => '/app/classes/Services/UsersService.php',
             'getAllPrivileges'       => '/app/classes/Services/UsersService.php',
             'getUserFacilityMap'     => '/app/classes/Services/FacilitiesService.php',
-            'activityLog'            => '/app/classes/Services/CommonService.php',
+            // CommonService::activityLog() hands the entry to ActivityLogService,
+            // which writes the row.
+            'activityLog'            => ['/app/classes/Services/ActivityLogService.php', 'write'],
             'getSystemConfig'        => '/app/classes/Services/CommonService.php',
             'getGlobalConfig'        => '/app/classes/Services/CommonService.php',
             'getMenu'                => '/app/classes/Services/AppMenuService.php',
@@ -356,7 +358,7 @@ final class PreflightSchemaReferencesTest extends TestCase
             // entry points stops vouching for its table instead of silently
             // continuing to.
             if (str_contains($entry, $method . '(')) {
-                $out[] = [$file, $method];
+                $out[] = is_array($file) ? $file : [$file, $method];
             }
         }
 

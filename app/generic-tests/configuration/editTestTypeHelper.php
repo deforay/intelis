@@ -27,6 +27,8 @@ $tableName7 = "generic_test_result_units_map";
 $tableName8 = "generic_test_methods_map";
 $testAttribute = [];
 $testTypeId = (int) base64_decode((string) $_POST['testTypeId']);
+// Compared after the save, so the activity log lists what changed.
+$activityBefore = $testTypeId > 0 ? $generic->activitySnapshot($testTypeId) : null;
 
 // echo "<pre>";print_r($_POST);die;
 $_POST['testStandardName'] = trim((string) $_POST['testStandardName']);
@@ -249,6 +251,13 @@ try {
             );
         }
         $_SESSION['alertMsg'] = _translate("Test type updated successfully");
+        $general->activityLog(
+            'custom-test-update',
+            'Updated Custom Test ' . $_POST['testStandardName'],
+            'custom-tests',
+            null,
+            $generic->activityDetails($testTypeId, $activityBefore)
+        );
     }
 
     header("Location:test-type.php");

@@ -207,12 +207,13 @@ try {
         ContainerRegistry::get(\App\Services\UserProfileSyncService::class)
             ->push($profile, $signatureImagePath ?? null);
     }
-    //Add event log
-    $eventType = 'user-add';
-    $action = $_SESSION['userName'] . ' added user ' . $_POST['userName'];
-    $resource = 'user';
-
-    $general->activityLog($eventType, $action, $resource);
+    $general->activityLog(
+        'user-add',
+        'Added user ' . ($_POST['userName'] ?? ''),
+        'user',
+        null,
+        empty($data['user_id']) ? [] : $usersService->activityDetails((string) $data['user_id'], null)
+    );
 } catch (Throwable $exc) {
     LoggerUtility::logError($exc->getMessage(), [
         'exception' => $exc->getMessage(),

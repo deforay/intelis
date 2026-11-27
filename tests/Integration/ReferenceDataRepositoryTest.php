@@ -6,6 +6,7 @@ namespace Tests\Integration;
 
 use App\Exceptions\SystemException;
 use App\Repositories\Reference\ReferenceDataRepository;
+use App\Services\ActivityLogService;
 use App\Services\DatabaseService;
 use mysqli;
 use PHPUnit\Framework\TestCase;
@@ -289,7 +290,7 @@ final class ReferenceDataRepositoryTest extends TestCase
             }
         }
         self::$db->rawQuery('DELETE FROM lab_storage');
-        $this->repository = new ReferenceDataRepository(self::$db);
+        $this->repository = new ReferenceDataRepository(self::$db, new ActivityLogService(self::$db));
     }
 
     /** @return array<string, mixed>|null */

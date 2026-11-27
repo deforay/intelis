@@ -793,4 +793,110 @@ final class GenericTestsService extends AbstractTestService
             return null;
         }
     }
+
+    /**
+     * Lists a Custom Test links to, keyed by the activity log field name:
+     * [map table, reference table, id column, name column].
+     */
+    private const array ACTIVITY_LISTS = [
+        'sample_types' => ['generic_test_sample_type_map', 'r_generic_sample_types', 'sample_type_id', 'sample_type_name'],
+        'testing_reasons' => ['generic_test_reason_map', 'r_generic_test_reasons', 'test_reason_id', 'test_reason'],
+        'symptoms' => ['generic_test_symptoms_map', 'r_generic_symptoms', 'symptom_id', 'symptom_name'],
+        'failure_reasons' => ['generic_test_failure_reason_map', 'r_generic_test_failure_reasons', 'test_failure_reason_id', 'test_failure_reason'],
+        'rejection_reasons' => ['generic_sample_rejection_reason_map', 'r_generic_sample_rejection_reasons', 'rejection_reason_id', 'rejection_reason_name'],
+        'result_units' => ['generic_test_result_units_map', 'r_generic_test_result_units', 'unit_id', 'unit_name'],
+        'test_methods' => ['generic_test_methods_map', 'r_generic_test_methods', 'test_method_id', 'test_method_name'],
+    ];
+
+    /** Readable labels for the top-level fields activitySnapshot() returns. */
+    private const array ACTIVITY_LABELS = [
+        'test_standard_name' => 'Test standard name',
+        'test_generic_name' => 'Test generic name',
+        'test_short_code' => 'Test short code',
+        'test_loinc_code' => 'LOINC code',
+        'test_category' => 'Test category',
+        'test_status' => 'Status',
+        'test_form_config' => 'Form fields',
+        'test_results_config' => 'Result settings',
+        'sample_types' => 'Sample types',
+        'testing_reasons' => 'Testing reasons',
+        'symptoms' => 'Symptoms',
+        'failure_reasons' => 'Test failure reasons',
+        'rejection_reasons' => 'Rejection reasons',
+        'result_units' => 'Result units',
+        'test_methods' => 'Test methods',
+    ];
+
+    /**
+     * A Custom Test as the activity log compares it: its form and result
+     * settings field by field, its category by name, and the sample types,
+     * reasons, units and methods it links to as lists of names.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function activitySnapshot(int $testTypeId): ?array
+    {
+        // The log must never stop the save it records: an unreadable record
+        // is logged without its changes.
+        try {
+            return $this->readActivitySnapshot($testTypeId);
+        } catch (\Throwable $e) {
+            \App\Utilities\LoggerUtility::logWarning('Activity log snapshot not read: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /** @return array<string, mixed>|null */
+    private function readActivitySnapshot(int $testTypeId): ?array
+    {
+        $row = $this->db->rawQueryOne(
+            "SELECT t.test_standard_name, t.test_generic_name, t.test_short_code, t.test_loinc_code,
+                    c.test_category_name AS test_category, t.test_status, t.test_form_config, t.test_results_config
+               FROM r_test_types AS t
+               LEFT JOIN r_generic_test_categories AS c ON c.test_category_id = t.test_category
+              WHERE t.test_type_id = ?",
+            [$testTypeId]
+        );
+        if ($row === null) {
+            return null;
+        }
+        foreach (['test_form_config', 'test_results_config'] as $json) {
+            $decoded = json_decode((string) $row[$json], true);
+            $row[$json] = is_array($decoded) ? $decoded : (string) $row[$json];
+        }
+        foreach (self::ACTIVITY_LISTS as $field => [$mapTable, $refTable, $idColumn, $nameColumn]) {
+            $row[$field] = array_column($this->db->rawQuery(
+                "SELECT r.`$nameColumn` AS name
+                   FROM `$mapTable` AS m
+                   JOIN `$refTable` AS r ON r.`$idColumn` = m.`$idColumn`
+                  WHERE m.test_type_id = ?
+                  ORDER BY r.`$nameColumn`",
+                [$testTypeId]
+            ) ?: [], 'name');
+        }
+        return $row;
+    }
+
+    /**
+     * What to pass CommonService::activityLog() for a save of one Custom Test:
+     * the test, the fields that changed since $before (null for a new test),
+     * and the flag for changes to how results are entered or read.
+     *
+     * @param array<string, mixed>|null $before from activitySnapshot(), taken before the save
+     * @return array<string, mixed>
+     */
+    public function activityDetails(int $testTypeId, ?array $before): array
+    {
+        $after = $this->activitySnapshot($testTypeId);
+        return [
+            'entity' => [
+                'type' => 'custom-test',
+                'id' => $testTypeId,
+                'label' => $after['test_standard_name'] ?? ($before['test_standard_name'] ?? (string) $testTypeId),
+            ],
+            'changes' => ActivityLogService::changes($before, $after, self::ACTIVITY_LABELS),
+            'importantFields' => $before === null ? [] : ['test_results_config', 'result_units', 'test_methods', 'test_status'],
+            'reason' => 'Changes how results are entered or read',
+        ];
+    }
 }

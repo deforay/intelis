@@ -2,7 +2,6 @@
 
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Repositories\Reference\ReferenceDataRepository;
@@ -18,8 +17,6 @@ $failureReason = trim((string) _rawInput("failureReason", ""));
 /** @var ReferenceDataRepository $referenceData */
 $referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 try {
 	if ($failureReason !== "") {
@@ -35,7 +32,6 @@ try {
 		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("VL Test Failure Reason Saved Successfully");
-			$general->activityLog('VL Test Failure Reason', $_SESSION['userName'] . ' saved vl test failure reason ' . $failureReason, 'vl-reference');
 		}
 	}
 	MiscUtility::redirect("/vl/reference/vl-test-failure-reasons.php");

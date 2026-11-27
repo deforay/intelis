@@ -594,73 +594,29 @@ final class CommonService
     }
 
     /**
+     * Writes one user activity log entry. See ActivityLogService for $extra:
+     * the record the entry is about, what changed, and whether it is important.
+     *
      * @param string|null $userId Who did it, for a call with no web session (the
      *                            mobile API); a web request takes the session's user.
+     * @param array<string, mixed> $extra
      */
-    public function activityLog($eventType, $action, $resource, ?string $userId = null): void
+    public function activityLog($eventType, $action, $resource, ?string $userId = null, array $extra = []): void
     {
-
-        $ipAddress = self::getClientIpAddress();
-
-        $data = [
-            'event_type' => $eventType,
-            'action' => $action,
-            'resource' => $resource,
-            'user_id' => $userId ?? ((empty($_SESSION['userId'])) ? null : $_SESSION['userId']),
-            'date_time' => DateUtility::getCurrentDateTime(),
-            'ip_address' => $ipAddress,
-        ];
-
-        // Forensic context. The proxy-aware IP above can be shared (CGNAT), so the
-        // per-session hash is what actually disambiguates concurrent users, and the
-        // user agent records the device/browser. Each is guarded so logging never
-        // breaks on an install not yet migrated to that column.
-        if ($this->activityLogHasColumn('session_hash')) {
-            $data['session_hash'] = $this->sessionHash() ?: null;
-        }
-        if ($this->activityLogHasColumn('user_agent')) {
-            $data['user_agent'] = $this->userAgent() ?: null;
-        }
-
-        $this->db->insert('activity_log', $data);
+        ContainerRegistry::get(ActivityLogService::class)
+            ->record((string) $eventType, (string) $action, $resource === null ? null : (string) $resource, $extra, $userId);
     }
 
-    /**
-     * Short, opaque per-session id: sha256 of the PHP session id, first 16 hex
-     * chars (64 bits). Hashed (not the raw session id) so the stored value can't
-     * be replayed against a live session. '' in CLI / when no session exists.
-     */
+    /** See ActivityLogService::sessionHash(). */
     public function sessionHash(): string
     {
-        if (self::isCliRequest()) {
-            return '';
-        }
-        $sid = session_id();
-        return $sid !== '' && $sid !== false ? substr(hash('sha256', (string) $sid), 0, 16) : '';
+        return ActivityLogService::sessionHash();
     }
 
-    /** Raw User-Agent of the current request (max 512 chars). '' in CLI. */
+    /** See ActivityLogService::userAgent(). */
     public function userAgent(): string
     {
-        if (self::isCliRequest()) {
-            return '';
-        }
-        $request = AppRegistry::get('request');
-        $ua = $request instanceof ServerRequestInterface
-            ? $request->getHeaderLine('User-Agent')
-            : (string) ($_SERVER['HTTP_USER_AGENT'] ?? '');
-        return substr((string) $ua, 0, 512);
-    }
-
-    /** Whether activity_log carries $column (cached per request, per column). */
-    private function activityLogHasColumn(string $column): bool
-    {
-        static $cache = [];
-        if (!array_key_exists($column, $cache)) {
-            $col = $this->db->rawQueryOne("SHOW COLUMNS FROM `activity_log` LIKE '" . $this->db->escape($column) . "'");
-            $cache[$column] = !empty($col);
-        }
-        return $cache[$column];
+        return ActivityLogService::userAgent();
     }
 
     public function getUserMappedProvinces($facilityMap = null): mixed

@@ -52,7 +52,6 @@ try {
 		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("Recommended Corrective Action saved successfully");
-			$general->activityLog('Recommended Corrective Action', $_SESSION['userName'] . ' saved Recommended Corrective Action ' . $correctiveAction, 'common-reference');
 		}
 	}
 	header("Location:recommended-corrective-actions.php?testType=" . urlencode($testType));

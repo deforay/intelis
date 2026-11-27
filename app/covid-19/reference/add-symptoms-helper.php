@@ -1,7 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -15,12 +15,16 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 
 
 $tableName = "r_covid19_symptoms";
+
+// A new row only, so the activity log lists every field it was saved with.
+/** @var ActivityLogService $activityLog */
+$activityLog = ContainerRegistry::get(ActivityLogService::class);
+$activityId = 0;
+$activityBefore = $activityLog->row('r_covid19_symptoms', 'symptom_id', $activityId);
 
 try {
 	if (isset($_POST['symptomsName']) && trim((string) $_POST['symptomsName']) !== "") {
@@ -31,7 +35,16 @@ try {
 		$lastId = $db->getInsertId();
 
 		$_SESSION['alertMsg'] = _translate("Symptom details added successfully");
-		$general->activityLog('add-symptoms', $_SESSION['userName'] . ' added new reference symptom' . $_POST['symptomsName'], 'reference-covid19-symptoms');
+		$activityLog->recordRowSave(
+		    'covid19-symptom-save',
+		    ($activityBefore === null ? 'Added ' : 'Updated ') . 'COVID-19 symptom ' . $_POST['symptomsName'],
+		    'covid19-symptom',
+		    'r_covid19_symptoms',
+		    'symptom_id',
+		    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+		    'symptom_name',
+		    $activityBefore
+		);
 	}
 	header("Location:covid19-symptoms.php");
 } catch (Exception $e) {

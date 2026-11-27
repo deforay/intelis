@@ -1,7 +1,7 @@
 <?php
 
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
@@ -12,10 +12,14 @@ use App\Utilities\DateUtility;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_generic_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";
+
+// Read before the save, so the activity log lists what changed.
+/** @var ActivityLogService $activityLog */
+$activityLog = ContainerRegistry::get(ActivityLogService::class);
+$activityId = (int) base64_decode((string) ($_POST['rejectionReasonId'] ?? ''));
+$activityBefore = $activityLog->row('r_generic_sample_rejection_reasons', 'rejection_reason_id', $activityId);
 
 try {
 	if (isset($_POST['rejectionReasonName']) && trim((string) $_POST['rejectionReasonName']) !== "") {
@@ -34,7 +38,16 @@ try {
 		}
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("Lab Tests Sample Rejection Reasons details added successfully");
-			$general->activityLog('VL Sample Rejection Reasons For VL', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons for VL  ' . $_POST['rejectionReasonName'], 'vl-reference');
+			$activityLog->recordRowSave(
+			    'generic-rejection-reason-save',
+			    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Custom Tests rejection reason ' . $_POST['rejectionReasonName'],
+			    'generic-rejection-reason',
+			    'r_generic_sample_rejection_reasons',
+			    'rejection_reason_id',
+			    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+			    'rejection_reason_name',
+			    $activityBefore
+			);
 		}
 	}
 	header("Location:generic-sample-rejection-reasons.php");

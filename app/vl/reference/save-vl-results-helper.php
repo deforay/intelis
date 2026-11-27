@@ -2,7 +2,6 @@
 
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Repositories\Reference\ReferenceDataRepository;
@@ -20,8 +19,6 @@ $interpretation = (string) _rawInput("interpretation", "");
 /** @var ReferenceDataRepository $referenceData */
 $referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 try {
 	if ($resultName !== "") {
@@ -45,7 +42,6 @@ try {
 		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("VL Results details saved successfully");
-			$general->activityLog('VL Results details', $_SESSION['userName'] . ' saved results ' . $resultName, 'vl-reference');
 		}
 	}
 	MiscUtility::redirect("/vl/reference/vl-results.php");

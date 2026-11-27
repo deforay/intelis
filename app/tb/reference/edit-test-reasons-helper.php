@@ -1,7 +1,6 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Repositories\Reference\ReferenceDataRepository;
@@ -17,8 +16,6 @@ $reasonName = trim((string) _rawInput("testReasonName", ""));
 /** @var ReferenceDataRepository $referenceData */
 $referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 try {
 	if ($reasonName !== "") {
@@ -33,7 +30,6 @@ try {
 			$reasonId
 		);
 		$_SESSION['alertMsg'] = _translate("Test reason details updated successfully");
-		$general->activityLog('update-test-reasons', $_SESSION['userName'] . ' updated reference test reasons ' . $reasonName, 'reference-tb-test-reasons');
 	}
 	header("Location:tb-test-reasons.php");
 } catch (Throwable $e) {

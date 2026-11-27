@@ -44,6 +44,8 @@ $sanitizedUserSignature = ($uploadedSignature instanceof UploadedFile && $upload
 $userId = base64_decode((string) $_POST['userId']);
 
 $userInfo = $usersService->getUserByID($userId);
+// Compared after the save, so the activity log lists what changed.
+$activityBefore = $usersService->activitySnapshot((string) $userId);
 
 $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 MiscUtility::makeDirectory($signatureImagePath);
@@ -262,12 +264,13 @@ try {
     }
 
 
-    //Add event log
-    $eventType = 'user-update';
-    $action = $_SESSION['userName'] . ' updated details for user ' . $_POST['userName'];
-    $resource = 'user';
-
-    $general->activityLog($eventType, $action, $resource);
+    $general->activityLog(
+        'user-update',
+        'Updated user ' . ($_POST['userName'] ?? ''),
+        'user',
+        null,
+        $usersService->activityDetails((string) $userId, $activityBefore)
+    );
 } catch (Throwable $e) {
     LoggerUtility::log("error", $e->getMessage(), [
         'file' => $e->getFile(),

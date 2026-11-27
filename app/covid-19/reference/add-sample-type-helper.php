@@ -1,7 +1,6 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Repositories\Reference\ReferenceDataRepository;
@@ -17,8 +16,6 @@ $sampleName = trim((string) _rawInput("sampleName", ""));
 /** @var ReferenceDataRepository $referenceData */
 $referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 try {
 	if ($sampleName !== "") {
@@ -29,7 +26,6 @@ try {
 			(string) ($_POST['sampleStatus'] ?? '')
 		);
 		$_SESSION['alertMsg'] = _translate("Sample Type details added successfully");
-		$general->activityLog('add-sample-type', $_SESSION['userName'] . ' added new Covid-19 sample type : ' . $sampleName, 'reference-covid19-sample-type');
 	}
 	header("Location:covid19-sample-type.php");
 } catch (Throwable $e) {

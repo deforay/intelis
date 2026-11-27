@@ -370,7 +370,13 @@ try {
 			}
 		}
 
-		$general->activityLog('add-facility', $_SESSION['userName'] . ' added new facility ' . $_POST['facilityName'], 'facility');
+		$general->activityLog(
+			'add-facility',
+			'Added facility ' . $_POST['facilityName'],
+			'facility',
+			null,
+			$lastId > 0 ? $facilitiesService->activityDetails((int) $lastId, null) : []
+		);
 	}
 	if (isset($apiData['api-type']) && $apiData['api-type'] == "sync" && !isset($_POST['fromAPI'])) {
 		echo $lastId;

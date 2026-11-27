@@ -102,7 +102,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 <div class="content-wrapper">
      <!-- Content Header (Page header) -->
      <section class="content-header">
-          <h1> <em class="fa-solid fa-user"></em> <?php echo _translate("Edit User"); ?></h1>
+          <h1> <em class="fa-solid fa-user"></em> <?php echo _translate("Edit User"); ?><?= \App\Utilities\ActivityLogUtility::historyLink('user', (string) $id, (string) ($userInfo['user_name'] ?? '')); ?></h1>
           <ol class="breadcrumb">
                <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
                <li class="active"><?php echo _translate("Users"); ?></li>

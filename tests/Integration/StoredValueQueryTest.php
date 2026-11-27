@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\Repositories\Reference\ReferenceDataRepository;
+use App\Services\ActivityLogService;
 use App\Services\DatabaseService;
 use App\Services\GeoLocationsService;
 use App\Services\PatientsService;
@@ -85,7 +86,7 @@ final class StoredValueQueryTest extends TestCase
 
     public function testAReasonForTestingIsFoundByIdOrByName(): void
     {
-        $repository = new ReferenceDataRepository($this->db);
+        $repository = new ReferenceDataRepository($this->db, new ActivityLogService($this->db));
 
         $this->assertSame([5], array_column($repository->findByIdOrName('test-reason', 'vl', '5'), 'test_reason_id'));
         $this->assertSame(

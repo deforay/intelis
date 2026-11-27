@@ -39,6 +39,9 @@ if (empty($userId)) {
     throw new SystemException(_translate('Your session has expired. Please log in again.'), 401);
 }
 
+// Compared after the save, so the activity log lists what changed.
+$activityBefore = $usersService->activitySnapshot((string) $userId);
+
 try {
 
     $wasUpdated = false;
@@ -106,7 +109,13 @@ try {
             $_SESSION['alertMsg'] = _translate(
                 "Your profile changes have been saved. You can continue using the application."
             );
-            $general->activityLog('profile-update', $_POST['userName'] . ' profile updated', 'user-profile');
+            $general->activityLog(
+                'profile-update',
+                'Updated own profile',
+                'user-profile',
+                null,
+                $usersService->activityDetails((string) $userId, $activityBefore)
+            );
             $_SESSION['userName'] = $_POST['userName'];
             $_SESSION['email'] = $_POST['email'];
         } else {

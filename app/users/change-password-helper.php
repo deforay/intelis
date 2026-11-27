@@ -79,7 +79,9 @@ try {
     if ($wasUpdated !== false) {
         unset($_SESSION['forcePasswordReset']);
         $_SESSION['alertMsg'] = _translate("Your password has been updated. You can continue using the application.");
-        $general->activityLog('password-update', $userRow['user_name'] . ' password updated', 'change-password');
+        $general->activityLog('password-update', 'Changed own password', 'change-password', null, [
+            'entity' => ['type' => 'user', 'id' => (string) $userId, 'label' => $userRow['user_name']],
+        ]);
     } else {
         $_SESSION['alertMsg'] = _translate("Password not updated!");
     }

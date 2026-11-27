@@ -179,8 +179,9 @@ final class LegacyEndpointTest extends TestCase
 
         $log = $db->rawQueryOne('SELECT * FROM activity_log ORDER BY log_id DESC LIMIT 1');
 
-        self::assertSame('VL Test Reason details', $log['event_type'] ?? null);
-        self::assertSame('vl-reference', $log['resource'] ?? null);
+        // ReferenceDataRepository writes the entry for every reference save.
+        self::assertSame('test-reason-add', $log['event_type'] ?? null);
+        self::assertSame('reference-data', $log['resource'] ?? null);
         self::assertStringContainsString('Clinical failure', (string) ($log['action'] ?? ''));
         self::assertSame('1', (string) ($log['user_id'] ?? ''));
     }
