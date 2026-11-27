@@ -104,6 +104,26 @@ final class DatabaseStreamingTest extends TestCase
     }
 
     /**
+     * The connections before a test starts. A connection the previous test closed can
+     * still be in the server's list, and would make the count one too high. The count
+     * is read until two reads 100 ms apart agree, for up to two seconds.
+     */
+    private function settledConnections(): int
+    {
+        $deadline = microtime(true) + 2.0;
+        $last = $this->openConnections();
+        while (microtime(true) < $deadline) {
+            usleep(100000);
+            $now = $this->openConnections();
+            if ($now === $last) {
+                return $now;
+            }
+            $last = $now;
+        }
+        return $last;
+    }
+
+    /**
      * The connections are back to $before. A closed connection leaves the server's
      * list a moment after close() returns, so the count is read again for up to
      * two seconds. A connection left open stays in the list, and still fails here.
@@ -155,7 +175,7 @@ final class DatabaseStreamingTest extends TestCase
 
     public function testStoppingPartWayIsQuickAndLeavesNothingBehind(): void
     {
-        $before = $this->openConnections();
+        $before = $this->settledConnections();
         $started = microtime(true);
 
         $taken = 0;
@@ -173,7 +193,7 @@ final class DatabaseStreamingTest extends TestCase
 
     public function testFinishingClosesItsConnection(): void
     {
-        $before = $this->openConnections();
+        $before = $this->settledConnections();
 
         iterator_to_array(self::$db->rawQueryGenerator('SELECT id FROM samples WHERE id <= 3'));
 
@@ -219,7 +239,7 @@ final class DatabaseStreamingTest extends TestCase
 
     public function testABadQueryStillThrowsAndLeavesNoConnection(): void
     {
-        $before = $this->openConnections();
+        $before = $this->settledConnections();
 
         try {
             iterator_to_array(self::$db->rawQueryGenerator('SELECT no_such_column FROM samples'));
