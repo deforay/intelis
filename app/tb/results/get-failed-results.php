@@ -10,6 +10,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\SampleAccessService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -23,6 +24,10 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 try {
 
     /** @var CommonService $general */
@@ -200,7 +205,7 @@ try {
         $row[] = ($aRow['status_name']);
 
         if ($editRequest) {
-            $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim(base64_encode((string) $aRow['tb_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
+            $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim($sampleAccess->encode($aRow['tb_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
         }
         $output['aaData'][] = $row;
     }

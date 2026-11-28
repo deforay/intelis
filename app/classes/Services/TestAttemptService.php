@@ -53,9 +53,10 @@ final class TestAttemptService
      */
     public static function sampleIdsFromRequest(array $post, string $field): array
     {
+        $sampleAccess = ContainerRegistry::get(SampleAccessService::class);
         $raw = (!empty($post['bulkIds']) && isset($post[$field]) && is_array($post[$field]))
             ? $post[$field]
-            : [base64_decode((string) ($post[$field] ?? ''))];
+            : [$sampleAccess->decode($post[$field] ?? '')];
 
         return self::positiveIds($raw);
     }

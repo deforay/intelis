@@ -10,6 +10,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\SampleAccessService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -23,6 +24,9 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
 
 try {
 
@@ -175,7 +179,7 @@ try {
         }
         $row = [];
 
-        $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['covid19_id'] . '"  value="' . $aRow['covid19_id'] . '" onchange="resetBtnShowHide();" onclick="toggleTest(this);"  />';
+        $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['covid19_id'] . '"  value="' . $sampleAccess->encode($aRow['covid19_id']) . '" onchange="resetBtnShowHide();" onclick="toggleTest(this);"  />';
         $row[] = $aRow['sample_code'];
         if (!$general->isStandaloneInstance()) {
             $row[] = $aRow['remote_sample_code'];

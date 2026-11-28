@@ -7,6 +7,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Services\DatabaseService;
+use App\Services\SampleAccessService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ListingFilterClauseBuilder;
 
@@ -20,6 +21,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
+
+/** @var SampleAccessService $sampleAccess */
+$sampleAccess = ContainerRegistry::get(SampleAccessService::class);
+
 $covid19Results = $covid19Service->getCovid19Results();
 
 $tableName = "form_covid19";
@@ -241,7 +246,7 @@ if ($labScope = $general->labScopeWhere('vl')) {
 if ($labScope = $general->labScopeWhere('vl')) {
     $dWhere .= " AND $labScope";
 }
-$sQuery = $sQuery . ' ' . $sWhere . ' AND ct.result LIKE "positive" GROUP BY vl.covid19_id';
+$sQuery = $sQuery ;
 // Counted over the grid's own query, joins and grouping included, so the totals
 // match the rows shown.
 $countQuery = $sQuery;
@@ -272,9 +277,9 @@ foreach ($rResult as $aRow) {
      $print = '';
      if ($aRow['result'] == '') {
 
-          $print = '<a href="update-record-confirmatory-tests.php?id=' . base64_encode((string) $aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Enter Result</a>';
+          $print = '<a href="' . $sampleAccess->url("/covid-19/results/update-record-confirmatory-tests.php", (int) $aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Enter Result</a>';
      } else {
-          $print = '<a href="update-record-confirmatory-tests.php?id=' . base64_encode((string) $aRow['covid19_id']) . '" class="btn btn-warning btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-eye"></em> View</a>';
+          $print = '<a href="' . $sampleAccess->url("/covid-19/results/update-record-confirmatory-tests.php", (int) $aRow['covid19_id']) . '" class="btn btn-warning btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-eye"></em> View</a>';
      }
 
 
