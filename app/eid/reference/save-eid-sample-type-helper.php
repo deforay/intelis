@@ -1,7 +1,6 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Repositories\Reference\ReferenceDataRepository;
@@ -17,8 +16,6 @@ $sampleName = trim((string) _rawInput("sampleName", ""));
 /** @var ReferenceDataRepository $referenceData */
 $referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 try {
 	if ($sampleName !== "") {
@@ -34,7 +31,6 @@ try {
 		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("EID Sample details saved successfully");
-			$general->activityLog('EID Sample Type details', $_SESSION['userName'] . ' saved EID sample type : ' . $sampleName, 'eid-reference');
 		}
 	}
 	header("Location:eid-sample-type.php");

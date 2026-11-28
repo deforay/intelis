@@ -238,6 +238,15 @@ try {
             );
         }
         $_SESSION['alertMsg'] = _translate("Test type added successfully");
+        if ($lastId > 0) {
+            $general->activityLog(
+                'custom-test-add',
+                'Added Custom Test ' . $_POST['testStandardName'],
+                'custom-tests',
+                null,
+                $generic->activityDetails((int) $lastId, null)
+            );
+        }
     }
     //error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     header("Location:test-type.php");

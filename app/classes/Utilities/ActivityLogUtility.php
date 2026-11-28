@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Utilities;
 
+use App\Services\ActivityLogFeedService;
+
 /**
  * Extracted from monitoring/get-activity-log.php's activityActionType() and
  * activityInitials(). That file executes request-handling code at the top level, so it
@@ -45,5 +47,28 @@ final class ActivityLogUtility
             }
         }
         return $out !== '' ? $out : strtoupper(substr($name, 0, 1));
+    }
+
+    /**
+     * A "History" link that opens the User Activity Log filtered to one record,
+     * for the heading of that record's edit page. Empty for a user who cannot
+     * open the log, so a page never shows a link that leads to an error.
+     */
+    public static function historyLink(string $entityType, int|string $entityId, string $label = ''): string
+    {
+        $entityId = (string) $entityId;
+        if ($entityType === '' || $entityId === '' || $entityId === '0'
+            || !function_exists('_isAllowed') || !_isAllowed('/admin/monitoring/activity-log.php')) {
+            return '';
+        }
+        $typeLabel = ActivityLogFeedService::labelFor($entityType);
+        $url = '/admin/monitoring/activity-log.php?' . http_build_query([
+            'entityType' => $entityType,
+            'entityId' => $entityId,
+            'entityLabel' => $label === '' ? $typeLabel : "$typeLabel: $label",
+        ]);
+        return '<a class="btn btn-default btn-sm" style="margin-left:10px;" href="' . htmlspecialchars($url, ENT_QUOTES)
+            . '" title="' . htmlspecialchars(_translate('Show every activity log entry for this item'), ENT_QUOTES) . '">'
+            . '<em class="fa-solid fa-clock-rotate-left"></em> ' . htmlspecialchars(_translate('History'), ENT_QUOTES) . '</a>';
     }
 }

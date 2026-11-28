@@ -1,17 +1,21 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Registries\ContainerRegistry;
 
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 
 
 $tableName = "r_generic_symptoms";
 $symptomId = (int) base64_decode((string) $_POST['symptomId']);
+// Read before the save, so the activity log lists what changed.
+/** @var ActivityLogService $activityLog */
+$activityLog = ContainerRegistry::get(ActivityLogService::class);
+$activityId = (int) base64_decode((string) ($_POST['symptomId'] ?? ''));
+$activityBefore = $activityLog->row('r_generic_symptoms', 'symptom_id', $activityId);
+
 try {
     if (!empty($_POST['symptomName'])) {
 
@@ -21,14 +25,32 @@ try {
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Symptoms Details updated successfully");
-                $general->activityLog('Symptoms', $_SESSION['userName'] . ' updated new symptom for ' . $_POST['symptomName'], 'generic-symptoms');
+                $activityLog->recordRowSave(
+                    'generic-symptom-save',
+                    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Custom Tests symptom ' . $_POST['symptomName'],
+                    'generic-symptom',
+                    'r_generic_symptoms',
+                    'symptom_id',
+                    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+                    'symptom_name',
+                    $activityBefore
+                );
             }
         } else {
             $id = $db->insert($tableName, $data);
             $lastId = $db->getInsertId();
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Symptoms details added successfully");
-                $general->activityLog('Symptoms', $_SESSION['userName'] . ' added new symptom for ' . $_POST['symptomName'], 'generic-symptoms');
+                $activityLog->recordRowSave(
+                    'generic-symptom-save',
+                    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Custom Tests symptom ' . $_POST['symptomName'],
+                    'generic-symptom',
+                    'r_generic_symptoms',
+                    'symptom_id',
+                    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+                    'symptom_name',
+                    $activityBefore
+                );
             }
         }
     }

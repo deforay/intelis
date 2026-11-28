@@ -88,13 +88,28 @@ référence des échantillons** se trouvent sous **ADMIN → Rapports**.
 2. Sous **Afficher**, choisir **Tout**, **Actions** ou **Connexions**.
 3. Renseigner **Plage de dates** et **Utilisateur**.
 4. Lire les entrées. Chacune porte l'utilisateur, l'action, l'adresse IP et le
-   navigateur.
-5. Pour suivre une connexion du début à la fin, sélectionner **Filtrer par cette
-   session** sur l'une de ses entrées.
+   navigateur. La modification d'un utilisateur, d'une structure, d'un
+   paramètre ou d'une liste de référence montre aussi les champs modifiés, avec
+   l'ancienne et la nouvelle valeur.
+5. Sélectionner une entrée pour ouvrir son détail.
+6. Pour suivre une connexion du début à la fin, sélectionner **Même session**.
 
 Le Journal d'activité de l'utilisateur enregistre ce que les utilisateurs ont
 fait. Pour voir les anciennes et nouvelles valeurs d'un échantillon, utiliser la
 Piste d'audit.
+
+??? info "Autres façons de restreindre le journal"
+
+    | Commande | Affiche |
+    | --- | --- |
+    | **Important uniquement** | Les modifications qui peuvent changer les résultats ou les accès d'un utilisateur, comme un nouveau rôle, une unité de résultat ou un format de code d'échantillon |
+    | **Historique de cet élément**, dans le détail d'une entrée | Toutes les entrées sur le même utilisateur, la même structure, le même paramètre ou le même élément de liste de référence |
+    | **Historique**, à côté du titre des pages Modifier l'utilisateur, Modifier la structure et Modifier le type de test | Le même historique, ouvert depuis l'enregistrement lui-même |
+    | **Même enregistrement**, dans le détail d'une entrée | Toutes les entrées écrites par un même enregistrement |
+    | **Exporter** | Un fichier CSV des entrées qui correspondent aux filtres |
+
+    La barre d'adresse conserve les filtres. Une vue filtrée peut donc être
+    mise en favori ou envoyée à un autre administrateur.
 
 ## Voir quelles pages sont utilisées
 

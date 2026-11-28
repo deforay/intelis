@@ -84,12 +84,26 @@ Network** sit under **ADMIN → Reports**.
 2. Under **Show**, pick **All**, **Actions** or **Logins**.
 3. Set **Date Range** and **User**.
 4. Read the entries. Each carries the user, the action, the IP address and the
-   browser.
-5. To follow one sign-in from start to end, select **Filter by this session** on
-   one of its entries.
+   browser. An edit of a user, facility, setting or reference list also shows
+   the fields it changed, with the old and new values.
+5. Select an entry to open its details.
+6. To follow one sign-in from start to end, select **Same session**.
 
 The User Activity Log records what users did. To see the old and new values of
 a sample, use the Audit Trail.
+
+??? info "Other ways to narrow the log"
+
+    | Control | Shows |
+    | --- | --- |
+    | **Important only** | Changes that can alter results or what a user can access, such as a new role, a result unit or a sample code format |
+    | **History of this item**, in an entry's details | Every entry about the same user, facility, setting or reference list item |
+    | **History**, next to the heading of the Edit User, Edit Facility and Edit Test Type pages | The same history, opened from the record itself |
+    | **Same save**, in an entry's details | Every entry written by one save |
+    | **Export** | A CSV file of the entries that match the filters |
+
+    The address bar keeps the filters, so a filtered view can be bookmarked or
+    sent to another administrator.
 
 ## See which pages are used
 

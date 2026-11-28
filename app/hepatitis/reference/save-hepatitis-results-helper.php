@@ -1,7 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -12,11 +12,15 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_hepatitis_results";
 $primaryKey = "result_id";
 // print_r(base64_decode($_POST['resultId']));die;
+// Read before the save, so the activity log lists what changed.
+/** @var ActivityLogService $activityLog */
+$activityLog = ContainerRegistry::get(ActivityLogService::class);
+$activityId = (int) base64_decode((string) ($_POST['resultId'] ?? ''));
+$activityBefore = $activityLog->row('r_hepatitis_results', 'result_id', $activityId);
+
 try {
 	if (isset($_POST['resultName']) && trim((string) $_POST['resultName']) !== "") {
 		$data = ['result' 		=> ($_POST['resultName']), 'status' 	    => $_POST['resultStatus'], 'updated_datetime' 	=> DateUtility::getCurrentDateTime()];
@@ -30,7 +34,16 @@ try {
 
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("Hepatitis Results details saved successfully");
-			$general->activityLog('Hepatitis Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'hepatitis-reference');
+			$activityLog->recordRowSave(
+			    'hepatitis-result-save',
+			    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Hepatitis result ' . $_POST['resultName'],
+			    'hepatitis-result',
+			    'r_hepatitis_results',
+			    'result_id',
+			    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+			    'result',
+			    $activityBefore, [], ['result', 'status']
+			);
 		}
 	}
 	header("Location:hepatitis-results.php");

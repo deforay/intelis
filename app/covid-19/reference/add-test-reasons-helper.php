@@ -1,7 +1,6 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Repositories\Reference\ReferenceDataRepository;
@@ -17,8 +16,6 @@ $reasonName = trim((string) _rawInput("testReasonName", ""));
 /** @var ReferenceDataRepository $referenceData */
 $referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 try {
 	if ($reasonName !== "") {
@@ -30,7 +27,6 @@ try {
 			['parent_reason' => (string) ($_POST['parentReason'] ?? '')]
 		);
 		$_SESSION['alertMsg'] = _translate("COVID 19 Test reasons details added successfully");
-		$general->activityLog('add-test-reasons', $_SESSION['userName'] . ' added new reference test reasons ' . $reasonName, 'reference-covid19-test-reasons');
 	}
 	header("Location:covid19-test-reasons.php");
 } catch (Throwable $e) {

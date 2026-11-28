@@ -2,7 +2,6 @@
 
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Repositories\Reference\ReferenceDataRepository;
@@ -19,8 +18,6 @@ $category = (string) _rawInput("category", "");
 /** @var ReferenceDataRepository $referenceData */
 $referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 try {
 	if ($artCode !== "") {
@@ -40,7 +37,6 @@ try {
 		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("Art Code details saved successfully");
-			$general->activityLog('Add art code details', $_SESSION['userName'] . ' saved art code ' . $artCode, 'vl-reference');
 		}
 	}
 	MiscUtility::redirect("/vl/reference/vl-art-code-details.php");

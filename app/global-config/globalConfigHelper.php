@@ -6,6 +6,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -44,6 +45,10 @@ $instanceTableName = "s_vlsm_instance";
 $systemService = ContainerRegistry::get(SystemService::class);
 
 $currentDateTime = DateUtility::getCurrentDateTime();
+
+// Settings read before and after the save, so the activity log lists what changed.
+$readSettings = static fn(): array => array_column($db->rawQuery("SELECT `name`, `value` FROM global_config") ?: [], 'value', 'name');
+$activityBefore = $readSettings();
 
 // unset global config cache so that it can be reloaded with new values
 // this is set in CommonService::getGlobalConfig()
@@ -233,12 +238,36 @@ try {
 
     $_SESSION['alertMsg'] = _translate("Configuration updated successfully");
 
-    //Add event log
-    $eventType = 'general-config-update';
-    $action = $_SESSION['userName'] . ' updated general config';
-    $resource = 'general-config';
+    // Several modules share a display name ("Minimum Patient ID Length"), so a
+    // module's own setting is labelled with the module.
+    $modules = ['vl' => 'VL', 'eid' => 'EID', 'cd4' => 'CD4', 'tb' => 'TB', 'covid19' => 'COVID-19', 'hepatitis' => 'Hepatitis', 'generic' => 'Custom Tests'];
+    $settingLabels = [];
+    foreach ($db->rawQuery("SELECT `name`, `display_name` FROM global_config") ?: [] as $setting) {
+        $label = trim((string) ($setting['display_name'] ?? '')) ?: $setting['name'];
+        $module = strtok((string) $setting['name'], '_');
+        if (isset($modules[$module]) && stripos($label, $modules[$module]) === false) {
+            $label = $modules[$module] . ' › ' . $label;
+        }
+        $settingLabels[$setting['name']] = $label;
+    }
 
-    $general->activityLog($eventType, $action, $resource);
+    $general->activityLog('general-config-update', 'Updated general settings', 'general-config', null, [
+        'entity' => ['type' => 'global-config', 'id' => 'general', 'label' => 'General settings'],
+        'changes' => ActivityLogService::changes($activityBefore, $readSettings(), $settingLabels),
+        // Settings that change how results are read, approved or locked, or how
+        // sample codes are made.
+        'importantFields' => [
+            'viral_load_threshold_limit', 'vl_interpret_and_convert_results', 'low_vl_text_results',
+            'auto_approval', 'auto_approve_interface_results', 'user_review_approve',
+            'lock_approved_vl_samples', 'lock_approved_eid_samples', 'lock_approved_covid19_samples',
+            'lock_approved_tb_samples', 'sample_lock_after_days', 'import_non_matching_sample',
+            'sample_code', 'sample_code_prefix', 'eid_sample_code', 'eid_sample_code_prefix',
+            'cd4_sample_code', 'cd4_sample_code_prefix', 'tb_sample_code', 'tb_sample_code_prefix',
+            'covid19_sample_code', 'covid19_sample_code_prefix', 'hepatitis_sample_code',
+            'hepatitis_sample_code_prefix', 'generic_sample_code', 'instance_type', 'vl_form',
+        ],
+        'reason' => 'Changes how results or sample codes are handled',
+    ]);
     header("Location:/global-config/editGlobalConfig.php");
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());

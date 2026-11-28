@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories\Reference;
 
 use App\Exceptions\SystemException;
+use App\Services\ActivityLogService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
@@ -20,6 +21,9 @@ use App\Utilities\DateUtility;
  * The endpoints whose writes moved here are listed in
  * bin/build/check-repository-boundaries.php, which fails the build if a direct
  * table write creeps back into any of them.
+ *
+ * Every save and status change writes a user activity log entry naming the
+ * row and what changed, so the endpoints do not log these writes themselves.
  */
 final readonly class ReferenceDataRepository
 {
@@ -38,6 +42,9 @@ final readonly class ReferenceDataRepository
      * endpoint rewire once dropped the invalidation and only review caught it.
      * statusOnly: updateStatus() is allowed but save() is refused -- the save
      * path has an owner of its own (lab storage saves via StorageService).
+     * important: columns whose change flags the activity log entry.
+     * noun: how the activity log names a row, when the entity key does not
+     * read as English ("vl-result" is a "result").
      *
      * Custom Tests manage their reference data elsewhere with different
      * schemas, so they are not listed.
@@ -52,7 +59,9 @@ final readonly class ReferenceDataRepository
      *   sync?: list<string>,
      *   cacheTags?: list<string>,
      *   statusOnly?: bool,
-     *   idType?: string
+     *   idType?: string,
+     *   important?: list<string>,
+     *   noun?: string
      * }>
      */
     private const ENTITIES = [
@@ -126,6 +135,10 @@ final readonly class ReferenceDataRepository
             'fields' => ['interpretation', 'available_for_instruments'],
             // The result-entry forms cache the VL result list per instrument.
             'cacheTags' => ['r_vl_results'],
+            // A change to these alters how results are read or which results
+            // a technician can pick, so its activity log entry is flagged.
+            'important' => ['interpretation', 'available_for_instruments', 'status'],
+            'noun' => 'result',
         ],
         'art-code' => [
             'tables' => ['vl' => 'r_vl_art_regimen'],
@@ -137,6 +150,7 @@ final readonly class ReferenceDataRepository
             // update-vl-art-code-alias.php for why it is additive-only.
             'fields' => ['parent_art', 'headings'],
             'defaults' => ['parent_art' => '0'],
+            'noun' => 'ART regimen',
         ],
         // The vocabularies that are not per-test-type.
         'funding-source' => [
@@ -158,6 +172,7 @@ final readonly class ReferenceDataRepository
             'id' => 'recommended_corrective_action_id',
             'name' => 'recommended_corrective_action_name',
             'status' => 'status',
+            'noun' => 'recommended corrective action',
             // The test-type slug the action belongs to; the screen manages one
             // test type at a time.
             'fields' => ['test_type'],
@@ -175,7 +190,18 @@ final readonly class ReferenceDataRepository
 
     private const STATUSES = ['active', 'inactive'];
 
-    public function __construct(private DatabaseService $db)
+    /** How the activity log names each test type in a statement. */
+    private const TEST_TYPE_NAMES = [
+        'vl' => 'VL',
+        'eid' => 'EID',
+        'cd4' => 'CD4',
+        'tb' => 'TB',
+        'covid19' => 'COVID-19',
+        'hepatitis' => 'Hepatitis',
+        'common' => '',
+    ];
+
+    public function __construct(private DatabaseService $db, private ActivityLogService $activityLog)
     {
     }
 
@@ -234,9 +260,11 @@ final readonly class ReferenceDataRepository
             if ($rowId <= 0) {
                 throw new SystemException("Invalid $entity id");
             }
+            $before = $this->findRow($spec, $table, $rowId);
             $this->db->where($spec['id'], $rowId);
             $this->db->update($table, $data);
             $this->invalidateCaches($spec);
+            $this->logSave($entity, $testType, $spec, $table, $rowId, $before);
             return $rowId;
         }
 
@@ -245,7 +273,11 @@ final readonly class ReferenceDataRepository
         }
         $this->db->insert($table, $data);
         $this->invalidateCaches($spec);
-        return (int) $this->db->getInsertId();
+        $newId = (int) $this->db->getInsertId();
+        if ($newId > 0) {
+            $this->logSave($entity, $testType, $spec, $table, $newId, null);
+        }
+        return $newId;
     }
 
     /**
@@ -277,13 +309,38 @@ final readonly class ReferenceDataRepository
             return 0;
         }
 
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $before = $this->db->rawQuery(
+            "SELECT `{$spec['id']}` AS id, `{$spec['name']}` AS name, `{$spec['status']}` AS status
+               FROM `$table` WHERE `{$spec['id']}` IN ($placeholders)",
+            $ids
+        ) ?: [];
+
         $this->db->where($spec['id'], $ids, 'IN');
         $this->db->update($table, [
             $spec['status'] => $status,
             'updated_datetime' => DateUtility::getCurrentDateTime(),
         ]);
         $this->invalidateCaches($spec);
-        return (int) $this->db->count;
+        $count = (int) $this->db->count;
+
+        // One entry per row whose status changed, so each row's history shows it.
+        foreach ($before as $row) {
+            if ((string) $row['status'] === $status) {
+                continue;
+            }
+            $this->activityLog->record(
+                "$entity-status",
+                sprintf('Changed the status of %s %s', $this->noun($entity, $testType, $spec), $row['name']),
+                'reference-data',
+                [
+                    'entity' => ['type' => self::entityType($entity, $testType), 'id' => $row['id'], 'label' => $row['name']],
+                    'changes' => ActivityLogService::changes(['status' => $row['status']], ['status' => $status]),
+                    'importantFields' => in_array($spec['status'], $spec['important'] ?? [], true) ? ['status'] : [],
+                ]
+            );
+        }
+        return $count;
     }
 
     /**
@@ -321,8 +378,107 @@ final readonly class ReferenceDataRepository
     }
 
     /**
+     * The activity log's entity type for a row: "vl-sample-type", or the bare
+     * entity for the vocabularies that are not per-test-type.
+     */
+    public static function entityType(string $entity, string $testType): string
+    {
+        return $testType === 'common' ? $entity : "$testType-$entity";
+    }
+
+    /**
+     * Logs one save with the fields it changed. $before is null for a new row.
+     *
+     * @param array<string, mixed> $spec
+     * @param array<string, mixed>|null $before
+     */
+    private function logSave(string $entity, string $testType, array $spec, string $table, int|string $rowId, ?array $before): void
+    {
+        $after = $this->findRow($spec, $table, $rowId);
+        if ($after === null) {
+            return;
+        }
+        $name = (string) $after[$spec['name']];
+        $this->activityLog->record(
+            $entity . ($before === null ? '-add' : '-update'),
+            sprintf('%s %s %s', $before === null ? 'Added' : 'Updated', $this->noun($entity, $testType, $spec), $name),
+            'reference-data',
+            [
+                'entity' => ['type' => self::entityType($entity, $testType), 'id' => $rowId, 'label' => $name],
+                'changes' => ActivityLogService::changes(
+                    $before === null ? null : $this->forLog($before),
+                    $this->forLog($after),
+                    [$spec['name'] => 'Name', $spec['status'] => 'Status'],
+                    [$spec['id'], 'updated_datetime', 'data_sync']
+                ),
+                // A new row is not flagged: the entry already lists every field.
+                'importantFields' => $before === null ? [] : ($spec['important'] ?? []),
+            ]
+        );
+    }
+
+    /**
+     * A row as the activity log compares it: the instrument list of a VL result
+     * by name rather than as a JSON list of ids.
+     *
+     * @param array<string, mixed> $row
+     * @return array<string, mixed>
+     */
+    private function forLog(array $row): array
+    {
+        if (array_key_exists('available_for_instruments', $row)) {
+            $ids = json_decode((string) $row['available_for_instruments'], true);
+            $row['available_for_instruments'] = is_array($ids) ? $this->instrumentNames($ids) : [];
+        }
+        return $row;
+    }
+
+    /**
+     * @param list<int|string> $ids
+     * @return list<string>
+     */
+    private function instrumentNames(array $ids): array
+    {
+        if ($ids === []) {
+            return [];
+        }
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $names = [];
+        foreach ($this->db->rawQuery(
+            "SELECT instrument_id, machine_name FROM instruments WHERE instrument_id IN ($placeholders)",
+            array_map(strval(...), $ids)
+        ) ?: [] as $row) {
+            $names[(string) $row['instrument_id']] = (string) $row['machine_name'];
+        }
+        return array_map(static fn($id): string => $names[(string) $id] ?? (string) $id, $ids);
+    }
+
+    /**
+     * @param array<string, mixed> $spec
+     * @return array<string, mixed>|null
+     */
+    private function findRow(array $spec, string $table, int|string $rowId): ?array
+    {
+        return $this->db->rawQueryOne("SELECT * FROM `$table` WHERE `{$spec['id']}` = ?", [$rowId]) ?: null;
+    }
+
+    /**
+     * "VL sample type", "funding source": how a statement names a row's kind.
+     *
+     * @param array<string, mixed> $spec
+     */
+    private function noun(string $entity, string $testType, array $spec): string
+    {
+        $noun = $spec['noun'] ?? str_replace('-', ' ', $entity);
+        $prefix = self::TEST_TYPE_NAMES[$testType] ?? strtoupper($testType);
+        return trim("$prefix $noun");
+    }
+
+    /**
      * @return array{tables: array<string, string>, id: string, name: string,
-     *   status: string, fields?: list<string>, defaults?: array<string, string>}
+     *   status: string, fields?: list<string>, defaults?: array<string, string>,
+     *   sync?: list<string>, cacheTags?: list<string>, statusOnly?: bool,
+     *   idType?: string, important?: list<string>, noun?: string}
      */
     private function spec(string $entity): array
     {

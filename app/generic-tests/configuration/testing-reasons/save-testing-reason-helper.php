@@ -1,7 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -10,13 +10,17 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "r_generic_test_reasons";
 
 $testReasonId = (int) base64_decode((string) $_POST['testReasonId']);
 $_POST['testReason'] = trim((string) $_POST['testReason']);
+// Read before the save, so the activity log lists what changed.
+/** @var ActivityLogService $activityLog */
+$activityLog = ContainerRegistry::get(ActivityLogService::class);
+$activityId = (int) base64_decode((string) ($_POST['testReasonId'] ?? ''));
+$activityBefore = $activityLog->row('r_generic_test_reasons', 'test_reason_id', $activityId);
+
 try {
     if (isset($_POST['testReason']) && ($_POST['testReason'] !== '' && $_POST['testReason'] !== '0')) {
 
@@ -26,14 +30,32 @@ try {
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Testing reason updated successfully");
-                $general->activityLog('Testing Reason', $_SESSION['userName'] . ' updated new testing reason for ' . $_POST['testReason'], 'generic-testing-reason');
+                $activityLog->recordRowSave(
+                    'generic-test-reason-save',
+                    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Custom Tests testing reason ' . $_POST['testReason'],
+                    'generic-test-reason',
+                    'r_generic_test_reasons',
+                    'test_reason_id',
+                    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+                    'test_reason',
+                    $activityBefore
+                );
             }
         } else {
             $id = $db->insert($tableName, $data);
             $lastId = $db->getInsertId();
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Testing reason added successfully");
-                $general->activityLog('Testing Reason', $_SESSION['userName'] . ' added new testing reason for ' . $_POST['testReason'], 'generic-testing-reason');
+                $activityLog->recordRowSave(
+                    'generic-test-reason-save',
+                    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Custom Tests testing reason ' . $_POST['testReason'],
+                    'generic-test-reason',
+                    'r_generic_test_reasons',
+                    'test_reason_id',
+                    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+                    'test_reason',
+                    $activityBefore
+                );
             }
         }
     }

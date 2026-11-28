@@ -80,6 +80,9 @@ try {
 	$healthFacilityTable = "health_facilities";
 	$signTableName = "lab_report_signatories";
 
+	// Compared after the save, so the activity log lists what changed.
+	$activityBefore = $facilityService->activitySnapshot((int) $facilityId);
+
 	$facilityRow = $db->rawQueryOne('SELECT facility_attributes, facility_code from facility_details where facility_id= ?', [$facilityId]);
 	$facilityAttributes = json_decode((string) $facilityRow['facility_attributes'], true);
 	$storedFacilityCode = $facilityRow['facility_code'] ?? null;
@@ -424,7 +427,13 @@ try {
 		}
 
 		$_SESSION['alertMsg'] = _translate("Facility details updated successfully");
-		$general->activityLog('update-facility', $_SESSION['userName'] . ' updated facility ' . $_POST['facilityName'], 'facility');
+		$general->activityLog(
+			'update-facility',
+			'Updated facility ' . $_POST['facilityName'],
+			'facility',
+			null,
+			$facilityService->activityDetails((int) $facilityId, $activityBefore)
+		);
 	}
 	header("Location:facilities.php");
 } catch (Exception $e) {

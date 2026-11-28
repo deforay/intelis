@@ -767,4 +767,105 @@ final class FacilitiesService
             return $facility;
         });
     }
+
+    /** Readable labels for the fields activitySnapshot() returns. */
+    private const array ACTIVITY_LABELS = [
+        'facility_name' => 'Facility name',
+        'facility_code' => 'Facility code',
+        'other_id' => 'Other ID',
+        'facility_type' => 'Facility type',
+        'status' => 'Status',
+        'facility_state' => 'Province',
+        'facility_district' => 'District',
+        'facility_hub_name' => 'Hub name',
+        'address' => 'Address',
+        'country' => 'Country',
+        'latitude' => 'Latitude',
+        'longitude' => 'Longitude',
+        'facility_emails' => 'Email',
+        'report_email' => 'Report email',
+        'contact_person' => 'Contact person',
+        'facility_mobile_numbers' => 'Phone number',
+        'test_type' => 'Test types',
+        'testing_points' => 'Testing points',
+        'header_text' => 'Report header text',
+        'facility_logo' => 'Logo',
+        'facility_attributes' => 'Settings',
+        'targets' => 'Targets',
+    ];
+
+    /**
+     * A facility as the activity log compares it: its type by name, its test
+     * types and testing points as lists, its settings field by field, and a
+     * testing lab's monthly targets per test type.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function activitySnapshot(int $facilityId): ?array
+    {
+        // The log must never stop the save it records: an unreadable record
+        // is logged without its changes.
+        try {
+            return $this->readActivitySnapshot($facilityId);
+        } catch (\Throwable $e) {
+            \App\Utilities\LoggerUtility::logWarning('Activity log snapshot not read: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /** @return array<string, mixed>|null */
+    private function readActivitySnapshot(int $facilityId): ?array
+    {
+        $row = $this->db->rawQueryOne(
+            "SELECT f.facility_name, f.facility_code, f.other_id, ft.facility_type_name AS facility_type,
+                    f.status, f.facility_state, f.facility_district, f.facility_hub_name, f.address,
+                    f.country, f.latitude, f.longitude, f.facility_emails, f.report_email,
+                    f.contact_person, f.facility_mobile_numbers, f.test_type, f.testing_points,
+                    f.header_text, f.facility_logo, f.facility_attributes
+               FROM facility_details AS f
+               LEFT JOIN facility_type AS ft ON ft.facility_type_id = f.facility_type
+              WHERE f.facility_id = ?",
+            [$facilityId]
+        );
+        if ($row === null) {
+            return null;
+        }
+        $row['test_type'] = array_values(array_filter(array_map('trim', explode(',', (string) $row['test_type']))));
+        foreach (['testing_points', 'facility_attributes'] as $json) {
+            $decoded = json_decode((string) $row[$json], true);
+            $row[$json] = is_array($decoded) ? $decoded : (string) $row[$json];
+        }
+        $targets = [];
+        foreach ($this->db->rawQuery(
+            "SELECT test_type, monthly_target, suppressed_monthly_target FROM testing_labs WHERE facility_id = ?",
+            [$facilityId]
+        ) ?: [] as $lab) {
+            $targets[(string) $lab['test_type']] = [
+                'monthly_target' => $lab['monthly_target'],
+                'suppressed_monthly_target' => $lab['suppressed_monthly_target'],
+            ];
+        }
+        $row['targets'] = $targets;
+        return $row;
+    }
+
+    /**
+     * What to pass CommonService::activityLog() for a save of one facility: the
+     * facility and the fields that changed since $before (null for a new one).
+     * A change of status or type is flagged: it decides where the facility can
+     * be picked on request and result forms.
+     *
+     * @param array<string, mixed>|null $before from activitySnapshot(), taken before the save
+     * @return array<string, mixed>
+     */
+    public function activityDetails(int $facilityId, ?array $before): array
+    {
+        $after = $this->activitySnapshot($facilityId);
+        return [
+            'entity' => ['type' => 'facility', 'id' => $facilityId, 'label' => $after['facility_name'] ?? ($before['facility_name'] ?? (string) $facilityId)],
+            'changes' => ActivityLogService::changes($before, $after, self::ACTIVITY_LABELS),
+            'importantFields' => $before === null ? [] : ['status', 'facility_type'],
+            'reason' => 'Changes where the facility can be selected',
+        ];
+    }
 }

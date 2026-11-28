@@ -1,7 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -9,12 +9,16 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_generic_test_failure_reasons";
 
 $testFailureReasonId = (int) base64_decode((string) $_POST['testFailureReasonId']);
 $_POST['testFailureReason'] = trim((string) $_POST['testFailureReason']);
+// Read before the save, so the activity log lists what changed.
+/** @var ActivityLogService $activityLog */
+$activityLog = ContainerRegistry::get(ActivityLogService::class);
+$activityId = (int) base64_decode((string) ($_POST['testFailureReasonId'] ?? ''));
+$activityBefore = $activityLog->row('r_generic_test_failure_reasons', 'test_failure_reason_id', $activityId);
+
 try {
     if (isset($_POST['testFailureReason']) && ($_POST['testFailureReason'] !== '' && $_POST['testFailureReason'] !== '0')) {
 
@@ -24,14 +28,32 @@ try {
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Test Failure reason updated successfully");
-                $general->activityLog('Test Failure Reason', $_SESSION['userName'] . ' updated new test failure reason for ' . $_POST['testFailureReason'], 'generic-test-failure-reason');
+                $activityLog->recordRowSave(
+                    'generic-test-failure-reason-save',
+                    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Custom Tests test failure reason ' . $_POST['testFailureReason'],
+                    'generic-test-failure-reason',
+                    'r_generic_test_failure_reasons',
+                    'test_failure_reason_id',
+                    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+                    'test_failure_reason',
+                    $activityBefore
+                );
             }
         } else {
             $id = $db->insert($tableName, $data);
             $lastId = $db->getInsertId();
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Test Failure reason added successfully");
-                $general->activityLog('Test Failure Reason', $_SESSION['userName'] . ' added new test failure reason for ' . $_POST['testFailureReason'], 'generic-test-failure-reason');
+                $activityLog->recordRowSave(
+                    'generic-test-failure-reason-save',
+                    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Custom Tests test failure reason ' . $_POST['testFailureReason'],
+                    'generic-test-failure-reason',
+                    'r_generic_test_failure_reasons',
+                    'test_failure_reason_id',
+                    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+                    'test_failure_reason',
+                    $activityBefore
+                );
             }
         }
     }

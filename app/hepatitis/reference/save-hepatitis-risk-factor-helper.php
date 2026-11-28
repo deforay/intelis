@@ -1,7 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -12,11 +12,15 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_hepatitis_risk_factors";
 $primaryKey = "riskfactor_id";
 // print_r($_POST);die;
+// Read before the save, so the activity log lists what changed.
+/** @var ActivityLogService $activityLog */
+$activityLog = ContainerRegistry::get(ActivityLogService::class);
+$activityId = (int) base64_decode((string) ($_POST['riskFactorId'] ?? ''));
+$activityBefore = $activityLog->row('r_hepatitis_risk_factors', 'riskfactor_id', $activityId);
+
 try {
 	if (isset($_POST['riskFactorName']) && trim((string) $_POST['riskFactorName']) !== "") {
 		$data = ['riskfactor_name'         => $_POST['riskFactorName'], 'riskfactor_status'     => $_POST['riskFactorStatus'], 'updated_datetime'     => DateUtility::getCurrentDateTime()];
@@ -30,7 +34,16 @@ try {
 
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("Hepatitis Risk Factor details saved successfully");
-			$general->activityLog('Hepatitis Risk Factor details', $_SESSION['userName'] . ' added new risk factor for ' . $_POST['riskFactorName'], 'hepatitis-reference');
+			$activityLog->recordRowSave(
+			    'hepatitis-risk-factor-save',
+			    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Hepatitis risk factor ' . $_POST['riskFactorName'],
+			    'hepatitis-risk-factor',
+			    'r_hepatitis_risk_factors',
+			    'riskfactor_id',
+			    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+			    'riskfactor_name',
+			    $activityBefore
+			);
 		}
 	}
 	header("Location:hepatitis-risk-factors.php");

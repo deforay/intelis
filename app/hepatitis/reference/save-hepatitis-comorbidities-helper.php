@@ -1,7 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -12,11 +12,15 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_hepatitis_comorbidities";
 $primaryKey = "comorbidity_id";
 // print_r($_POST);die;
+// Read before the save, so the activity log lists what changed.
+/** @var ActivityLogService $activityLog */
+$activityLog = ContainerRegistry::get(ActivityLogService::class);
+$activityId = (int) base64_decode((string) ($_POST['comorbidityId'] ?? ''));
+$activityBefore = $activityLog->row('r_hepatitis_comorbidities', 'comorbidity_id', $activityId);
+
 try {
 	if (isset($_POST['comorbidityName']) && trim((string) $_POST['comorbidityName']) !== "") {
 		$data = ['comorbidity_name'         => $_POST['comorbidityName'], 'comorbidity_status'     => $_POST['comorbidityStatus'], 'updated_datetime'     => DateUtility::getCurrentDateTime()];
@@ -30,7 +34,16 @@ try {
 
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("Hepatitis Comorbidity details saved successfully");
-			$general->activityLog('Hepatitis Comorbidity details', $_SESSION['userName'] . ' added new comorbidity for ' . $_POST['comorbidityName'], 'hepatitis-reference');
+			$activityLog->recordRowSave(
+			    'hepatitis-comorbidity-save',
+			    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Hepatitis comorbidity ' . $_POST['comorbidityName'],
+			    'hepatitis-comorbidity',
+			    'r_hepatitis_comorbidities',
+			    'comorbidity_id',
+			    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+			    'comorbidity_name',
+			    $activityBefore
+			);
 		}
 	}
 	header("Location:hepatitis-comorbidities.php");

@@ -38,6 +38,12 @@ class AppRegistry
         return $value;
     }
 
+    /** Whether $key is set, without the missing-request warning get() logs. */
+    public static function has(string $key): bool
+    {
+        return isset(self::$items[$key]);
+    }
+
     public static function remove(string $key): void
     {
         unset(self::$items[$key]);

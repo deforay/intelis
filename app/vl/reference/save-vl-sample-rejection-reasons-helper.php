@@ -2,7 +2,6 @@
 
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Repositories\Reference\ReferenceDataRepository;
@@ -20,8 +19,6 @@ $reasonCode = (string) _rawInput("rejectionReasonCode", "");
 /** @var ReferenceDataRepository $referenceData */
 $referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 try {
 	if ($reasonName !== "") {
@@ -41,7 +38,6 @@ try {
 		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("VL Sample Rejection Reasons details added successfully");
-			$general->activityLog('VL Sample Rejection Reasons For VL', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons for VL  ' . $reasonName, 'vl-reference');
 		}
 	}
 	MiscUtility::redirect("/vl/reference/vl-sample-rejection-reasons.php");

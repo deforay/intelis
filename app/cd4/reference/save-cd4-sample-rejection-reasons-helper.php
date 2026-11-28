@@ -1,7 +1,6 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Repositories\Reference\ReferenceDataRepository;
@@ -19,8 +18,6 @@ $reasonCode = (string) _rawInput("rejectionReasonCode", "");
 /** @var ReferenceDataRepository $referenceData */
 $referenceData = ContainerRegistry::get(ReferenceDataRepository::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 try {
 	if ($reasonName !== "") {
@@ -40,7 +37,6 @@ try {
 		);
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("CD4 Sample Rejection Reasons details added successfully");
-			$general->activityLog('CD4 Sample Rejection Reasons For CD4', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons for CD4  ' . $reasonName, 'cd4-reference');
 		}
 	}
 	header("Location:/cd4/reference/cd4-sample-rejection-reasons.php");

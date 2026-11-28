@@ -1,7 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
+use App\Services\ActivityLogService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -9,12 +9,16 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_generic_test_categories";
 
 $testCategoryId = (int) base64_decode((string) $_POST['testCategoryId']);
 $_POST['testCategory'] = trim((string) $_POST['testCategory']);
+// Read before the save, so the activity log lists what changed.
+/** @var ActivityLogService $activityLog */
+$activityLog = ContainerRegistry::get(ActivityLogService::class);
+$activityId = (int) base64_decode((string) ($_POST['testCategoryId'] ?? ''));
+$activityBefore = $activityLog->row('r_generic_test_categories', 'test_category_id', $activityId);
+
 try {
     if (isset($_POST['testCategory']) && ($_POST['testCategory'] !== '' && $_POST['testCategory'] !== '0')) {
 
@@ -24,14 +28,32 @@ try {
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Test Category updated successfully");
-                $general->activityLog('Test category', $_SESSION['userName'] . ' updated new Test category for ' . $_POST['testCategory'], 'generic-test-categories');
+                $activityLog->recordRowSave(
+                    'generic-test-category-save',
+                    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Custom Tests test category ' . $_POST['testCategory'],
+                    'generic-test-category',
+                    'r_generic_test_categories',
+                    'test_category_id',
+                    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+                    'test_category_name',
+                    $activityBefore
+                );
             }
         } else {
             $id = $db->insert($tableName, $data);
             $lastId = $db->getInsertId();
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Test Category added successfully");
-                $general->activityLog('Test Category', $_SESSION['userName'] . ' added new Test category for ' . $_POST['testCategory'], 'generic-test-categories');
+                $activityLog->recordRowSave(
+                    'generic-test-category-save',
+                    ($activityBefore === null ? 'Added ' : 'Updated ') . 'Custom Tests test category ' . $_POST['testCategory'],
+                    'generic-test-category',
+                    'r_generic_test_categories',
+                    'test_category_id',
+                    $activityBefore === null ? (int) $db->getInsertId() : $activityId,
+                    'test_category_name',
+                    $activityBefore
+                );
             }
         }
     }

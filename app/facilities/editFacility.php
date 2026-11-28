@@ -171,7 +171,7 @@ if ($showInterfaceConnections) {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-hospital"></em> <?php echo _translate("Edit Facility"); ?></h1>
+		<h1><em class="fa-solid fa-hospital"></em> <?php echo _translate("Edit Facility"); ?><?= \App\Utilities\ActivityLogUtility::historyLink('facility', (int) $id, (string) ($facilityInfo['facility_name'] ?? '')); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
 			<li class="active"><?php echo _translate("Facilities"); ?></li>
